@@ -9,7 +9,7 @@ pipeline{
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'sudo docker build -t navedamanat/frntEnd:${IMAGE_TAG} .'
+                    sh 'sudo docker build -t navedamanat/frntend:${IMAGE_TAG} .'
                 }
             }
         }
