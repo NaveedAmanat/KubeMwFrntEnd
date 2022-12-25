@@ -21,7 +21,7 @@ export class ApiModel {
     // this.host = 'http://192.168.7.49:8080';
     // this.host = 'http://192.168.7.83:8080';
     // this.host = 'http://192.168.7.83:8080';
-    this.host = 'http://192.168.7.84:8080';
+    this.host = 'http://kashf.devolpment.com';
     //  ----- KASHF PROD  ------//
     // this.host = 'http://221.120.209.185:8080';
     //  ----- KASHF QA  ------- //
