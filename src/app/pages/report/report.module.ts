@@ -41,7 +41,7 @@ import { TrailBalanceComponent } from './trail-balance/trail-balance.component';
 import { ParMdComponent } from './par-md/par-md.component';
 import { LandingComponent } from './landing/landing.component';
 import { BmBdoRecoveryComponent } from './bm-bdo-recovery/bm-bdo-recovery.component';
-import { ClientHealthBeneficiaryComponent } from './client-health-beneficiary/client-health-beneficiary.component';
+//import { ClientHealthBeneficiaryComponent } from './client-health-beneficiary/client-health-beneficiary.component';
 import { ActiveClientsComponent } from './active-clients/active-clients.component';
 import { MobileWalletDisbursmentComponent } from './mobile-wallet-disbursment/mobile-wallet-disbursment.component';
 import { MobileWalletDisbursmentDueComponent } from './mobile-wallet-disbursment-due/mobile-wallet-disbursment-due.component';
@@ -88,7 +88,7 @@ export const routes: Routes = [
   { path: 'due-recovery', component: DueRecoveryComponent, canActivate: [AuthGuard] },
   { path: 'women-participation', component: WomenparticipationComponent, canActivate: [AuthGuard] },
   { path: 'party-ledger', component: PartyLedgerComponent, canActivate: [AuthGuard] },
-  { path: 'client-health-beneficiary', component: ClientHealthBeneficiaryComponent, canActivate: [AuthGuard] },
+ // { path: 'client-health-beneficiary', component: ClientHealthBeneficiaryComponent, canActivate: [AuthGuard] },
   { path: 'brnch-turnover-anlysis', component: BrnchTurnoverAnlysisComponent, canActivate: [AuthGuard] },
   { path: 'insurance-claim', component: InsuranceClaimComponent, canActivate: [AuthGuard] },
   { path: 'par-branch-wise', component: PARBranchWiseComponent, canActivate: [AuthGuard] },
@@ -207,7 +207,7 @@ export const routes: Routes = [
     MatExpansionModule,
     MatRadioModule
   ],
-  declarations: [OverdueloansReportComponent, ReportsLeftsideBarComponent, PortfolioComponent, FundStmntComponent, ValidationReportComponent, AccountLedgerComponent, BookDetailsComponent, DueRecoveryComponent, WomenparticipationComponent, ClientHealthBeneficiaryComponent, PartyLedgerComponent, BrnchTurnoverAnlysisComponent, InsuranceClaimComponent, PARBranchWiseComponent, BranchPerformanceReviewComponent, FiveDayAdvanceComponent, ProjectedClientsLoanCompletionComponent, TopSheetComponent, PdcDetailComponent, RateOfRetentionComponent, PdcDetailComponent, ProductWiseReportEditionComponent, PARBranchWiseComponent, AdcWiseBranchRecoveryComponent, PortfolioConcentrationComponent, PendingClientsComponent, TagClientClaimComponent, AgenciesTargetTrackingComponent, TransferredClientsComponent, TurnAroundTimeComponent, FemaleParticipationComponent, SharedComponent, ReversedEntriesComponent, TrailBalanceComponent, ParMdComponent, LandingComponent, BmBdoRecoveryComponent
+  declarations: [OverdueloansReportComponent, ReportsLeftsideBarComponent, PortfolioComponent, FundStmntComponent, ValidationReportComponent, AccountLedgerComponent, BookDetailsComponent, DueRecoveryComponent, WomenparticipationComponent, PartyLedgerComponent, BrnchTurnoverAnlysisComponent, InsuranceClaimComponent, PARBranchWiseComponent, BranchPerformanceReviewComponent, FiveDayAdvanceComponent, ProjectedClientsLoanCompletionComponent, TopSheetComponent, PdcDetailComponent, RateOfRetentionComponent, PdcDetailComponent, ProductWiseReportEditionComponent, PARBranchWiseComponent, AdcWiseBranchRecoveryComponent, PortfolioConcentrationComponent, PendingClientsComponent, TagClientClaimComponent, AgenciesTargetTrackingComponent, TransferredClientsComponent, TurnAroundTimeComponent, FemaleParticipationComponent, SharedComponent, ReversedEntriesComponent, TrailBalanceComponent, ParMdComponent, LandingComponent, BmBdoRecoveryComponent
   , ActiveClientsComponent, MobileWalletDisbursmentComponent, MobileWalletDisbursmentDueComponent, ClientsLoanMaturityComponent, PortfolioNewComponent, DonorTaggingReportComponent, VerisysReportComponent, AnimalMissingTagComponent, KmPortfolioComponent, RecoveryTrendAnalysisComponent, BmMobileWalletDisbursmentComponent, BmMobileWalletDisbursmentDueComponent, BmClientsLoanMaturityComponent, MobileWalletOpenedComponent, TransferClientsDetailsComponent, RegionalRiskFlaggingReportComponent, RiskAndSocialKpiComponent, RegionDisbursementComponent, TopSheetTransferClientsComponent, PremiumDataComponent, PremiumDataKmComponent, WoRecoveryComponent, WoClientDataComponent, AccRecoveryComponent, ClientDataComponent, KszbClientDataComponent, AccTopsheetComponent, AccRecoverydetailComponent, RegionalRecoveryTrendComponent, NadraVerisysErrorStatusComponent, ExportBankBookCsvComponent, MonthlyAccountsComponent],
   providers: [AuthGuard],
 })
