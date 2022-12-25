@@ -1,0 +1,33 @@
+<div class="col-md-12">
+  <div class="content">
+    <div class="cRow">
+      <div class="mysearchbox">
+        <h6 class="d-inline-block searchshow">Agencies Target Tracking</h6>
+        <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+          <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."
+            title="Type in a name">
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="row"> -->
+    <form class="md-float-material" [formGroup]="ngForm" (ngSubmit)="onSubmitAgenciesTargetReport()">
+      <div class="row">
+        <div class="col-md-12">
+          <input *ngIf="auth.role == 'bm'" type="hidden" formControlName="branch" readonly />
+
+          <ng-select *ngIf="auth.role != 'bm'" [items]="branchs" required bindLabel="brnchNm" bindValue="brnchSeq"
+            name="brnchNm" placeholder="Select Branch:" formControlName="branch">
+          </ng-select>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Print</button>
+
+      </div>
+
+    </form>
+  </div>
+  <!-- </div> -->
+</div>

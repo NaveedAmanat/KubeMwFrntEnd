@@ -1,0 +1,126 @@
+<main class="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <app-left-side-bar></app-left-side-bar>
+            </div>
+            <div class="col-md-9">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mysearchbox">
+                                <h6 class="d-inline-block searchshow">Device Register
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 addBtn">
+                            <button class="btn btn-primary btn-sm" (click)="openAddAssignment()" type="button"><i
+                                    class="fa fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Sr. #</th>
+                                    <th>Employee Name</th>
+                                    <th>Device IMEI</th>
+                                    <th>Identifier</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let device of allRegisteredDevices; let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{getEmployeeName(device.entyTypSeq)}}</td>
+                                    <td>{{device.dvcAddr}}</td>
+                                    <td>{{device.crtdBy}}</td>
+                                    <td>Active</td>
+                                    <td>
+                                        <a data-toggle="modal" (click)="openTabAssignment(device)" class="iconBtn"><i
+                                                class="fa fa-tablet"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="AssignTablet" role="dialog">
+            <div class="modal-dialog big mymodal">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Assign Tablet</h5>
+                    </div>
+                    <form class="md-float-material" [formGroup]="AssignTabletForm">
+                        <div class="modal-body pt-0" style="overflow:visible">
+
+                            <div class="cRow">
+
+                                <div class="cCol3">
+                                    <ng-select [multiple]="false" placeholder="All Employee"
+                                        formControlName="entyTypSeq">
+                                        <ng-option *ngFor="let emplyee of allEmployees" [value]="emplyee.empSeq">
+                                            {{emplyee.empNm}}
+                                        </ng-option>
+                                    </ng-select>
+                                    <mat-error
+                                        *ngIf="AssignTabletFormControls.entyTypSeq.errors?.required && AssignTabletFormControls.entyTypSeq.touched">
+                                        Employee is <strong>required</strong>
+                                    </mat-error>
+                                </div>
+
+                                <div class="cCol2">
+                                    <mat-form-field>
+                                        <input type="text" matInput formControlName="dvcAddr"
+                                            placeholder="Device Unique Id" name="dvcAddr">
+                                    </mat-form-field>
+                                    <mat-error
+                                        *ngIf="AssignTabletFormControls.dvcAddr.errors && (AssignTabletFormControls.dvcAddr.dirty || AssignTabletFormControls.dvcAddr.touched)">
+                                        <div *ngIf="AssignTabletFormControls.dvcAddr.errors?.required">
+                                            Device Unique ID is required
+                                        </div>
+                                        <div *ngIf="AssignTabletFormControls.dvcAddr.errors?.minlength">
+                                            Device Unique ID must be at least 15 characters long.
+                                        </div>
+                                        <div *ngIf="AssignTabletFormControls.dvcAddr.errors?.maxlength">
+                                            Device Unique ID cannot be more than 16 characters long.
+                                        </div>
+                                    </mat-error>
+                                </div>
+
+                                <div class="cCol2">
+                                    <mat-form-field>
+                                        <input type="text" matInput formControlName="crtdBy" placeholder="Identifier"
+                                            name="identifier" maxlength="30">
+                                    </mat-form-field>
+                                    <mat-error
+                                        *ngIf="AssignTabletFormControls.crtdBy.errors?.required && AssignTabletFormControls.crtdBy.touched">
+                                        Identifier Amount is <strong>required</strong>
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer text-center">
+                            <button *ngIf="regUnReg" (click)="unregisterDevice()" type="button"
+                                class="btn btn-danger btn-min">Un-Register
+                                Device</button>
+
+                            <button *ngIf="!regUnReg" (click)="registerDevice()" type="button"
+                                class="btn btn-primary btn-min">Register Device</button>
+
+                            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>

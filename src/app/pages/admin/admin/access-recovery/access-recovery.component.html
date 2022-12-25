@@ -1,0 +1,346 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6" *ngIf="accessRecoveries?.length>0 || (this.auth.role == 'bm')">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                <!-- <mat-form-field *ngIf="auth.role != 'bm'">
+                  <mat-select placeholder="Select Branch" formControlName="branch"
+                    (selectionChange)="onSelectBranch()">
+                    <mat-option *ngFor="let b of branchs" [value]="b.brnchSeq">
+                      {{b.brnchNm}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+
+
+                <ng-select *ngIf="auth.role != 'bm'" [items]="branchs" required (change)="onSelectBranch($event)"
+                  bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+                  formControlName="branch">
+                </ng-select>
+
+
+              </form>
+            </div>
+
+
+            <!-- <div class="col-sm-6 addBtn"> -->
+            <!-- <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#applyExcessPayment"><i
+                  class="fa fa-plus"></i> Add</button> -->
+            <!-- </div> -->
+          </div>
+          <div class="modal fade" id="ApplyPayment" role="dialog">
+            <div class="modal-dialog mymodal bigger">
+
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Excess Recovery</h5>
+                </div>
+                <form [formGroup]="accessRecoveryForm" (ngSubmit)="onPayClick()">
+                  <div class="modal-body">
+
+                    <div class="cRow">
+                      <!-- <div class="cCol2">
+                                    <label>Branch</label>
+                                    <input type="text" disabled="readonly" formControlName="brnchSeq" class="form-control" />
+                            </div>  -->
+                      <div class="cCol2">
+                        <label>Transaction Id</label>
+                        <input type="text" disabled="readonly" formControlName="txId" class="form-control" />
+                      </div>
+
+                      <div class="cCol2">
+                        <label>Client Id</label>
+                        <input type="text" disabled="readonly" formControlName="clientId" class="form-control" />
+                      </div>
+                      <div class="cCol2">
+                        <label>Client Name</label>
+                        <input type="text" disabled="readonly" formControlName="clientName" class="form-control" />
+                      </div>
+
+                      <div class="cCol2">
+                        <label>Access Amount</label>
+                        <input type="text" disabled="readonly" formControlName="accessAmount" class="form-control" />
+                      </div>
+                      <div class="cCol2">
+                        <label>Payment Mode</label>
+                        <mat-select type="" formControlName="paymentMode" class="form-control" id="paymentMode"
+                          [ngClass]="{ 'is-invalid': form.paymentMode.errors?.required && form.paymentMode.touched }"
+                          (selectionChange)="onSelectChange()">
+                          <mat-option *ngFor="let payment of paymentArray" [value]="payment">{{payment.typStr}}
+                          </mat-option>
+                        </mat-select>
+                        <div *ngIf="form.paymentMode.errors?.required" class="invalid-feedback">
+                          Payment Mode is required
+                        </div>
+                      </div>
+
+                      <div class="cCol2" *ngIf="!isCash">
+                        <label>Instrument #</label>
+                        <input type="text" formControlName="instrumentNum" class="form-control"
+                          [ngClass]="{ 'is-invalid': form.instrumentNum.errors?.required && form.instrumentNum.touched }" />
+                        <div *ngIf="form.instrumentNum.errors?.required" class="invalid-feedback">
+                          Instrument No. is required
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="modal-footer text-center">
+                    <button type="button" (click)="onPayClick()" appNoDblClick [disabled]="!accessRecoveryForm.valid"
+                      class="btn btn-primary btn-min">Pay</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!--------------------------------   APPLY EXCESS RECOVERY              -------------------------------------->
+
+          <div class="modal fade" id="applyExcessPayment" role="dialog">
+            <div class="modal-dialog mymodal big">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Apply Excess Payment</h5>
+                </div>
+                <form [formGroup]="applyExcessPayment" (ngSubmit)="onApplyExcessPaymentSubmit()">
+                  <div class="modal-body">
+                    <div class="cRow">
+                      <div class="cRow">
+                        <div class="cCol4">
+                          <mat-form-field>
+                            <input type="text" matInput placeholder="Client Sequence:" formControlName="clntSeq"
+                              [errorStateMatcher]="matcher">
+                            <mat-error *ngIf="fApplyPayment.clntSeq.errors?.required">
+                              Client Sequence <strong>required</strong>
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div class="cCol3-col">
+                          <button mat-stroked-button color="primary" type="submit" (click)="validateClient()">Validate
+                            Client</button>
+                        </div>
+                      </div>
+
+                      <div class="cCol2" *ngIf="payment">
+                        <mat-form-field>
+                          <mat-select placeholder="Payment Mode:" formControlName="pymntMod" name="pymntMod"
+                            [errorStateMatcher]="matcher">
+                            <mat-option *ngFor="let edu of tempInstituteArray" [value]="edu">
+                              {{edu.typStr}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="fApplyPayment.pymntMod.errors?.required">
+                            Payment Mode is <strong>required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol2" *ngIf="payment">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Payment Amount:" pattern="^-?[\d]+(?:e-?\d+)?$"
+                            formControlName="pymtAmt" [errorStateMatcher]="matcher">
+                          <mat-error *ngIf="fApplyPayment.pymtAmt.errors?.required">
+                            Payment Amount is <strong>required</strong>
+                          </mat-error>
+                          <mat-error *ngIf="fApplyPayment.pymtAmt.errors?.paymtamterror">
+                            Payment Amount is <strong>Greater then Due Amount</strong>
+                          </mat-error>
+                          <mat-error *ngIf="fApplyPayment.pymtAmt.errors?.pattern">
+                            Payment Amount is <strong>Invalid</strong>
+                          </mat-error>
+
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button appNoDblClick type="button" (click)="onApplyExcessPaymentSubmit()"
+                      class="btn btn-primary btn-min" [disabled]="!applyExcessPayment.valid">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+          <!------------------------           End Apply Excess Payment           ------------------------->
+
+
+
+
+
+          <!-- <div class="table-responsive">
+              <table class="table record" id="myTable">
+                <thead class="thead-blue thead-light">
+                  <tr>
+                      <th>Transaction Number</th>
+                      <th>Branch</th>
+                      <th>Client ID</th>
+                      <th>Client Name</th>
+                      <th>Excess Amount</th>
+                      <th>Transaction Date</th>
+                      <th>Agent</th>
+                      <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let accessRecovery of accessRecoveries">                  
+                    <td>{{accessRecovery.txId}}</td>
+                    <td>{{accessRecovery.branchNm}}</td>
+                    <td>{{accessRecovery.clientId}}</td>
+                    <td>{{accessRecovery.clientName}}</td>
+                    <td>{{accessRecovery.accessAmount}}</td>
+                    <td>{{accessRecovery.pymtDt}}</td>
+                    <td>{{accessRecovery.agent}}</td>
+                    <td>						
+                            <a href="#" data-toggle="modal" data-target="#ApplyPayment" (click)="onPaymentClick(accessRecovery)" class="iconBtn"><img src="assets/images/rscheck.png" alt=""></a>
+                    </td>                          
+                  </tr> 
+                </tbody>
+              </table>
+            </div> -->
+
+
+
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort id="myTable">
+
+              <!-- Transaction Number Column -->
+              <ng-container matColumnDef="txId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Transaction #</th>
+                <td mat-cell *matCellDef="let accessRecovery">{{accessRecovery.txId}}</td>
+              </ng-container>
+
+              <!--Branch Name Column -->
+              <ng-container matColumnDef="branchNm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                <td mat-cell *matCellDef="let accessRecovery">{{accessRecovery.branchNm}}</td>
+              </ng-container>
+
+              <!-- Client ID Column -->
+              <ng-container matColumnDef="clientId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client ID</th>
+                <td mat-cell *matCellDef="let accessRecovery">{{accessRecovery.clientId}}</td>
+              </ng-container>
+
+              <!-- Client Name Column -->
+              <ng-container matColumnDef="clientName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client Name</th>
+                <td mat-cell *matCellDef="let accessRecovery">{{accessRecovery.clientName}}</td>
+              </ng-container>
+
+              <!-- Excess Amount Column -->
+              <ng-container matColumnDef="accessAmount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Excess Amount</th>
+                <td mat-cell *matCellDef="let accessRecovery">{{accessRecovery.accessAmount}}</td>
+              </ng-container>
+
+              <!-- Payment Date Column -->
+              <ng-container matColumnDef="pymtDt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Date</th>
+                <td mat-cell *matCellDef="let accessRecovery">{{accessRecovery.pymtDt | date:'dd-MM-yyyy'}}</td>
+              </ng-container>
+
+              <!-- Agent Column -->
+              <ng-container matColumnDef="agent">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Agent</th>
+                <td mat-cell *matCellDef="let accessRecovery">{{accessRecovery.agent}}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let accessRecovery">
+                  <a href="#" data-toggle="modal" data-target="#ApplyPayment" (click)="onPaymentClick(accessRecovery)"
+                    class="iconBtn"><img src="assets/images/rscheck.png" alt=""></a>
+
+                  <!-- Modified by Areeba - Granted rights for adc excess recovery to finance -->
+                  <a *ngIf="(accessRecovery.prntRef=='' && (auth.role=='admin' || auth.role=='ra' || (auth.role=='finance' && accessRecovery.agentBrnchSeq != 0))) && (accessRecovery.trf_clnt_seq != 'T')" matTooltip="text" class="iconBtn delBtn"
+                    (click)="onClickExcessRecoveryButton(accessRecovery.txId)" title="Excess Recovery Reversal"><img
+                      alt=""><i _ngcontent-c19="" class="fa fa-undo"></i></a>
+                  <!-- Added By Naveed - Date - 24-02-2022
+                      SCR - Portfolio phase - 2, show tooltip text
+                  -->
+                  <a *ngIf="(accessRecovery.prntRef=='' && auth.role=='admin') && (accessRecovery.trf_clnt_seq == 'T')" matTooltip="text" class="iconBtn delBtn"
+                    title="You cannot allowed To reverse transferred clients Excess Recovery">
+                    <img alt=""><i _ngcontent-c19="" class="fa fa-undo"></i></a>
+                    <!-- Ended By Naveed - Date - 24-02-2022 -->
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <h5>Total Excess Amount : {{isTotalAmt  | currency:'PKR':''}}</h5>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="excessRecoveryReversal" role="dialog">
+    <div class="modal-dialog mymodal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Excess Recovery Reversal</h5>
+        </div>
+        <form [formGroup]="excessRecoveryReversalForm" (ngSubmit)="onSubmitExcessRecoveryReversal()">
+          <input type="hidden" formControlName="loanAppSeq" />
+          <div class="modal-body">
+            <div class="cRow">
+              <div class="cCol6">
+                <mat-form-field>
+                  <input matInput required formControlName="cmnt" placeholder="Remarks:" />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button appNoDblClick type="button" (click)="onSubmitExcessRecoveryReversal()"
+              class="btn btn-primary">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

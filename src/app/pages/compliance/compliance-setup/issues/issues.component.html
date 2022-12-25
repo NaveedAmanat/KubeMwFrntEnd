@@ -1,0 +1,90 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Issues
+                </h6>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" type="button" (click)="openIssuesModel()"><i
+                  class="fa fa-plus"></i>
+                Add</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>Issue Id</th>
+                  <th>Issue Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let iss of totalIssue">
+                  <td>{{iss.isuId}}</td>
+                  <td>{{iss.isuNm}}</td>
+                  <td>
+                    <a data-toggle="tooltip" title="Edit" (click)="onEditIssue(iss)" class="iconBtn"><i
+                        class="fa fa-pencil"></i></a>
+                    <a data-toggle="tooltip" title="Delete" (click)="onDeleteIssue(iss)" class="iconBtn delBtn"><i
+                        class="fa fa-trash-o"></i></a>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="text-left mt-2 pb-3">
+            <button [routerLink]="['/compliance/compliance-setup/action-sub-categories/:adtCtgrySeq']" type="button"
+              class="btn btn-primary btn-min">Back</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="issue" role="dialog">
+        <div class="modal-dialog big mymodal">
+
+          <form (ngSubmit)="onSubmitIssue()" [formGroup]="issueForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Action Sub Categories</h5>
+              </div>
+              <div class="modal-body">
+                <div class="cRow">
+
+                  <!-- <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Issue ID:"
+                        formControlName="isuId">
+                    </mat-form-field>
+                  </div> -->
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Issue Name:" formControlName="isuNm">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button type="submit" [disabled]=!issueForm.valid class="btn btn-primary btn-min">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

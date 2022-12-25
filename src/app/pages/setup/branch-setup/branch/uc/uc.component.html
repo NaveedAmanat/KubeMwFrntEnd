@@ -1,0 +1,347 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">Branch: {{brmodel.brnchSeq}} - {{brmodel.brnchNm.toUpperCase()}}</h6>
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="colorBlack" id="ucSection">UCs</h6>
+        </div>
+        <div class="col-sm-6 addBtn">
+          
+          <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+            (click)="addExUCs()">
+            <i class="fa fa-plus"></i> Add Existing UC</button>
+          <button (click)="goToGeography()" type="button" class="btn btn-primary">Geography</button>
+          <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+            (click)="addUCs()">
+            <i class="fa fa-plus"></i> Add New</button>
+          <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+            (click)="openFile(file)"><i class="fa fa-upload" aria-hidden="true"></i> Upload
+            <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+              (change)="handle($event)"></button>
+        </div>
+        <!-- =====================================Add Existing UC Modal===================================== -->
+        <div class="modal fade" id="addExUCs" role="dialog">
+          <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onExUCFormSubmit(exUcForm.value)" #exUcForm="ngForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Existing UC</h5>
+                </div>
+                <div class="modal-body text-left">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <mat-form-field>
+                        <mat-select placeholder="Province" [(ngModel)]="selectedSt" [errorStateMatcher]="matcher"
+                          [disabled]="false" name="exStSeq" required
+                          (selectionChange)="onExStChange()">
+                          <mat-option *ngFor="let st of sts" [value]="st.stSeq">
+                            {{st.stNm}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      </div>
+                      <div class="col-sm-4" *ngIf="selectedSt">
+                        <mat-form-field>
+                          <mat-select placeholder="District" [(ngModel)]="selectedDist" [errorStateMatcher]="matcher"
+                            [disabled]="false" name="exDistSeq" required
+                            (selectionChange)="onExDistChange()">
+                            <mat-option *ngFor="let dist of existingDists" [value]="dist.distSeq">
+                              {{dist.distNm}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        </div>
+                        <div class="col-sm-4" *ngIf="selectedDist">
+                          <mat-form-field>
+                            <mat-select placeholder="Tehsil" [(ngModel)]="selectedThsl" [errorStateMatcher]="matcher"
+                              [disabled]="false" name="exThslSeq" required
+                              (selectionChange)="onExThslChange()">
+                              <mat-option *ngFor="let thsl of existingThsls" [value]="thsl.thslSeq">
+                                {{thsl.thslNm}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          </div>
+                          <div class="col-sm-4" *ngIf="selectedThsl">
+                            <mat-form-field>
+                              <mat-select placeholder="UC" [(ngModel)]="selectedUc" [errorStateMatcher]="matcher"
+                                [disabled]="false" name="exUcSeq" required>
+                                <mat-option *ngFor="let uc of existingUcs" [value]="uc">
+                                  {{uc.ucNm + " - " + uc.ucCmnt}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                            </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" [disabled]="!exUcForm.form.valid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        
+        <!-- =====================================Add UC Modal===================================== -->
+        <div class="modal fade" id="addUCs" role="dialog">
+          <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onUCFormSubmit(ucForm.value)" #ucForm="ngForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add UC</h5>
+                </div>
+                <div class="modal-body text-left">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <input type="text" placeholder="UC No." id="ucNm" name="ucNm" matInput
+                          [disabled]="readonly && !hasPermission" required (keypress)="onlyNumbers($event)" maxlength="15"
+                          [(ngModel)]="ucNm">
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly && !hasPermission" placeholder="Status"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="ucStsKey" id="ucStsKey" required
+                          [(ngModel)]="ucStsKey">
+                          <mat-option *ngFor="let sts of status" [value]="sts.codeKey">
+                            {{sts.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="isEdit || readonly && !hasPermission" placeholder="Tehsil"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="thslSeq" id="thslSeq" required
+                          [(ngModel)]="thslSeq">
+                          <mat-option *ngFor="let thsl of thsls" [value]="thsl.thslSeq">
+                            {{thsl.thslNm}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-2 addBtn">
+                      <button type="button" [disabled]="isEdit || readonly && !hasPermission"
+                        class="btn btn-primary btn-sm" (click)="addThsls()">
+                        <i class="fa fa-plus"></i> Add Tehsil</button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-10">
+                      <mat-form-field>
+                        <input type="text" placeholder="Name" id="ucCommnets" name="ucCommnets" matInput
+                          [disabled]="readonly && !hasPermission" [(ngModel)]="ucCommnets" required
+                          (keypress)="keyPress($event)" maxlength="100">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" [disabled]="!ucForm.form.valid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- =====================================Add Tehsil Modal===================================== -->
+        <div class="modal fade" id="addThsls" role="dialog">
+          <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onThslFormSubmit(thslForm.value)" #thslForm="ngForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Tehsil</h5>
+                </div>
+                <div class="modal-body text-left">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <input type="text" placeholder="Name" id="thslNm" name="thslNm" matInput
+                          [disabled]="readonly && !hasPermission" required (keypress)="keyPress($event)" maxlength="15"
+                          [(ngModel)]="thslNm">
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly && !hasPermission" placeholder="Status"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="thslStsKey" id="thslStsKey" required
+                          [(ngModel)]="thslStsKey">
+                          <mat-option *ngFor="let sts of status" [value]="sts.codeKey">
+                            {{sts.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly && !hasPermission" placeholder="District"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="distSeq" id="distSeq" required
+                          [(ngModel)]="distSeq">
+                          <mat-option *ngFor="let dist of dists" [value]="dist.distSeq">
+                            {{dist.distNm}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-2 addBtn">
+                      <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+                        (click)="addDists()">
+                        <i class="fa fa-plus"></i> Add District</button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-10">
+                      <mat-form-field>
+                        <input type="text" placeholder="Description" id="thslCmnt" name="thslCmnt" matInput
+                          [disabled]="readonly && !hasPermission" [(ngModel)]="thslCmnt" required
+                          (keypress)="keyPress($event)" maxlength="20">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" [disabled]="!thslForm.form.valid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- =====================================Add District Modal===================================== -->
+        <div class="modal fade" id="addDists" role="dialog">
+          <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onDistFormSubmit(distForm.value)" #distForm="ngForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add District</h5>
+                </div>
+                <div class="modal-body text-left">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <input type="text" placeholder="Name" id="distNm" name="distNm" matInput
+                          [disabled]="readonly && !hasPermission" required (keypress)="keyPress($event)" maxlength="15"
+                          [(ngModel)]="distNm">
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly && !hasPermission" placeholder="Status"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="distStsKey" id="distStsKey" required
+                          [(ngModel)]="distStsKey">
+                          <mat-option *ngFor="let sts of status" [value]="sts.codeKey">
+                            {{sts.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly && !hasPermission" placeholder="Province"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="stSeq" id="stSeq" required
+                          [(ngModel)]="stSeq">
+                          <mat-option *ngFor="let st of sts" [value]="st.stSeq">
+                            {{st.stNm}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <input type="text" placeholder="Description" id="distCmnt" name="distCmnt" matInput
+                          [disabled]="readonly && !hasPermission" [(ngModel)]="distCmnt" (keypress)="keyPress($event)"
+                          maxlength="20" required>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" [disabled]="!distForm.form.valid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>Code</th>
+              <th>UC No.</th>
+              <th>Name</th>
+              <th>Tehsil</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let uc of pagedItems">
+              <td>{{uc.ucCd}}</td>
+              <td>{{uc.ucNm}}</td>
+              <td>{{uc.ucCmnt}}</td>
+              <td>{{findThslNm(uc.thslSeq)}}</td>
+              <td>{{findValueFromKey(uc.ucStsKey, status)}}</td>
+              <td>
+                <button [disabled]="readonly && !hasPermission" (click)="removeUCs(uc)"
+                  class="iconBtn delBtn simplebtn " data-toggle="tooltip" title="Unassign UC from Branch"> 
+                  <i class="fa fa-close"></i>
+                </button>
+                <button [disabled]="readonly && !hasPermission" (click)="editUCs(uc)" class="iconBtn simplebtn " 
+                data-toggle="tooltip" title="Edit UC Information">
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <button *ngIf="auth.role == 'admin'" [disabled]="readonly && !hasPermission" (click)="deleteUCs(uc)"
+                  class="iconBtn delBtn simplebtn " data-toggle="tooltip" title="Delete UC">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav aria-label="Page navigation ">
+        <ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+          <li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+            <a class="page-link" (click)="setPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+
+      <button (click)="prevScreen()" type="button" class="btn btn-primary"><i
+        class="fa fa-chevron-left"></i> Back</button>
+      <button (click)="continueClicked()" type="button" class="btn btn-primary">Continue</button>
+      <button (click)="addUcsToBrnch()" type="button" class="btn btn-primary">Add UCs to Branch</button>
+    </div>
+  </div>
+</main>

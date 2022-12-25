@@ -1,0 +1,353 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <!-- Added by Zohaib Asim - Dated 19-07-2021 - CR: Sanction List -->
+          <div class="row">
+            <div class="col-sm-5">
+              <ng-select [multiple]="false" placeholder="File Type" name="fileType" (change)="fileTypeChange($event)">
+                <ng-option *ngFor="let ftype of fileTypes" [value]="ftype.id">{{ftype.value}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <!-- End by Zohaib Asim -->
+          <div class="row">
+            <div class="col-sm-5">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer">
+                  Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float: left">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float: right">
+                    <button class="btn btn-primary btn-lg" type="submit">
+                      Search
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- Changed by Areeba - IA access-->
+            <div class="col-sm-7 addBtn" *ngIf="this.iaRights">
+              <button class="btn btn-primary btn-sm" (click)="addNewNacta()">
+                <i class="fa fa-plus"></i> Add
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="updateRepository()" [disabled]="btnSancDisable">
+                <i class="fa fa-refresh" aria-hidden="true"></i> Update Repository
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="findMatchingClients()">
+                <i class="fa fa-search" aria-hidden="true"></i> Find Matching Clients
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="inValidData()">
+                <i class="fa fa-exclamation-triangle"></i> In-Valid Entries
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="openFile(file)">
+                <i class="fa fa-upload" aria-hidden="true"></i> Upload
+                <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+                  (change)="handle($event)">
+              </button>
+            </div>                       
+            <div class="modal fade" id="AdvanceRules" role="dialog">
+              <div class="modal-dialog bigger mymodal" style="max-width: 60%; top: 2%; min-height: 50%">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Add Nacta/Sanction Client</h5>
+                  </div>
+                  <form [formGroup]="NactaListForm" (ngSubmit)="onSubmit()">
+                    <div class="modal-body">
+                      <ul class="infolist">
+                      </ul>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <label>CNIC</label>
+                          <input type="text" (keypress)="onlyNumbers($event)" formControlName="cnicNum"
+                            class="form-control" [ngClass]="{ 'is-invalid': submitted && form.cnicNum.errors }" />
+                          <div *ngIf="submitted && form.cnicNum.errors" class="invalid-feedback">
+                            <div *ngIf="form.cnicNum.errors.required">Client CNIC Required</div>
+                            <div *ngIf="form.cnicNum.errors.minlength">Client CNIC Should Be 13 digit</div>
+                            <div *ngIf="form.cnicNum.errors.maxlength">Client CNIC Should Be 13 digit</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>First Name</label>
+                          <input type="text" formControlName="frstNm" (keypress)="onlyAlpha($event)"
+                            class="form-control" [ngClass]="{ 'is-invalid': submitted && form.frstNm.errors }" />
+                          <div *ngIf="submitted && form.frstNm.errors" class="invalid-feedback">
+                            <div *ngIf="form.frstNm.errors.required">First Name Required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>Last Name</label>
+                          <input type="text" formControlName="lastNm" (keypress)="onlyAlpha($event)"
+                            class="form-control" [ngClass]="{ 'is-invalid': submitted && form.lastNm.errors }" />
+                          <div *ngIf="submitted && form.lastNm.errors" class="invalid-feedback">
+                            <div *ngIf="form.lastNm.errors.required">Last Name Required</div>
+                          </div>
+                        </div>                        
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <label>Father Name</label>
+                          <input type="text" formControlName="fatherNm" (keypress)="onlyAlpha($event)"
+                            class="form-control" [ngClass]="{ 'is-invalid': submitted && form.fatherNm.errors }" />
+                          <div *ngIf="submitted && form.fatherNm.errors" class="invalid-feedback">
+                            <div *ngIf="form.fatherNm.errors.required">Father Name Required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>District</label>
+                          <input type="text" formControlName="dstrct" class="form-control" (keypress)="onlyAlpha($event)"
+                            [ngClass]="{ 'is-invalid': submitted && form.dstrct.errors }" />
+                          <div *ngIf="submitted && form.dstrct.errors" class="invalid-feedback">
+                            <div *ngIf="form.dstrct.errors.required">District Required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>Province</label>
+                          <input type="text" formControlName="prvnce" class="form-control" (keypress)="onlyAlpha($event)"
+                            [ngClass]="{ 'is-invalid': submitted && form.prvnce.errors }" />
+                          <div *ngIf="submitted && form.prvnce.errors" class="invalid-feedback">
+                            <div *ngIf="form.prvnce.errors.required">Province Required</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <label>Country</label>
+                          <input type="text" formControlName="cntry" (keypress)="onlyAlpha($event)"
+                            class="form-control" [ngClass]="{ 'is-invalid': submitted && form.cntry.errors }" />
+                          <div *ngIf="submitted && form.cntry.errors" class="invalid-feedback">
+                            <div *ngIf="form.cntry.errors.required">Country Required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">                          
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="picker2" placeholder="DOB"
+                              name="dob" formControlName="dob">
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                          </mat-form-field>
+                          <!-- <label>DOB</label>
+                          <input type="text" formControlName="dob" (keypress)="onlyNumbers($event)"
+                            class="form-control" [ngClass]="{ 'is-invalid': submitted && form.dob.errors }" />
+                          <div *ngIf="submitted && form.dob.errors" class="invalid-feedback">
+                            <div *ngIf="form.dob.errors.required">DOB Required</div>
+                          </div> -->
+                        </div>
+                        <div class="cCol2">
+                          <mat-form-field>
+                            <mat-select [multiple]="false" placeholder="Association With" formControlName="sancType">
+                              <mat-option *ngFor="let slType of sancListTypes" [value]="slType.id">{{slType.value}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="modal-footer text-center">
+                        <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                        <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div> 
+          <!-- Added by Zohaib Asim - CR: Sanction List -->        
+          <div class="row" style="margin: 1% 1% 0% 0%;">
+            <div class="col-sm-3">
+            </div>
+            <!-- Changed by Areeba - IA access-->
+            <div class="col-sm-9" *ngIf="this.iaRights">
+              <!-- <button class="btn btn-primary btn-sm" (click)="taggedClntList()">
+                <i class="fa fa-user" aria-hidden="true"></i> Tagged Clients List
+              </button> -->
+              <button class="btn btn-primary btn-sm" (click)="deleteInValidData()">
+                <i class="fa fa-trash-o"></i> Delete In-Valid Entries
+              </button>
+              
+              <button class="btn btn-primary btn-sm" (click)="exportMtchngClntReport()">
+                <i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Matching List
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="exportInValidReport()">
+                <i class="fa fa-file-excel-o" aria-hidden="true"></i> Export InValid List
+              </button>              
+            </div>
+          </div>
+          <!-- End by Zohaib Asim --> 
+
+          <!---- DATA TABLES---->
+          <!-- Modifed by Zohaib Asim - Dated 26-07-2021 - CR: Sanction List  -->
+          <div class="table-responsive mb-md-5">
+            <table class="table" id="myTable" mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows
+              matSort>
+              <!-- Reference Id Column -->
+              <ng-container matColumnDef="sancSeq">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.sancSeq }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="cnicNum">
+                <th mat-header-cell *matHeaderCellDef>CNIC</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.cnicNum }}</td>
+              </ng-container>
+
+              <!-- Category Column -->
+              <ng-container matColumnDef="clntNm">
+                <th mat-header-cell *matHeaderCellDef>Client Name</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.frstNm }} {{ rule.lastNm }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="fatherNm">
+                <th mat-header-cell *matHeaderCellDef>Father Name</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.fatherNm }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="dstrct">
+                <th mat-header-cell *matHeaderCellDef>District</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.dstrct }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="prvnce">
+                <th mat-header-cell *matHeaderCellDef>Province</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.prvnce }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="cntry">
+                <th mat-header-cell *matHeaderCellDef>Country</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.cntry }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="dob">
+                <th mat-header-cell *matHeaderCellDef>Date of Birth</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.dob | date:"dd-MMM-yyyy" }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="sancType">
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let rule">{{ rule.sancType }}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let rule">
+                  <!-- Changed by Areeba - IA access-->
+                  <div *ngIf="this.iaRights">
+                    <a href="javascript:void(0);" (click)="onEditNacta(rule)" class="iconBtn"><i
+                        class="fa fa-pencil"></i></a>
+
+                    <!-- Added by Zohaib Asim - Dated 23-08-2021 - CR: Sanction List Phase-2 -->
+                    <a *ngIf="rule.tagClntFlg == 0" href="javascript:void(0);" (click)="markClntTag(rule, 'Tag')" class="iconBtn"
+                      title="Tag"><i class="fa fa-bookmark-o"></i></a>
+                    <a *ngIf="rule.tagClntFlg == 1" href="javascript:void(0);" (click)="markClntTag(rule, 'UnTag')" class="iconBtn"
+                      title="Un-Tag"><i class="fa fa-bookmark"></i></a>
+                    <!-- End by Zohaib Asim -->
+                    
+                    <a (click)="onDeleteNacta(rule.sancSeq)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+          <!--  -->
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+<script>
+  $(".searchshow").click(function () {
+    $(".mysearchbox").addClass("intro");
+  });
+  $(".remove-search").click(function () {
+    $(".mysearchbox").removeClass("intro");
+  });
+
+  function myFunction() {
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+<script>
+  var index = 1;
+  $("ul.moreless li:gt(" + index + ")").hide();
+  $("ul.moreless").append('<li class="more">more..</li>');
+  $("ul.moreless li.more").click(function () {
+    $("ul.moreless li.more").remove();
+    $("ul.moreless li:gt(" + index + ")").show();
+    $("ul.moreless").append('<li class="less">Less..</li>');
+    $("ul.moreless li.less").click(function () {
+      $("ul.moreless li.less").remove();
+      $("ul.moreless li:gt(" + index + ")").remove();
+      $("ul.moreless").append('<li class="more">more..</li>');
+    });
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".acc_trigger").toggleClass("inactive-header");
+
+    $(".acc_trigger:first").addClass("active-header").next().show();
+    $(".acc_trigger").click(function () {
+      if ($(this).next().is(":hidden")) {
+        $(".active-header")
+          .toggleClass("active-header")
+          .toggleClass("inactive-header")
+          .next()
+          .slideToggle()
+          .toggleClass("open-content");
+        $(this).toggleClass("active-header").toggleClass("inactive-header");
+        $(this).next().slideToggle().toggleClass("open-content");
+      } else {
+        $(this).toggleClass("active-header").toggleClass("inactive-header");
+        $(this).next().slideToggle().toggleClass("open-content");
+      }
+    });
+
+    return false;
+  });
+</script>

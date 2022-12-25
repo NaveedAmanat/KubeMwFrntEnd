@@ -1,0 +1,219 @@
+<main class="main nomargin">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="leftSideBar mt-sm-4">
+          <h6>
+            <i class="fa fa-sliders fa-lg"></i> Filter</h6>
+          <div class="filtersWrap">
+            <div class="filter">
+              <a href="#." class="acc_trigger">Organization</a>
+              <div class="collapse acc_container">
+                <ul>
+                  <li>Portfolio 001</li>
+                  <li>Portfolio 002</li>
+                  <li>Portfolio 003</li>
+                  <li>Portfolio 004</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="filter">
+              <a href="#." class="acc_trigger">Application Status</a>
+              <div class="collapse acc_container">
+                <ul>
+                  <li>Approved</li>
+                  <li>Rejected</li>
+                  <li>Sent Back</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="filter">
+              <a href="#." class="acc_trigger">Favorites</a>
+              <div class="collapse acc_container">
+                <ul>
+                  <li>Daily Closing Report</li>
+                  <li>Accounts Ledger</li>
+                  <li>Funds Statement</li>
+                </ul>
+              </div>
+            </div>
+
+            <button class="btn btn-primary mt-3">
+              <i class="fa fa-plus"></i> Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="content dashboard-wrap mb-md-5">
+          <div class="board-head">
+            <div class="row">
+              <div class="col-sm-8">
+                <div class="title-Dashboard">
+                  <h1>Dashboard</h1>
+                  <span class="subtitle"></span>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="timerbox">
+                  {{now | date:'h:mm:ss'}} <sub>{{now | date:'a'}}</sub>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 pb-3">
+            <div class="custom-control custom-radio bidradio custom-control-inline">
+              <input type="radio" id="weekly" checked name="coBorrower" class="custom-control-input">
+              <label class="custom-control-label" for="weekly">Weekly</label>
+            </div>
+            <div class="custom-control custom-radio bidradio custom-control-inline">
+              <input type="radio" id="monthly" name="coBorrower" class="custom-control-input">
+              <label class="custom-control-label" for="monthly">Monthly</label>
+            </div>
+          </div>
+
+          <div class="info-bloks">
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="dashboard-info">
+                  <div class="board-box">
+                    <h3> 08</h3>
+                    <p class="m-0">Target</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="dashboard-info">
+                  <div class="board-box purple-bg">
+                    <h3> 03</h3>
+                    <p class="m-0">Achieved</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="dashboard-info">
+                  <div class="board-box darkgreen-bg">
+                    <h3>01</h3>
+                    <p class="m-0">Will Be Completed</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <ul class="nav nav-tabs borrowerTabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="bm-index.html">Credit Application</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="bm-tasks.html">Task</a>
+              </li>
+            </ul>
+            <div class="borrowerTabsContent pt-3 pl-3 pr-3 pb-0">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Application ID</th>
+                      <th>Portfolio</th>
+                      <th>Client</th>
+                      <th>Product</th>
+                      <th>Request Creidt Amount</th>
+                      <th>Approved Credit Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a href="process-application.html"> 12345678</a>
+                      </td>
+                      <td>001-East</td>
+                      <td>Shabnam</td>
+                      <td>Kashf Karobar</td>
+                      <td>30,000</td>
+                      <td>30,000</td>
+                      <td class="colorGreen">Aapproved</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="process-application.html"> 12345678</a>
+                      </td>
+                      <td>001-East</td>
+                      <td>Sayra khanam</td>
+                      <td>Kashf Easy Credit</td>
+                      <td>40,000</td>
+                      <td>38,000</td>
+                      <td class="colorGreen">Aapproved</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="process-application.html"> 12345678</a>
+                      </td>
+                      <td>001-East</td>
+                      <td>Abida </td>
+                      <td>Kashf Karobar</td>
+                      <td>60,000</td>
+                      <td></td>
+                      <td class="colorRed">Rejected</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="process-application.html"> 12345678</a>
+                      </td>
+                      <td>001-East</td>
+                      <td>Rshida</td>
+                      <td>Kashf Easy Credit</td>
+                      <td>50,000</td>
+                      <td>58,000</td>
+                      <td class="colorGreen">Aapproved</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="process-application.html"> 12345678</a>
+                      </td>
+                      <td>001-East</td>
+                      <td>Ammara</td>
+                      <td>Kashf Karobar</td>
+                      <td>30,000</td>
+                      <td></td>
+                      <td class="colorBrown">Sent Back</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="process-application.html"> 12345678</a>
+                      </td>
+                      <td>001-East</td>
+                      <td>Naseema</td>
+                      <td>Kashf Easy Credit</td>
+                      <td>40,000</td>
+                      <td></td>
+                      <td class="colorRed">Rejected</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <a href="process-application.html"> 12345678</a>
+                      </td>
+                      <td>001-East</td>
+                      <td>Farzana</td>
+                      <td>Kashf Easy Credit</td>
+                      <td>30,000</td>
+                      <td>30,000</td>
+                      <td class="colorGreen">Aapproved</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

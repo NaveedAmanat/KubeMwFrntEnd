@@ -1,0 +1,262 @@
+<main class="main">
+	<div class="container-fluid">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-arrow">
+				<li>
+					<a routerLink="/setup/communication-workflow/add-workflow-rule">Rule</a>
+				</li>
+				<li class="active">
+					<a routerLink="/setup/communication-workflow/add-workflow-action">Workflow Action</a>
+				</li>
+			</ol>
+		</nav>
+
+		<div class="content">
+			<h6 class="mt-3">Workflow Action</h6>
+			<div class="cRow">
+				<div class="cCol1">
+					<label>Workflow Action:</label>
+					<form class="md-float-material" [formGroup]="test" (ngSubmit)="ontestSubmit()">
+						<select formControlName="okvalue" (change)="WorkflowActionChanged($event.target.value)" class="form-control" id="divselector">
+							<option value="newtast">New Task</option>
+							<option value="newsms">New SMS</option>
+							<option value="EmailAlert">Email Alert</option>
+						</select>
+					</form>
+				</div>
+			</div>
+			<div *ngIf="newtast" class="newtast" id="newtast">
+				<form class="md-float-material" [formGroup]="workflowActionNewTaskForm" (ngSubmit)="onWorkworkflowActionNewTaskSubmit()">
+					<div class="cRow">
+						<div class="cCol1 mt-4">
+							<label>Subject:</label>
+							<input type="text" class="form-control" formControlName="taskSubject" [ngClass]="{ 'is-invalid': submitted && f.taskSubject.errors }"
+							/>
+						</div>
+						<div class="cCol5 pt-0m2">
+							<label>Due Date Calculation:</label>
+							<div class="blackborder clearfix">
+								<div class="cCol1">
+									<label>Days:</label>
+									<input type="text" class="form-control" formControlName="taskDays" [ngClass]="{ 'is-invalid': submitted && f.taskDays.errors }"
+									/>
+								</div>
+								<div class="cCol1 mt-4">
+									<div class="custom-control custom-radio custom-control-inline">
+										<input type="radio" id="Aftter" class="custom-control-input" value="After" [checked]="true" formControlName="taskDueable">
+										<label class="custom-control-label" for="Aftter">Aftter</label>
+									</div>
+									<div class="custom-control custom-radio custom-control-inline">
+										<input type="radio" id="Before" class="custom-control-input" value="Before" formControlName="taskDueable">
+										<label class="custom-control-label" for="Before">Before</label>
+									</div>
+								</div>
+								<div class="cCol1">
+									<label>Date Field:</label>
+									<input type="date" class="form-control" formControlName="taskDate" />
+								</div>
+
+							</div>
+						</div>
+						<div class="cCol1 mt-4">
+							<label>Assign to:</label>
+							<select class="form-control" formControlName="taskAssignTo">
+								<option value="1" [selected]="1">Assign to 1</option>
+								<option value="2">Assign to 2</option>
+							</select>
+						</div>
+					</div>
+					<div class="cRow">
+						<div class="cCol1">
+							<label>Status:</label>
+							<select class="form-control" formControlName="taskStatus">
+								<option *ngFor="let status of statusListing" value="{{status.codeKey}}">{{status.codeValue}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="cRow">
+						<div class="cCol7">
+							<label>Comments:</label>
+							<textarea class="form-control" formControlName="taskActionComments" [ngClass]="{ 'is-invalid': submitted && f.taskActionComments.errors }"></textarea>
+						</div>
+					</div>
+					<div *ngIf="submitted && f.taskSubject.errors" class="alert alert-warning mt-2 mb-2">
+						<i class="fa fa-exclamation-circle"></i>
+						<strong *ngIf="f.taskSubject.errors.required">Please Enter Subject</strong>
+					</div>
+					<div *ngIf="submitted && f.taskDays.errors" class="alert alert-warning mt-2 mb-2">
+						<i class="fa fa-exclamation-circle"></i>
+						<strong *ngIf="f.taskDays.errors.required">Please Enter Due Date Days</strong>
+					</div>
+					<div *ngIf="submitted && f.taskActionComments.errors" class="alert alert-warning mt-2 mb-2">
+						<i class="fa fa-exclamation-circle"></i>
+						<strong *ngIf="f.taskActionComments.errors.required">Please Enter Comments</strong>
+					</div>
+					<div class="mt-5">
+						<button class="btn btn-primary">Save</button>
+						<button type="button" class="btn btn-default btn-min" routerLink="/setup/communication-workflow">Cancel</button>
+					</div>
+				</form>
+
+			</div>
+			<div *ngIf="newsms" class="newsms" id="newsms">
+				<form class="md-float-material" [formGroup]="workflowActionNewSmsForm" (ngSubmit)="workflowActionNewSmsSubmit()">
+					<div class="cRow mt-2">
+						<div class="cCol6">
+							<label class="m-0">Recipient Type:</label>
+							<div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<input type="radio" id="PhoneField" checked value="Phone Field" [checked]="PhoneField" (change)="onPhoneChange($event.target.value)"
+									 formControlName="messageRecpientType" class="custom-control-input">
+									<label class="custom-control-label" for="PhoneField">Phone Field</label>
+								</div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<input type="radio" id="Individual" value="Individual" (change)="onPhoneChange($event.target.value)" formControlName="messageRecpientType"
+									 class="custom-control-input">
+									<label class="custom-control-label" for="Individual">Individual #.</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="cRow mt-1">
+						<div class="cCol7">
+							<label>Message Text:</label>
+							<textarea class="form-control" formControlName="messageText" [ngClass]="{ 'is-invalid': submitted && a.messageText.errors }"></textarea>
+						</div>
+					</div>
+					<div id="rstype1" class="desc" *ngIf="PhoneField">
+						<div class="pt-1 mt-3">
+							<label>Select Phone #.</label>
+						</div>
+						<div class="checkbox mb-1">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" id="checkbox1" class="custom-control-input" formControlName="isClientPhone">
+								<label class="custom-control-label" for="checkbox1"> Client Phone</label>
+							</div>
+						</div>
+						<div class="checkbox mb-1">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" id="checkbox2" class="custom-control-input" formControlName="coBorrowerPhone" />
+								<label class="custom-control-label" for="checkbox2"> Coborower Phone</label>
+							</div>
+						</div>
+						<div class="checkbox mb-1">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" id="checkbox3" class="custom-control-input" formControlName="spousePhone" />
+								<label class="custom-control-label" for="checkbox3"> Spouse Phone</label>
+							</div>
+						</div>
+					</div>
+					<div id="rstype2" class="desc" *ngIf="Individual">
+						<div class="cRow">
+
+							<div class="cCol6">
+								<label>Phone #.</label>
+								<div>
+									<input type="text" class="form-control small cCol1" value="+92 333 8574 983" formControlName="individualPhones" />
+									<!-- <button class="btn pull-left nobg"><i class="fa fa-plus"></i></button> -->
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div *ngIf="submitted && a.messageText.errors" class="alert alert-warning mt-2 mb-2">
+						<i class="fa fa-exclamation-circle"></i>
+						<strong *ngIf="a.messageText.errors.required">Please Enter Message Text</strong>
+					</div>
+					<div class="mt-5">
+						<button class="btn btn-primary">Save</button>
+						<button type="button" class="btn btn-default btn-min" routerLink="/setup/communication-workflow">Cancel</button>
+					</div>
+				</form>
+
+			</div>
+			<div *ngIf="EmailAlert" class="newsms" id="EmailAlert">
+				<form class="md-float-material" [formGroup]="workflowActionEmailAlertForm" (ngSubmit)="workflowActionEmailAlertSubmit()">
+					<div class="cRow mt-2">
+						<div class="cCol6">
+							<div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<input type="radio" id="EmailGroup" value="Email Field" [checked]="EmailField" (change)="onEmailChange($event.target.value)"
+									 formControlName="emailRecepient" class="custom-control-input">
+									<label class="custom-control-label" for="EmailGroup">Email Group</label>
+								</div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<input type="radio" id="IndividualEmail" value="Individual" (change)="onEmailChange($event.target.value)" formControlName="emailRecepient"
+									 class="custom-control-input">
+									<label class="custom-control-label" for="IndividualEmail">Individual Email</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="cRow mt-1">
+						<div class="cCol1">
+							<label>Subject</label>
+							<input type="text" class="form-control" formControlName="emailSubject" [ngClass]="{ 'is-invalid': submitted && b.emailSubject.errors }"
+							/>
+						</div>
+					</div>
+					<div class="cRow">
+						<div class="cCol7">
+							<label>Email Text:</label>
+							<textarea class="form-control" formControlName="emailText" [ngClass]="{ 'is-invalid': submitted && b.emailText.errors }"></textarea>
+						</div>
+					</div>
+					<div id="emtype1" class="dess" *ngIf=EmailField>
+						<div class="pt-1 mt-3">
+							<label>Select Email Group:</label>
+						</div>
+						<div class="checkbox mb-1">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" id="checkbox4" name="coBorrower" class="custom-control-input" formControlName="isGroup1">
+								<label class="custom-control-label" for="checkbox4"> Group 01</label>
+							</div>
+						</div>
+						<div class="checkbox mb-1">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" id="checkbox5" name="coBorrower" class="custom-control-input" formControlName="isGroup2">
+								<label class="custom-control-label" for="checkbox5"> Group 02</label>
+							</div>
+						</div>
+						<div class="checkbox mb-1">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" id="checkbox6" name="coBorrower" class="custom-control-input" formControlName="isGroup3">
+								<label class="custom-control-label" for="checkbox6">Group 03</label>
+							</div>
+						</div>
+					</div>
+					<div id="emtype2" class="dess" *ngIf="EmailIndividual">
+						<div class="cRow">
+							<div class="cCol6">
+								<label>Send Email Address</label>
+								<div>
+									<input type="text" class="form-control small cCol1" value="" formControlName="emailAddresses">
+									<!-- <button class="btn pull-left nobg"><i class="fa fa-plus"></i></button> -->
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div *ngIf="submitted && b.emailSubject.errors" class="alert alert-warning mt-2 mb-2">
+						<i class="fa fa-exclamation-circle"></i>
+						<strong *ngIf="b.emailSubject.errors.required">Please Enter Email Subject</strong>
+					</div>
+					<div *ngIf="submitted && b.emailText.errors" class="alert alert-warning mt-2 mb-2">
+						<i class="fa fa-exclamation-circle"></i>
+						<strong *ngIf="b.emailText.errors.required">Please Enter Email Text</strong>
+					</div>
+					<div class="mt-5">
+						<button class="btn btn-primary">Save</button>
+						<button type="button" class="btn btn-default btn-min" routerLink="/setup/communication-workflow">Cancel</button>
+					</div>
+				</form>
+			</div>
+
+			<!--<div class="mt-5">
+            <button class="btn btn-primary btn-min">Save</button>
+            <button class="btn btn-default btn-min">Cancel</button>
+			
+            </div>-->
+		</div>
+	</div>
+</main>

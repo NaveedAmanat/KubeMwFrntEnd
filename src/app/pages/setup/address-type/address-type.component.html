@@ -1,0 +1,113 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Region Type <i class="fa fa-search"> </i></h6>
+                <div class="mysearch">
+                  <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" data-toggle="modal" (click)="addItem()"><i class="fa fa-plus"></i> Add</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+              <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>TRANS DATE</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let code of pagedItems">
+                <td>{{code.refCd}}</td>
+                <td>{{code.refCdCmnt}}</td>
+                <td>{{code.lastUpdDt | date: 'yyyy-MM-dd'}}</td>
+                <td>
+                  <a (click)="editItem(code.refCdSeq)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a (click)="deleteItem(code.refCdSeq)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                  <!-- <a href="#" class="iconBtn"><i class="fa fa-history"></i></a> -->
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="back">
+            <a routerLink="/setup" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+          </div>
+          <nav aria-label="Page navigation ">
+            <ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+              <li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+                <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+              </li>
+              <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                <a class="page-link" (click)="setPage(page)">{{page}}</a>
+              </li>
+              <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+              </li>
+            </ul>
+          </nav>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="modal fade" id="businessector" role="dialog">
+  <div class="modal-dialog mymodal">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Region Type</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="commonCodeValueForm" (ngSubmit)="onCommonCodeValueSubmit()" >
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol3-col">
+              <label>Code:</label>
+              <input type="text" class="form-control" formControlName="valueCode" [ngClass]="{ 'is-invalid': submitted && f.valueCode.errors }" />
+            </div>
+            <div class="cCol3-col">
+              <label>Name:</label>
+              <input type="text" class="form-control" formControlName="valueName" [ngClass]="{ 'is-invalid': submitted && f.valueName.errors }" />
+            </div>
+            <div class="cCol3-col">
+              <label>Description:</label>
+              <input type="text" class="form-control" formControlName="valueDescription" [ngClass]="{ 'is-invalid': submitted && f.valueDescription.errors }" />
+            </div>
+          </div>
+        </div>
+        <div *ngIf="submitted && f.valueCode.errors" class="alert alert-warning mt-2 mb-2">
+          <i  class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.valueCode.errors.required">Please Enter Group Value Code</strong>
+        </div>
+        <div *ngIf="submitted && f.valueName.errors" class="alert alert-warning mt-2 mb-2">
+          <i  class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.valueName.errors">Please Enter Group Value Name</strong>
+        </div>
+        <div *ngIf="submitted && f.valueDescription.errors" class="alert alert-warning mt-2 mb-2">
+          <i  class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.valueDescription.errors">Please Enter Group Value Description</strong>
+        </div>
+        <div class="modal-footer text-center">
+          <button  class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

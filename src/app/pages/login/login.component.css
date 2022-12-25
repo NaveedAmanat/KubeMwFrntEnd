@@ -1,0 +1,128 @@
+@import "../../../assets/login/vendor/animate/animate.css";
+@import "../../../assets/login/vendor/css-hamburgers/hamburgers.min.css";
+@import "../../../assets/login/vendor/animsition/css/animsition.min.css";
+@import "../../../assets/login/vendor/select2/select2.min.css";
+@import "../../../assets/login/vendor/daterangepicker/daterangepicker.css";
+@import "../../../assets/login/css/util.css";
+@import "../../../assets/login/css/main.css";
+.forgot{
+  float: right;
+}
+.white-color-text{
+  color: #ffffff;
+}
+.remember-checkbox{
+  float: left;
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.remember-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+}
+/* On mouse-over, add a grey background color */
+.remember-checkbox:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.remember-checkbox input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.remember-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.remember-checkbox .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.login-form-forgot {
+  display: block;
+  font-family: Poppins-Regular;
+  font-size: 29px;
+  color: #333333;
+  line-height: 1.2;
+  text-align: right;
+  padding-bottom:15px !important;
+}
+.sub-container-login{
+  width: 85%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.body-container{
+  background-color: #006eb0;
+}
+.image{
+  width: auto;
+  alignment: center;
+  padding-top: 15px;
+  justify-content: center;
+}
+.b1{
+  align-items: center;
+}
+.login-form-title {
+  display: block;
+  font-weight: bolder;
+  font-size: 29px;
+  color: #000000;
+  line-height: 1.2;
+  text-align: center;
+}
+
+body {
+  background: #e2e1e0;
+  text-align: center;
+}
+.card {
+  border-radius: 20px;
+  display: inline-block;
+  margin: 1rem;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+a { color:#4da6f6;
+  text-underline: #4da6f6;
+  text-decoration: underline;}

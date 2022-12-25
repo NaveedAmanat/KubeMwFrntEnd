@@ -1,0 +1,306 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+
+    <div class="content">
+
+      <form (ngSubmit)="onInsuranceFormSubmit()" #addInsuranceInfoForm="ngForm">
+        <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+        <div class="cRow">
+          <div class="cCol">
+            <mat-label>Already have {{titleValue}} plan ?</mat-label>
+            <br>
+            <mat-radio-group [disabled]="readonly" [(ngModel)]="model.hlthInsrFlag" name="hlthInsrFlag" required>
+              <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" (change)="onRadioChange(disFlag.value)"
+                [value]="disFlag.value">{{disFlag.name}}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <div class="cRow">
+          <div [style.display]="model.hlthInsrFlag ? 'block' : 'none'">
+            <div class="cCol1">
+              <!-- <ng-select [items]="exclusionCategory" bindLabel="codeKey" bindValue="codeValue" name="codeValue" placeholder="Client Exclusion Category:"
+                [(ngModel)]="model.exclusionCategoryKey">
+              </ng-select> -->
+
+              <mat-form-field>
+                <mat-select [disabled]="readonly" placeholder="Client Exclusion Category" min="3"
+                  [(ngModel)]="model.exclusionCategoryKey" id="relKey" name="exclusionCategory"
+                  [required]="model.hlthInsrFlag">
+                  <mat-option *ngFor="let edu of exclusionCategory" [value]="edu.codeKey">
+                    {{edu.codeValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <!-- <div [style.display]="!model.hlthInsrFlag  ? 'block' : 'none'"> -->
+            <!-- Modified By Naveed - Date - 23-01-2022 -->
+            <!-- increase insurance plan width -->
+          <div class="cCol4">
+            <!-- Ended By Navee - Date - 23-01-2022 -->
+            <mat-form-field>
+              <!-- <mat-select [disabled]="readonly" placeholder="Select Plan" [(ngModel)]="model.healthInsrPlanSeq" -->
+              <mat-select disabled="true" placeholder="Select Plan" [(ngModel)]="model.healthInsrPlanSeq"
+                (selectionChange)="planChanged()" name="healthInsrPlanSeq" [required]="!model.hlthInsrFlag">
+                <mat-option *ngFor="let edu of plans" [value]="edu.hlthInsrPlanSeq">
+                  {{edu.planNm}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="cCol2">
+            <mat-form-field>
+              <mat-select [disabled]="readonly" placeholder="Bread Earner" [(ngModel)]="model.relWithBreadEarnerKey"
+                (selectionChange)="relationChanged('true')" name="relWithBreadEarnerKey"
+                [required]="!model.hlthInsrFlag" #relWithBreadEarnerKey="ngModel">
+                <mat-option *ngFor="let edu of breadEarner" [value]="edu.codeKey">
+                  {{edu.codeValue}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="relWithBreadEarnerKey.invalid">
+                bread earner is <strong>missing</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="cCol2">
+            <mat-form-field>
+              <input [disabled]="readonly" [disabled]="disableMainEarner" type="text" name="mainBreadEarnerName"
+                matInput placeholder="Bread Earner Name" [(ngModel)]="model.mainBreadEarnerName"
+                (keypress)="onlyLetters($event)" pattern="([a-zA-Z ]{3,30}\s*)+" #breadEarnerName="ngModel"
+                [required]="!model.hlthInsrFlag">
+              <mat-error *ngIf="breadEarnerName.invalid">
+                name is <strong>invalid</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div [style.display]="!model.hlthInsrFlag  ? 'block' : 'none'">
+          <div class="cRow">
+            <div class="cCol1">
+              <mat-form-field>
+                <input [disabled]="readonly" type="text" matInput placeholder="Annual {{titleValue}} Fee"
+                  value="{{annualInsrFee}}" readonly disabled>
+              </mat-form-field>
+            </div>
+            <div class="cCol1">
+              <mat-form-field>
+                <input [disabled]="readonly" type="text" matInput
+                  placeholder="Max Policy amount per year per family member" value="{{selectedPlan.maxPlcyAmt}}"
+                  readonly disabled>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- Added by Zohaib Asim - Dated 23-09-2022 - Kashf Sawari Karza -->
+        <div class="cRow" *ngIf="model.loanProd == 49 || model.loanProd == 50">          
+          <div class="cCol2">
+            <mat-form-field>
+              <input [disabled]="" [disabled]="" type="text" name="vehiclePurchaseAmt"
+                matInput placeholder="Vehicle Purchase Amount (Insured)" [(ngModel)]="model.vehiclePurchaseAmt"
+                (keypress)="onlyNumbers($event)" pattern="^[1-9]\d*$" #vehiclePurchaseAmt="ngModel"
+                [required]="!model.hlthInsrFlag">
+                <mat-hint>
+                  {{model.approvedAmount}}
+                  =< Approved Amount <=300000 </mat-hint>
+                    <mat-hint *ngIf="model.vehiclePurchaseAmt > 300000" style="color: red;">Max
+                      Amount is
+                      <strong>300000</strong>
+                    </mat-hint>
+                    <mat-hint *ngIf="model.vehiclePurchaseAmt < model.approvedAmount" style="color: red;">Min Amount is
+                      <strong>{{model.approvedAmount}}</strong>
+                    </mat-hint>
+              <mat-error *ngIf="vehiclePurchaseAmt.invalid">
+                Vehicle Purchase Amount is <strong>invalid</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+      </div>
+      <!-- End -->
+
+        <div>
+          <div class="row mt-3">
+            <div class="col-sm-6">
+              <h6 class="colorBlack">{{titleValue}} Members</h6>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" type="submit" >
+                <i class="fa fa-plus"></i> Add</button>
+            </div>
+
+
+
+          </div>
+          <div class="table-responsive mb-md-5">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>Name</th>
+                  <th>CNIC</th>
+                  <th>Gender</th>
+                  <th>DOB</th>
+                  <th>Marital Status</th>
+                  <th>Relationship</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let member of model.insuranceMembers">
+                  <td>{{member.memberName}}</td>
+                  <td>
+                    {{(member.memberCnicNum == 0 || member.memberCnicNum == undefined || member.memberCnicNum == null) ?
+                    'N/A' : returnCNICPattern(member.memberCnicNum)}}
+                  </td>
+                  <td>{{findValueFromKey(member.genderKey , genderOrig)}}</td>
+                  <td>{{member.dob | date: 'dd-MM-yyyy'}}</td>
+                  <td>{{findValueFromKey(member.maritalStatusKey , maritalStatusOrig)}}</td>
+                  <td>{{findValueFromKey(member.relKey , relationTypeOrig)}}</td>
+                  <td>
+                    <button type="button" [disabled]="readonly && !hasPermission" (click)="editMember(member)"
+                      class="iconBtn simplebtn">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                    <button type="button" [disabled]="readonly && !hasPermission" (click)="deleteMember(member)" class="iconBtn delBtn simplebtn">
+                      <i class="fa fa-trash-o"></i>
+                    </button>
+                    <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" (click)="continueClicked()"
+          [disabled]="!formSaved">Continue</button>
+        <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-default"
+          (click)="saveClicked();">Save</button>
+      </form>
+    </div>
+
+    <div class="modal fade" id="deleteConfirmation" role="dialog">
+      <div class="modal-dialog mymodal">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete {{titleValue}} Member</h5>
+          </div>
+          <div class="modal-body">
+
+            <div class="table-responsive">
+              <h6>Do you want to delete?</h6>
+            </div>
+
+
+            <div class="modal-footer smmodal-footer text-center">
+              <button type="button" (click)="confirmDelete()" class="btn btn-primary btn-min">Yes</button>
+              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal fade" id="addmember" role="dialog">
+      <div class="modal-dialog mymodal">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <form (ngSubmit)="onAddInsuranceMemberFormSubmit()" #addInsuranceMemberForm="ngForm">
+            <div class="modal-header">
+              <h5 class="modal-title">{{titleValue}} Member</h5>
+            </div>
+            <div class="modal-body">
+              <div class="cRow">
+                <div class="cCol2">
+                  <mat-form-field>
+                    <input [disabled]="(!hasPermission && addingChildAfterDisbursement) && readonly" matInput
+                      type="text" (keypress)="onlyLetters($event)" required [(ngModel)]="member.memberName"
+                      id="memberName" name="memberName" placeholder="Name" #memberName="ngModel"
+                      pattern="([a-zA-Z ]{3,30}\s*)+" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="memberName.invalid">
+                      name is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol2">
+                  <mat-form-field>
+                    <mat-select [disabled]="(!hasPermission && addingChildAfterDisbursement) && readonly"
+                      placeholder="Relationship" (selectionChange)="handleChanges(relKey.value)"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" [(ngModel)]="member.relKey" id="relKey"
+                      name="relKey" required #relKey="ngModel">
+                      <mat-option *ngFor="let edu of relationType" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="cCol2">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly" placeholder="Gender" [(ngModel)]="member.genderKey"
+                      name="genderKey" required #genderKey="ngModel" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$">
+                      <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="cCol2">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Marital Status"
+                      (selectionChange)="handleChanges(maritalKey.value)" [errorStateMatcher]="matcher"
+                      pattern="^[1-9]\d*$" [(ngModel)]="member.maritalStatusKey" name="maritalStatus" required
+                      [disabled]="isRelationDisable" #maritalKey="ngModel">
+                      <mat-option *ngFor="let edu of maritalStatus" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="cCol2">
+                  <mat-form-field>
+                    <input
+                      [disabled]="(isDobDisable || readonly) && (!hasPermission && addingChildAfterDisbursement)"
+                      matInput [required]="!isDobDisable" name="dob" (dateChange)="onDOBChange(dob.value)" [max]="date"
+                      [min]="minYear" #dob="ngModel" [matDatepicker]="picker3" placeholder="Date of birth"
+                      [(ngModel)]="member.dob" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker startView="multi-year" required #picker3 disabled="false"></mat-datepicker>
+                  </mat-form-field>
+
+                </div>
+                <div class="cCol2">
+                  <mat-form-field>
+                    <input [disabled]="isCnicDisable" matInput type="text" (keypress)="cnicPattern($event)"
+                      maxlength="15" [errorStateMatcher]="matcher" [required]="cnicMandatory" [(ngModel)]="memberCnic"
+                      id="memberCnicNum" name="memberCnicNum" placeholder="Cnic Number" #memberCnicNum="ngModel"
+                      pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$">
+                    <mat-error *ngIf="memberCnicNum.invalid">
+                      cnic number
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer text-center">
+              <button type="submit" class="btn btn-primary btn-min"
+                [disabled]="!addInsuranceMemberForm.form.valid">Ok</button>
+              <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()"
+                data-dismiss="modal">Cancel</button>
+
+            </div>
+          </form>
+        </div>
+
+
+
+      </div>
+    </div>
+
+  </div>
+</main>

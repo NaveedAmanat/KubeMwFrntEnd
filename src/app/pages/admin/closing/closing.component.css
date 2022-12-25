@@ -1,0 +1,18 @@
+tr.mat-header-row {
+    height: 0px;
+}
+
+tr.mat-row {
+  vertical-align: center;
+}
+
+.mat-cell, .mat-header-cell {
+  font-size: 13px;
+}
+
+.mat-cell, .mat-footer-cell {
+  font-size: 13px;
+}
+table {
+  width: 100%;
+}

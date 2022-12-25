@@ -1,0 +1,47 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+
+      <div class="table-responsive mb-md-5">
+        <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+
+
+
+          <ng-container matColumnDef="qstStrng">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Question</th>
+            <td mat-cell *matCellDef="let obj">
+            
+              {{obj.qstStrng}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="answrStrng">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Answer</th>
+            <td mat-cell *matCellDef="let obj">
+            
+              {{obj.answrStrng}}
+            </td>
+          </ng-container>
+
+      
+          <ng-container matColumnDef="cmnt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Comments</th>
+            <td mat-cell *matCellDef="let obj">{{obj.cmnt}}</td>
+          </ng-container>
+
+
+         
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+
+
+    </div>
+  </div>
+</main>

@@ -1,0 +1,157 @@
+<main class="main"> 
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-5">
+              <!-- tagTypeChange & ttype & tagTypes -->
+              <ng-select [multiple]="false" placeholder="Tag Type" name="tagType" (change)="tagTypeChange($event)">
+                <ng-option *ngFor="let ttype of tagTypes" [value]="ttype.id">{{ttype.value}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-5">
+              <!-- showField -->
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer">
+                  Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <!-- showFields & applyFilter -->
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float: left">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float: right">
+                    <button class="btn btn-primary btn-lg" type="submit">
+                      Search
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- iaRights & taggedClntList -->
+            <div class="col-sm-7 addBtn">
+              <button class="btn btn-primary btn-sm" (click)="exportClntList()">
+                <i class="fa fa-file-excel-o"></i> Export Clients
+              </button>
+            </div>
+          </div> 
+
+          <!-- ================== DATA TABLE ================== -->
+
+          <div class="table-responsive mb-md-5">
+            <table class="table" id="myTable" mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows
+              matSort>
+              <!-- Reference Id Column -->
+              <!-- <ng-container matColumnDef="clntTagListSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr. No.</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.clntTagListSeq }}</td>
+              </ng-container> -->
+
+              <!-- Category Column -->
+              <ng-container matColumnDef="cnicNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>CNIC</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.cnicNum }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="loanAppSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Loan No.</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.loanAppSeq }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="effStartDt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.effStartDt | date:"dd-MMM-yyyy" }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <!-- <ng-container matColumnDef="tagsSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Tag Sequence</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.tagsSeq }}</td>
+              </ng-container> -->
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="tagFromDt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Tag From</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.tagFromDt | date:"dd-MMM-yyyy" }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="tagToDt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Tag To</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.tagToDt | date:"dd-MMM-yyyy" }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="rmks">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Remarks</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.rmks }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="lastUpdBy">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Updated By</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.lastUpdBy }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="lastUpdDt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Update Date</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">{{ tag.lastUpdDt | date:"dd-MMM-yyyy" }}</td>
+              </ng-container>             
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                <td mat-cell *matCellDef="let tag" class="text-center">
+                  <div>
+                    <!-- Edit button -->
+                    <!-- <a href="javascript:void(0);" class="iconBtn"><i
+                        class="fa fa-pencil"></i></a> -->
+                    <a *ngIf="tag.crntRecFlg == 0" href="javascript:void(0);" (click)="changeClntTag(tag, 'TAG')" class="iconBtn"><i 
+                    class="fa fa-bookmark-o" data-toggle="tooltip" title="Tag Client"></i></a>
+                    <a *ngIf="tag.crntRecFlg == 1" href="javascript:void(0);" (click)="changeClntTag(tag, 'UNTAG')" class="iconBtn"><i 
+                      class="fa fa-bookmark" data-toggle="tooltip" title="Untag Client"></i></a>
+                    <!-- Delete Button ->
+                    <!-- <a class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+                </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator #paginatorRef [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+<script>
+  $(".searchshow").click(function () {
+    $(".mysearchbox").addClass("intro");
+  });
+  $(".remove-search").click(function () {
+    $(".mysearchbox").removeClass("intro");
+  });
+</script>

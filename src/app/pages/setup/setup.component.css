@@ -1,0 +1,15 @@
+
+.mat-cell, .mat-header-cell {
+  font-size: 14px;
+  }
+  
+  .mat-cell, .mat-footer-cell {
+  font-size: 13px;
+  }
+  table {
+  width: 100%;
+  }
+  th.mat-header-cell {
+      vertical-align: middle;
+  }
+  

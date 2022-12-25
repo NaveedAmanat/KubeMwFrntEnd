@@ -1,0 +1,137 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <h6 class="d-inline-block searchshow">Rights Assignment</h6>
+            </div>
+
+            <!----------   User Managment Modal Start            ------>
+
+            <div class="modal fade" id="userManagmentmodal" role="dialog">
+              <div class="modal-dialog mymodal">
+
+                <!-- Modal content-->
+                <form (ngSubmit)="onSubmitUserManagmentForm()" [formGroup]="userManagForm">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">User Managment</h5>
+                    </div>
+                    <div class="modal-body">
+                      <div class="cRow">
+
+                        <div class="cCol4">
+                          <mat-form-field>
+                            <input type="text" matInput placeholder="User Name:" formControlName="usrRolNm">
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!--------------------------- Modal End ------------------------------------>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <ul class="nav nav-tabs borrowerTabs fulltab" id="borrowerTabs" role="tablist">
+                <li class="nav-item"> <a class="nav-link active" id="rolls-tab" data-toggle="tab" href="#rolls"
+                    role="tab" aria-controls="home" aria-selected="true">Roles</a> </li>
+              </ul>
+              <div class="tab-content borrowerTabsContent mb-md-2" id="rullsTabsContent">
+                <div class="tab-pane fade active show" id="rolls" role="tabpanel" aria-labelledby="rolls-tab">
+                  <div class="addBtn mb-1">
+                    <button class="btn btn-primary btn-sm" (click)="onAddUser()"><i class="fa fa-plus"></i></button>
+                  </div>
+                  <div class="mnh-130">
+                    <div class="table-responsive bdotable">
+                      <table class="table last-left mt-0 mb-0">
+                        <tbody>
+                          <tr *ngFor="let r of roles; let i=index;">
+                            <td class="pointer" [class.activeName]="r.usrRolNm === selectedRole" (click)="userClick(r, $event)">
+                              {{r.usrRolNm | uppercase}}</td>
+                            <td [class.activeName]="r.usrRolNm === selectedRole" style="text-align: right">
+                              <a data-toggle="tooltip" title="Edit Name" (click)="onEditUser(r)" class="iconBtn"><i
+                                  class="fa fa-pencil"></i></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-9">
+              <div class="row pt-3">
+                <div class="col-sm-6">
+                  <h6 class="colorBlack small "><b>{{selectedRole | uppercase}}</b></h6>
+                </div>
+              </div>
+              <mat-accordion *ngFor="let mod of obj">
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{mod.mod.modNm}}
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+
+                  <!-- <mat-selection-list #shoes (selectionChange)='filterByAppStatus(shoes,$event)'>
+                    <mat-list-option *ngFor="let sub of mod.subMods" [value]="sub.sbModSeq">
+                      {{sub.sbModNm}}
+                    </mat-list-option>
+                  </mat-selection-list> -->
+
+                  <mat-selection-list #list>
+                    <mat-list-option *ngFor="let tta of mod.subMods" [selected]="tta.checked"
+                      (click)="onAreaListControlChanged(list,tta)" [value]="tta">
+                      {{tta.sbModNm}}
+                    </mat-list-option>
+                  </mat-selection-list>
+
+
+                </mat-expansion-panel>
+              </mat-accordion>
+
+              <!-- <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Personal data
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      Type your name and age
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <ul>
+                    <li>
+                      <mat-checkbox> </mat-checkbox>
+                    </li>
+                    <li></li>
+                  </ul>
+
+                </mat-expansion-panel>
+              </mat-accordion> -->
+            </div>
+          </div>
+          <div class="text-left mt-2 pb-3">
+            <!-- <button type="button" class="btn btn-primary btn-min">Save</button>
+            <button type="button" class="btn btn-primary btn-min ml-2">Cancel</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

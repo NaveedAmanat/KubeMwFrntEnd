@@ -1,0 +1,35 @@
+<div class="col-md-9">
+  <div class="content">
+    <div class="row">
+        <div class="row">
+          <h6 class="d-inline-block searchshow" class="wi"> HBL Konnect Dues Sharing  <i class="fa fa-print"> </i></h6>
+        </div>
+    </div>
+    <div class="row">
+      <form [formGroup]="ngForm" (ngSubmit)="hblConnectDues()">
+        <div class="cRow" class="w2">
+            <!-- <mat-form-field>
+              <input matInput required formControlName="frmDt" placeholder="From Date:" [matDatepicker]="picker1"
+                disabled readonly />
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+            </mat-form-field> -->  
+            <mat-form-field >
+              <input matInput required formControlName="toDt"
+                placeholder="To Date:" [matDatepicker]="picker2" disabled readonly />
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+            </mat-form-field>
+      
+            <mat-radio-group formControlName="isXls">
+              <mat-radio-button value="1" checked>Excel </mat-radio-button>
+              <!-- <mat-radio-button class="ml-3" checked value="0">PDF </mat-radio-button> -->
+            </mat-radio-group>
+        </div>
+        <div class="modal-footer text-center">
+          <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

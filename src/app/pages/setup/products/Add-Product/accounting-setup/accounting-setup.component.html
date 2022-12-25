@@ -1,0 +1,54 @@
+<main class="main">
+  <form (ngSubmit)="onSubmit()" #AccoutingForm="ngForm">
+
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+      <h6 class="mt-3">Products</h6>
+      <div class="pt-1">
+      </div>
+      <div class="cRow">
+        <div class="cCol3">
+          <div class="cRow">
+            <div class="cCol1">
+                <!-- <div class="cCol1"> -->
+                    <ng-select [items]="GlAccounts" required required bindLabel="accDesc" bindValue="accNum" name="cmntyNm" placeholder="Select GL Accounts"
+                      [(ngModel)]="model1.glAcctNum">
+                    </ng-select>
+                  <!-- </div> -->
+              <!-- <mat-form-field>
+                <input matInput required [(ngModel)]="model1.glAcctNum" maxlength="30"  name="glAccount" (keypress)="onlyNumbers($event)"
+                       placeholder="GL Account:" [errorStateMatcher]="matcher">
+              </mat-form-field> -->
+            </div>
+            <div class="cCol1">
+              <!-- <button class="btn btn-dots" type="button"></button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cRow">
+        <div class="cCol3">
+          <div class="cRow">
+            <div class="cCol1">
+              <!-- <mat-form-field> -->
+                <!-- <input matInput required [(ngModel)]="model2.glAcctNum" name="glAccountMapping"
+                       placeholder="GL Account Mapping:" maxlength="30"  [errorStateMatcher]="matcher"  (keypress)="onlyNumbers($event)">
+              </mat-form-field> -->
+              <ng-select [items]="GlAccounts" required required bindLabel="accDesc" bindValue="accNum" name="glMapping" placeholder="Select GL Account Mapping"
+                      [(ngModel)]="model2.glAcctNum">
+                    </ng-select>
+            </div>
+
+            <div class="cCol1">
+              <!-- <button class="btn btn-dots" type="button"></button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a routerLink="/setup/addProduct/forms-assignment" class="btn btn-primary">Continue</a>
+    <button type="submit" class="btn btn-default">Save</button>
+  </div>
+  </form>
+</main>

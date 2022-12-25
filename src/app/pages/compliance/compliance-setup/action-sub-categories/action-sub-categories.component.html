@@ -1,0 +1,102 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Action Sub Categories
+                </h6>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" type="button" (click)="openSubCategoryModel()"><i
+                  class="fa fa-plus"></i>
+                Add</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>Sub Category Id</th>
+                  <th>Sub Category Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sub of actionSubCategories">
+                  <td>{{sub.subCtgryId}}</td>
+                  <td>{{sub.subCtgryNm}}</td>
+                  <td>
+                    <a data-toggle="tooltip" title="Edit" (click)="onEditActionSubCategory(sub)" class="iconBtn"><i
+                        class="fa fa-pencil"></i></a>
+                    <a data-toggle="tooltip" title="Issues"
+                      [routerLink]="['/compliance/compliance-setup/issues', sub.sbCtgrySeq]" class="iconBtn"><i
+                        class="fa fa-plus"></i></a>
+                    <a data-toggle="tooltip" title="Delete" (click)="onDeleteActionSubCategory(sub)"
+                      class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="text-left mt-2 pb-3">
+            <button [routerLink]="['/compliance/compliance-setup/categories']" type="button"
+              class="btn btn-primary btn-min">Back</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal fade" id="addActionSubCategory" role="dialog">
+        <div class="modal-dialog big mymodal">
+
+          <form (ngSubmit)="onSubmitActionCategory()" [formGroup]="actionSubCategoryForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Action Sub Categories</h5>
+              </div>
+              <div class="modal-body">
+                <div class="cRow">
+
+                  <!-- <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Sub Category ID:"
+                        formControlName="subCtgryId">
+                    </mat-form-field>
+                  </div> -->
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Sub Category Name:" formControlName="subCtgryNm">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Comments:" formControlName="subCtgryCmnt">
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button type="submit" [disabled]=!actionSubCategoryForm.valid
+                  class="btn btn-primary btn-min">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

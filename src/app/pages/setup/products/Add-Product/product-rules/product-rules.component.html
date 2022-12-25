@@ -1,0 +1,314 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+      <div class="modal fade" id="AssignCheque" role="dialog">
+        <div class="modal-dialog mymodal" style="top:2%">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Assign Cheque</h5>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-light">
+                  <tr>
+                    <th><b>Installment #.</b></th>
+                    <th><b>Select</b></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let seg of segregateArray">
+                    <td>{{seg.instNum}}</td>
+                    <td>
+                      <mat-checkbox class="example-margin"
+                                    name="selfPDC"
+                                    (change)="addUpdateSegrigate(seg, $event)"
+                                    [(ngModel)]="seg.ischecked">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer smmodal-footer text-center">
+                <button (click)="segregateAdded()" class="btn btn-primary btn-min"  >Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <div class="modal fade" id="AssignRule" role="dialog">
+          <div class="modal-dialog fullpop mymodal" style="top:10%">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Rules</h5>
+              </div>
+              <div class="modal-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                    <tr>
+                      <th>Rule ID</th>
+                      <th>Rule Name</th>
+                      <th>Rule Category</th>
+                      <th class="text-left">Condition</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let rule of basicRules">
+                      <th>
+                        <mat-radio-group (change)="onRuleChange(rule.rulSeq)" [(ngModel)]="rule.ruleSeq" name="rulSeq" required>
+                          <mat-radio-button class="w-50" [value]="rule.rulSeq"></mat-radio-button>
+                        </mat-radio-group>
+                      </th>
+                      <td>{{rule.rulNm}}</td>
+                      <td>{{getNameByKey(rule.rulCtgryKey, ruleCategories)}}</td>
+                      <td class="text-left">{{rule.rulCrtraStr}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button (click)="updateRule()" class="btn btn-primary btn-min">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <h6 class="mt-3">Products</h6>
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="colorBlack">Credit Terms </h6>
+        </div>
+        <div class="col-sm-6 addBtn mt-6">
+          <button class="btn btn-primary btn-sm" data-toggle="modal" (click)="openLoanTerm()">
+            <i class="fa fa-plus"></i>Add</button>
+        </div>
+        <div class="modal fade" id="LoanTermst" role="dialog">
+          <div class="modal-dialog mymodal big">
+
+            <!-- Modal content-->
+            <form [formGroup]="loanTermForm" (ngSubmit)="onSubmitLoanTerms()">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Credit Terms</h5>
+                </div>
+                <div class="modal-body">
+                  <div class="cRow">
+                    <div class="cCol3">
+                      <mat-form-field>
+                        <mat-select placeholder="Terms:" formControlName="trmKey"
+                                    name="status" [errorStateMatcher]="matcher">
+                          <mat-option *ngFor="let edu of loanTerms" [value]="edu.codeKey">
+                            {{edu.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol3">
+                      <mat-form-field>
+                        <mat-select placeholder="Installment Frequency:" formControlName="pymtFreqKey"
+                                    name="status" [errorStateMatcher]="matcher">
+                          <mat-option *ngFor="let edu of frequency" [value]="edu.codeKey">
+                            {{edu.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mb-md-4">
+        <table class="table">
+          <thead class="thead-light">
+          <tr >
+            <th>Terms</th>
+            <th>Installment Frequency</th>
+            <th>Rule</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let loanTerm of allItemsLoanTerms">
+            <td>{{getNameByKey(loanTerm.trmKey, loanTerms)}}</td>
+            <td>{{getNameByKey(loanTerm.pymtFreqKey, frequency)}}</td>
+            <td>
+              <a class="iconBtn"  data-toggle="modal" (click)="openAssignRule(loanTerm, 1)"><i class="fa fa-plus"></i></a>
+              {{getRuleNameBySeq(loanTerm.rulSeq)}}
+            </td>
+            <td><a (click)="editLoanTerm(loanTerm)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+              <a (click)="deleteLoanTerm(loanTerm)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+              <a class="iconBtn"><i class="fa fa-history"></i></a></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="colorBlack">Principle Amount</h6>
+        </div>
+        <div class="col-sm-6 addBtn">
+          <button class="btn btn-primary btn-sm" (click)="openPrincipleAmount()">
+            <i class="fa fa-plus"></i> Add</button>
+        </div>
+        <div class="modal fade" id="principleAmount" role="dialog">
+          <div class="modal-dialog mymodal big">
+
+            <!-- Modal content-->
+            <form  [formGroup]="principleAmountForm" (ngSubmit)="onSubmitPrincipleAmount()">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Principle Amount</h5>
+                </div>
+                <div class="modal-body">
+                  <div class="cRow">
+                    <div class="cCol3-col">
+                      <mat-form-field>
+                        <input matInput placeholder="Min Amount:" type="text" (keypress)="onlyNumbers($event)" maxlength="10"
+                               formControlName="minAmt">
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol3-col">
+                      <mat-form-field>
+                        <input matInput placeholder="Max Amount:" type="text" (keypress)="onlyNumbers($event)" maxlength="10"
+                               formControlName="maxAmt">
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol3-col">
+                      <mat-form-field>
+                        <input matInput placeholder="Segregate in Installments:" type="text" maxlength="2" (keypress)="onlyNumbers($event)"
+                               formControlName="sgrtInstNum">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" >Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mb-md-3">
+        <table class="table">
+          <thead class="thead-light">
+          <tr>
+            <th>Min Amount</th>
+            <th>Max Amount</th>
+            <th>Segregate in Installment</th>
+            <th>Rule</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let pr of allItemsPrincipleAmounts">
+            <td>{{pr.minAmt}}</td>
+            <td>{{pr.maxAmt}}</td>
+            <td style="padding-left:65px">
+              <a href="#" class="iconBtn"  data-toggle="modal" (click)="openSegregate(pr)"><i class="fa fa-plus"></i></a>
+              <span>{{pr.sgrtInstNum}}</span>
+            </td>
+            <td>
+              <a href="#" class="iconBtn"  data-toggle="modal"  (click)="openAssignRule(pr, 2)"><i class="fa fa-plus"></i></a>
+              {{getRuleNameBySeq(pr.rulSeq)}}</td>
+            <td><a (click)="editPrincipleAmount(pr)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+              <a (click)="deletePrincipleAmount(pr)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+              <a href="#." class="iconBtn"><i class="fa fa-history"></i></a></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="colorBlack">Advance Rules</h6>
+        </div>
+        <div class="col-sm-6 addBtn">
+          <button class="btn btn-primary btn-sm" (click)="openAdvRules()">
+            <i class="fa fa-plus"></i> Select Rules</button>
+        </div>
+        <div class="modal fade" id="AdvanceRules" role="dialog">
+          <div class="modal-dialog fullpop mymodal">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Advance Rules</h5>
+              </div>
+              <div class="modal-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                    <tr >
+                      <th>Rule ID</th>
+                      <th>Rule Name</th>
+                      <th>Rule Category</th>
+                      <th class="text-left">Condition</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let rule of advRules">
+                      <td><input type="checkbox" [ngModel]="rule.isAdded"  (change)="addProductRule(rule)" class="check1"> {{rule.rulNm}}</td>
+                      <td>{{rule.rulNm}}</td>
+                      <td>{{getNameByKey(rule.rulCtgryKey, ruleCategories)}}</td>
+                      <td class="text-left">{{rule.rulCrtraStr}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+      <div class="table-responsive mb-md-5">
+        <table class="table">
+          <thead class="thead-light">
+          <tr>
+            <th>Rule ID</th>
+            <th>Rule Name</th>
+            <th>Rule Category</th>
+            <th class="text-left">Condition</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let ruleProduct of allProductRules">
+            <td>{{ruleProduct.rulSeq}}</td>
+            <td>{{ruleProduct.rulNm}}</td>
+            <td>{{ruleProduct.rulCtgryKey}}</td>
+            <!-- <td>{{getNameByKey(ruleProduct.rulCtgryKey, ruleCategories)}}</td> -->
+            <td class="text-left">{{ruleProduct.rulCmnt}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <a routerLinkActive="active" routerLink="/setup/addProduct/charges" class="btn btn-primary">Continue</a>
+      <!-- <button class="btn btn-default">Save</button> -->
+    </div>
+  </div>
+</main>

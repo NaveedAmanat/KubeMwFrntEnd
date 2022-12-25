@@ -1,0 +1,252 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+
+    <div class="content">
+      <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+
+
+      <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="business-assets-tab" data-toggle="tab" href="#assetsTab" role="tab"
+            aria-controls="home" aria-selected="true"><span *ngIf="model.schoolInformation.hasAssets" class="dot green"></span><span
+              *ngIf="!model.schoolInformation.hasAssets" class="dot orange"></span>School Infrastructure</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="school-quality-checklist-tab" data-toggle="tab" href="#qualityTab" role="tab"
+            aria-controls="qualityTab" aria-selected="false"><span *ngIf="model.schoolInformation.hasQltyChck" class="dot green"></span><span *ngIf="!model.schoolInformation.hasQltyChck"
+              class="dot orange"></span>School Quality Questionnaire</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="document-checklist-tab" data-toggle="tab" href="#documentTab" role="tab"
+            aria-controls="documentTab" aria-selected="false"><span *ngIf="model.schoolInformation.hasDocChck" class="dot green"></span><span
+              *ngIf="!model.schoolInformation.hasDocChck" class="dot orange"></span>Documents Verification Checklist</a>
+        </li>
+      </ul>
+      <form (ngSubmit)="onSubmit()" #coBorrowerForm="ngForm">
+
+        <div class="tab-content borrowerTabsContent mb-md-5" id="borrowerTabsContent">
+
+
+          <div class="tab-pane fade show active" id="assetsTab" role="tabpanel" aria-labelledby="business-assets-tab">
+
+            <h6 class="colorBlack mt-2 mb-2">School Infrastructure</h6>
+            <div>
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required matInput [disabled]="readonly && !hasPermission" id="totRmsId"
+                      #totRms="ngModel" name="totRms" [(ngModel)]="model.schoolInformation.totRms" placeholder="Total Classrooms">
+                    <mat-error *ngIf="totRms.invalid">
+                        Total Classrooms is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required id="totOfcsId" name="totOfcs"
+                      #totOfcs="ngModel" [(ngModel)]="model.schoolInformation.totMalTolts" placeholder="Total Male Toilets"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totOfcs.invalid">
+                      Total Male Toilets is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyNumbers($event)" id="totFlrsId" required maxlength="3" name="totFlrs"
+                        #totFlrs="ngModel" [(ngModel)]="model.schoolInformation.totFmalTolts" placeholder="Total Female Toilets"
+                        matInput [disabled]="readonly && !hasPermission">
+                      <mat-error *ngIf="totFlrs.invalid">
+                          Total Female Toilets is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required id="totToiletsId" name="totToilets"
+                      #totToilets="ngModel" [(ngModel)]="model.schoolInformation.totToilets" placeholder="Total Mixed Toilets"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totToilets.invalid">
+                        Total Mixed Toilets is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required id="totCmptrsId" name="totCmptrs"
+                      #totCmptrs="ngModel" [(ngModel)]="model.schoolInformation.totCmptrs" placeholder="Total Computers in Computer Lab(s)"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totCmptrs.invalid">
+                      Total Computers is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required id="totChrsId" name="totChrs"
+                      #totChrs="ngModel" [(ngModel)]="model.schoolInformation.totChrs" placeholder="Total Chairs/Benches"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totChrs.invalid">
+                      Total Chairs/Benches is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required id="totDsksId" name="totDsks"
+                      #totDsks="ngModel" [(ngModel)]="model.schoolInformation.totDsks" placeholder="Total Desks"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totDsks.invalid">
+                      Total Desks is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required id="totLabsId" name="totLabs"
+                      #totLabs="ngModel" [(ngModel)]="model.schoolInformation.totLabs" placeholder="Total Science Labs"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totLabs.invalid">
+                      Total Science Labs is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyNumbers($event)" id="othAstsId" required name="othAsts" #othAsts="ngModel" maxlength="3" [(ngModel)]="model.schoolInformation.totCmptrLabs"
+                        placeholder="Total Computer Labs" matInput [disabled]="readonly && !hasPermission">
+                      <mat-error *ngIf="othAsts.invalid">
+                          Total Computer Labs is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" required id="totWclrsId" name="totWclrs"
+                      #totWclrs="ngModel" [(ngModel)]="model.schoolInformation.totWclrs" placeholder="Total Watercoolers"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totWclrs.invalid">
+                      Total Watercoolers is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" id="totFansId" required maxlength="3" name="totFans"
+                      #totFans="ngModel" [(ngModel)]="model.schoolInformation.totFans" placeholder="Total Fans"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totFans.invalid">
+                      Total Fans is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyNumbers($event)" id="totGnrtrsId" required maxlength="3" name="totGnrtrs"
+                      #totGnrtrs="ngModel" [(ngModel)]="model.schoolInformation.totGnrtrs" placeholder="Total Generators/UPS"
+                      matInput [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="totGnrtrs.invalid">
+                      Total Generators/UPS is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                
+
+                
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="qualityTab" role="tabpanel" aria-labelledby="school-quality-checklist-tab">
+
+            <form>
+              <div class="borderbox pt-2 mb-3" *ngFor="let catQuestion of model.schoolInformation.SchoolQAArray; let h = index">
+                <label><b>{{catQuestion.group}}</b></label>
+                <div class="qs row" *ngFor="let question of catQuestion.questions; let i = index">
+                  <div class="col-sm-9">
+                    <p>{{question.questionString}}</p>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="qsbtns text-right">
+                      <mat-radio-group [disabled]="readonly && !hasPermission" name="answer{{h}}{{i}}" [(ngModel)]="question.answerSeq">
+                        <mat-radio-button class="w-50" *ngFor="let disFlag of booleanQA" [value]="disFlag.codeRefCd">{{disFlag.codeValue}}</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+
+          </div>
+
+
+          <div class="tab-pane fade" id="documentTab" role="tabpanel" aria-labelledby="document-checklist-tab">
+            <form>
+              <div class="borderbox pt-2 mb-3" *ngFor="let catQuestion of model.schoolInformation.documentChecklist; let h = index">
+                <label><b>{{catQuestion.group}}</b></label>
+                <div class="qs row" *ngFor="let dquestion of catQuestion.questions; let i = index">
+                  <div class="col-sm-9">
+                    <p>{{dquestion.questionString}}</p>
+                  </div>
+                  <div class="col-sm-3">
+
+                    <!-- <div class="qsbtns text-right">
+                      <mat-radio-group name="answer{{h}}{{i}}" [(ngModel)]="dquestion.answerSeq">
+                        <mat-radio-button class="w-50" *ngFor="let disFlag of booleanQA" [value]="disFlag.codeKey">{{disFlag.codeValue}}</mat-radio-button>
+                      </mat-radio-group>
+                    </div> -->
+                    <div class="qsbtns text-right">
+                        <mat-radio-group [disabled]="readonly && !hasPermission" name="danswer{{h}}{{i}}" [(ngModel)]="dquestion.answerSeq">
+                            <mat-radio-button class="w-50" *ngFor="let disFlag of booleanQA" [value]="disFlag.codeRefCd">{{disFlag.codeValue}}</mat-radio-button>
+                          </mat-radio-group>
+                      <!-- <div class="cCol1">
+                        <mat-select placeholder="Select: *" [(ngModel)]="dquestion.answerSeq" 
+                          pattern="^[1-9]\d*$" name="answer{{h}}{{i}}">
+                          <mat-option *ngFor="let disFlag of booleanQA" [value]="disFlag.codeKey">
+                            {{disFlag.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </div> -->
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+
+          </div>
+
+        </div>
+
+        <button (click)="continueClicked()" type="button" class="btn btn-primary">Continue</button>
+        <button class="btn btn-default" [disabled]="readonly && !hasPermission" type="submit">Save</button>
+      </form>
+
+    </div>
+  </div>
+</main>

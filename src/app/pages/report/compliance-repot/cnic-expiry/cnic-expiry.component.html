@@ -1,0 +1,51 @@
+<div class="col-md-12">
+  <div class="content">
+    <div class="mysearchbox">
+      <h6 class="d-inline-block searchshow">CNIC Expiry</h6>
+      <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+      </div>
+    </div>
+
+    <form [formGroup]="ngForm" (ngSubmit)="onSubmitCnicExpiry()">
+      <div class="row clearfix">
+        <div class="col-sm-12">
+          <!-- <input type="hidden" formControlName="brnchSeq" readonly /> -->
+
+          <!-- <div class="cRow">
+            <div>
+              <mat-form-field>
+                <input matInput required formControlName="frmDt" [max]="maxDate" placeholder="From Date:"
+                  [matDatepicker]="picker1" disabled readonly />
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field>
+                <input matInput required formControlName="toDt" [min]="ngForm.controls['frmDt'].value" [max]="maxDate"
+                  placeholder="To Date:" [matDatepicker]="picker2" disabled readonly />
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div>
+
+              <mat-radio-group formControlName="isXls">
+                <mat-radio-button value=true>Excel </mat-radio-button>
+                <mat-radio-button class="ml-3" checked value=false>PDF </mat-radio-button>
+              </mat-radio-group>
+
+            </div>
+          </div> -->
+          <div class="buttons mt-3">
+            <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary btn-min mr-3">Print CNIC
+              Expiry</button>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

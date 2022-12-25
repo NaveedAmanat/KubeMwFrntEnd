@@ -1,0 +1,109 @@
+<main class="main">
+	<div class="container-fluid">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-arrow">
+				 <li class="active"><a routerLink="/setup/communication-workflow/add-workflow-rule">Rule</a></li>
+		          <li><a routerLink="/setup/communication-workflow/add-workflow-action">Workflow Action</a></li>
+			</ol>
+		</nav>
+		<form class="md-float-material" [formGroup]="workflowRuleForm" (ngSubmit)="onWorkflowRuleSubmit()" >
+		<div class="content">
+			<h6 class="mt-3">Workflow</h6>
+			<div class="cRow">
+				<div class="cCol1">
+					<label>Function:</label>
+					<select class="form-control" formControlName="functionKey" [ngClass]="{ 'is-invalid': submitted && f.functionKey.errors }">
+                        <option *ngFor="let function of functionListing" value="{{function.codeKey}}">{{function.codeValue}}</option>
+                    </select>
+				</div>
+				<div class="cCol1">
+					<label>Rule Name:</label>
+					<input type="text" class="form-control" formControlName="ruleName" [ngClass]="{ 'is-invalid': submitted && f.ruleName.errors }" />
+				</div>
+			</div>
+            
+            <div class="cRow">
+				<div class="cCol6">
+					<label>Comments:</label>
+					<textarea class="form-control" formControlName="workflowComments"></textarea>
+				</div>
+			</div>
+            <div class="cRow">
+				<div class="cCol6">
+					<label>Rule Criteria:</label>
+          <button type="button" class="btn pull-right btn-dots" data-toggle="modal" data-target="#cmmoncodes"></button>
+					 <textarea class="form-control" formControlName="ruleCriteria" [ngClass]="{ 'is-invalid': submitted && f.ruleCriteria.errors }"></textarea>
+                     <div class="modal fade" id="cmmoncodes" role="dialog">
+                        <div class="modal-dialog mymodal big"> 
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Rule Condition</h5>
+                          </div>
+                          <div class="modal-body">
+                            <div class="p10">
+        			<div class="row">
+        	<div class="col-md-3 mb-2">
+            	<div class="filter noborder">
+                    <h6 class="border-title">Data Items</h6>
+                	<a href="#." class="acc_trigger inactive-header active-header">Client</a>
+                    <div class="collapse acc_container" style="display: block;">
+                    	 <div class="listmenu">
+                            <ul>
+                              	<li>Gender</li>
+                                <li>Merital Status</li>
+                            </ul>
+                         </div>
+                    </div>
+                    <a href="#." class="acc_trigger inactive-header">Credit Information</a>
+                    <div class="collapse acc_container">
+                    	 <div class="listmenu">
+                            <ul>
+                              	<li>Approved Amount</li>
+                                <li>Requested Amount</li>
+                            </ul>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 mt-3">
+            	<div class="cRow">
+            	<textarea formControlName="ruleCriteriafun" class="form-control large" placeholder="Days to complete < 8" ></textarea>
+                </div>
+            </div>
+        </div>        
+                </div>
+                          </div>
+                          <div class="modal-footer text-center">
+                            <button type="button" class="btn btn-primary btn-min" (click)="onCriteriaClick()" data-dismiss="modal">Ok</button>
+                            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+				</div>
+			</div>
+			<div *ngIf="submitted && f.functionKey.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.functionKey.errors.required">Please Enter Function</strong>
+                </div>
+                <div *ngIf="submitted && f.ruleName.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.ruleName.errors">Please Enter Rule Name</strong>
+                </div>
+                <div *ngIf="submitted && f.workflowComments.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.workflowComments.errors">Please Enter Comments</strong>
+               </div>
+               <div *ngIf="submitted && f.ruleCriteria.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.ruleCriteria.errors">Please Enter Rule Criteria</strong>
+                </div>
+			<div class="mt-5">
+			<button  class="btn btn-primary">Continue</button>
+				<button type="button" class="btn btn-default btn-min" routerLink="/setup/communication-workflow">Cancel</button>
+            </div>
+		</div>
+		</form>
+	</div>
+</main>

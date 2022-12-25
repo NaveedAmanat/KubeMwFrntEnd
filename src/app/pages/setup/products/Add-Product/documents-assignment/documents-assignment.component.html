@@ -1,0 +1,46 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+      <h6 class="mt-3">Products</h6>
+      <div class="pt-1">
+        <label>Select Form:</label>
+      </div>
+
+      <div class="checkbox mb-1" *ngFor="let form of allFormsAssignment">
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-checkbox class="example-margin" name="selfPDC" (change)="updateFromAssignment(form)" [(ngModel)]="form.ischecked">{{form.docNm}}</mat-checkbox>
+          </div>
+          <div class="col-sm-4">
+            <mat-checkbox class="example-margin" name="required" (change)="updateDocumentMndatryFlg(form)" [(ngModel)]="form.mndtryFlg"><span style="color:red;">*</span> Required</mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+      <!--<div class="checks mt-2" *ngFor="let form1 of allFormsAssignment">-->
+      <!--<div class="pt-1" *ngIf="form1.docCtgryKey === documents[0].codeKey">-->
+      <!--<label><b> {{documents[0].codeValue}}:</b></label>-->
+      <!--</div>-->
+      <!--<div class="checkbox mb-1 mr-2 d-inline-block">-->
+      <!--<div class="custom-control custom-checkbox">-->
+      <!--<input type="checkbox" id="checkbox3" name="coBorrower" class="custom-control-input">-->
+      <!--<label class="custom-control-label" for="checkbox3"> CNIC</label>-->
+      <!--</div>-->
+      <!--</div>-->
+      <!--<div class="checkbox mb-1 mr-2  d-inline-block">-->
+      <!--<div class="custom-control custom-checkbox">-->
+      <!--<input type="checkbox" id="checkbox4" name="coBorrower" class="custom-control-input">-->
+      <!--<label class="custom-control-label" for="checkbox4">Photo</label>-->
+      <!--</div>-->
+      <!--</div>-->
+      <!--</div>-->
+
+
+      <div class="mt-5">
+        <button routerLink="/setup/addProduct/adjustment-sequence" class="btn btn-primary btn-min">Continue</button>
+        <!-- <button class="btn btn-default" (click)="onSave()">Save</button> -->
+      </div>
+    </div>
+  </div>
+</main>

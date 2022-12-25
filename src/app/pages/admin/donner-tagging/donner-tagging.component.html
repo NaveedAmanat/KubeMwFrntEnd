@@ -1,0 +1,415 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-md-10 mysearchbox">
+              <h6 class="d-inline-block searchshow">Donor Tagging</h6>
+              <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."
+                  title="Type in a name">
+              </div>
+            </div>
+            <div class="col-md-2 addBtn mb-2" *ngIf="!taggingButton">
+              <button class="btn btn-primary btn-sm" (click)="openFile(file)">
+                <i class="fa fa-upload" aria-hidden="true"></i> Upload
+                <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+                  (change)="handle($event)">
+              </button>
+            </div>
+          </div>
+
+          <form (ngSubmit)="onSubmitFilters()" [formGroup]="filterForm">
+            <div class="borderbox">
+              <div class="row clearfix">
+                <div class="col-sm-12">
+
+                  <div class="pt-1">
+                    <label>Funder</label>
+                  </div>
+                  <div class="borderbox">
+                    <div class="cRow">
+
+                      <div class="cCol3">
+                        <ng-select [multiple]="false" placeholder="Funder" formControlName="funder">
+                          <ng-option *ngFor="let fun of funderData" [value]="fun.codeKey">{{fun.codeValue}}
+                          </ng-option>
+                        </ng-select>
+                        <mat-error
+                          *ngIf="filterFormsControl.funder.errors?.required && filterFormsControl.funder.touched">
+                          Funder is <strong>required</strong>
+                        </mat-error>
+                      </div>
+
+                      <div class="cCol3">
+                        <mat-form-field>
+                          <input matInput type="text" (keypress)="onlyNumbers($event)" placeholder="Fund Amount"
+                            formControlName="fundAmt">
+                        </mat-form-field>
+                        <mat-error
+                          *ngIf="filterFormsControl.fundAmt.errors?.required && filterFormsControl.fundAmt.touched">
+                          Funder Amount is <strong>required</strong>
+                        </mat-error>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="pt-1">
+                    <label>Other Filters</label>
+                  </div>
+                  <div class="borderbox">
+                    <div class="cRow">
+                      <div class="cCol4">
+                        <mat-form-field>
+                          <input matInput type="text" (keypress)="onlyNumbers($event)" placeholder="Client ID"
+                            formControlName="clntSeq">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol4">
+                        <mat-form-field>
+                          <input matInput type="text" (keypress)="onlyNumbers($event)" placeholder="Application ID"
+                            formControlName="loanAppSeq">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="cRow">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input matInput type="text" placeholder="From Disbursment Amount"
+                            (keypress)="onlyNumbers($event)" formControlName="frmAmt">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input matInput type="text" placeholder="To Disbursment Amount"
+                            (keypress)="onlyNumbers($event)" formControlName="toAmt">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input matInput type="text" (keypress)="onlyNumbers($event)" placeholder="Loan Cycle"
+                            formControlName="cycle">
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <!-- <div class="borderbox"> -->
+                    <div class="cRow">
+
+                      <div class="cCol30">
+                        <mat-form-field>
+                          <input matInput formControlName="frmDt" placeholder="From Disbursment Date:"
+                            [matDatepicker]="picker1" />
+                          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                          <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol7">
+                        <mat-form-field>
+                          <input matInput formControlName="toDt" placeholder="To Disbursment Date:"
+                            [min]="filterForm.controls['frmDt'].value" [matDatepicker]="picker2" />
+                          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                          <mat-datepicker #picker2 disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="cRow">
+                      <div class="cCol30">
+                        <ng-select [multiple]="true" [items]="productGroups" bindValue="prdGrpSeq" name="prdGrpNm"
+                          bindLabel="prdGrpNm" placeholder="Select Product Groups" formControlName="prd_grps"
+                          (change)="onSelectionChangeProducts($event)">
+                        </ng-select>
+                      </div> 
+
+                      <div class="cCol7">
+                        <ng-select [multiple]="true" placeholder="Select Product" formControlName="prds"
+                        [items]="filterProducts" bindValue="prdSeq" name="prdNm" bindLabel="prdNm"> 
+                          <!-- <ng-option *ngFor="let product of filterProducts" [value]="product.prdSeq">
+                            {{product.prdNm}}
+                          </ng-option> -->
+                          </ng-select> 
+                      </div> 
+                    </div>
+
+                    <div class="cRow">
+                      <div class="cCol30">
+                        <ng-select [multiple]="true" placeholder=" Select District" formControlName="districts"  
+                        (change)="onSelectionChangeDistrict($event)" 
+                        [items]="districtListings" bindValue="distSeq" name="distNm" bindLabel="distNm">
+                          <!-- <ng-option *ngFor="let districts of districtListings" [value]="districts.distSeq">
+                            {{districts.distNm}}
+                          </ng-option> -->
+                        </ng-select>
+                      </div>
+
+                      <div class="cCol7">
+                        <ng-select [multiple]="true" placeholder="Select Branch" formControlName="branchs"
+                        [items]="filterBrnch" bindValue="brnchSeq" name="brnchNm" bindLabel="brnchNm">
+                          <!-- <ng-option *ngFor="let branche of filterBrnch" [value]="branche.brnchSeq">
+                            {{branche.brnchNm}}
+                          </ng-option> -->
+                        </ng-select>
+                        <!-- <mat-error
+                          *ngIf="filterFormsControl.branchs.errors?.required && filterFormsControl.branchs.touched">
+                          Branch is <strong>required</strong>
+                        </mat-error> -->
+                      </div>
+                    </div>
+
+                    <div class="cRow">
+                      <div class="cCol30">
+                        <ng-select [multiple]="true" placeholder="Select Sector" formControlName="sectors" (change)="onSelectionChangeSector($event)"
+                        [items]="sectorData" bindValue="bizSectSeq" name="bizSectNm" bindLabel="bizSectNm">
+                          <!-- <ng-option *ngFor="let sector of sectorData" [value]="sector.bizSectSeq">{{sector.bizSectNm}}
+                          </ng-option> -->
+                        </ng-select>
+                      </div>
+
+                      <div class="cCol7">
+                        <ng-select [multiple]="true" placeholder="Select Activity" formControlName="activities"
+                        [items]="filterActy" bindValue="bizActySeq" name="bizActyNm" bindLabel="bizActyNm">
+                          <!-- <ng-option *ngFor="let activity of filterActy" [value]="activity.bizActySeq">
+                            {{activity.bizActyNm}}
+                          </ng-option> -->
+                        </ng-select>
+                      </div>
+                    </div>
+
+                  </div>
+                  <button class="btn btn-primary mt-3 mb-3" type="submit">Search</button>
+                </div>
+              </div>
+            </div>
+          </form><br><br>
+
+          <!-- <div class="table-responsive">
+            <table class="table record" id="myTable">
+              <thead class="thead-blue thead-light">
+                <tr>
+                  <th>Client ID</th>
+                  <th>Client Name</th>
+                  <th>Disbursment Date</th>
+                  <th>Amount</th>
+                  <th>Branch</th>
+                  <th>District</th>
+                  <th>Sector</th>
+                  <th>Activity</th>
+                  <th>Loan Cycle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let filter of filterData">
+                  <td>{{filter.clntId}}</td>
+                  <td>{{filter.clntName}}</td>
+                  <td>{{filter.disbDt}}</td>
+                  <td>{{filter.amt}}</td>
+                  <td>{{filter.branch}}</td>
+                  <td>{{filter.dist}}</td>
+                  <td>{{filter.sector}}</td>
+                  <td>{{filter.activity}}</td>
+                  <td>{{filter.loan_cycl_num}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+
+
+          <!---- DATA TABLES---->
+          <div *ngIf="taggingButton">
+            <label *ngIf="taggingButton">Available Amount For Tagging: {{totalAmont}} /{{fundsAmt}}</label><br>
+            <label *ngIf="taggingButton">Remaining Amount : {{fundsAmt - totalAmont}}</label><br>
+
+            <label *ngIf="taggingButton">Selected Clients: {{clients}} / {{clients}}</label><br>
+            <label *ngIf="taggingButton">Selected Amount: {{totalAmont}}</label><br>
+
+            <div class="row" *ngIf="taggingButton">
+              <!-- <div class="col-sm-4">
+                <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                  <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                    <i class="fa fa-search"> </i>
+                  </h6>
+                </div>
+                <div class="mysearch" *ngIf="showFields">
+                  <mat-form-field>
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                  </mat-form-field>
+                </div>
+              </div> -->
+              <div class="col-sm-4 addBtn">
+                <button [disabled]="clients==0" class="btn btn-primary btn-sm" (click)="onClickTagging()"> Tag Clients </button>
+              </div>
+            </div>
+
+            <!-- <div class="table-responsive" *ngIf="taggingButton">
+              <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort id="myTable">
+
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox color="warn" (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row">
+                    <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+                      [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container> -->
+
+                <!-- Client ID Column -->
+                <!-- <ng-container matColumnDef="clntId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Client ID</th>
+                  <td mat-cell *matCellDef="let row"> {{row.clntId}} </td>
+                </ng-container> -->
+
+                <!-- Client Name Column -->
+                <!-- <ng-container matColumnDef="clntName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Client Name </th>
+                  <td mat-cell *matCellDef="let row"> {{row.clntName}} </td>
+                </ng-container> -->
+
+                <!-- Disbersment Date Column -->
+                <!-- <ng-container matColumnDef="disbDt">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Disbursement Date </th>
+                  <td mat-cell *matCellDef="let row"> {{row.disbDt | date}} </td>
+                </ng-container> -->
+
+                <!-- Product Name Column -->
+                <!-- <ng-container matColumnDef="prd_nm">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Name </th>
+                  <td mat-cell *matCellDef="let row"> {{row.prd_nm}} </td>
+                </ng-container> -->
+
+                <!-- Amount Column -->
+                <!-- <ng-container matColumnDef="amt">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Amount </th>
+                  <td mat-cell *matCellDef="let filter"> {{filter.amt}} </td>
+                </ng-container> -->
+
+                <!-- Branch Column -->
+                <!-- <ng-container matColumnDef="branch">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Branch </th>
+                  <td mat-cell *matCellDef="let row"> {{row.branch}} </td>
+                </ng-container> -->
+
+                <!-- Amount Column -->
+                <!-- <ng-container matColumnDef="dist">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> District </th>
+                  <td mat-cell *matCellDef="let filter"> {{filter.dist}} </td>
+                </ng-container> -->
+
+                <!-- Activity Column -->
+                <!-- <ng-container matColumnDef="activity">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity </th>
+                  <td mat-cell *matCellDef="let row"> {{row.activity}} </td>
+                </ng-container> -->
+
+                <!-- Sector Column -->
+                <!-- <ng-container matColumnDef="sector">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Sector </th>
+                  <td mat-cell *matCellDef="let row"> {{row.sector}} </td>
+                </ng-container> -->
+
+                <!-- Loan Cycle Column -->
+                <!-- <ng-container matColumnDef="loan_cycl_num">
+                  <th mat-header-cell *matHeaderCellDef> Loan Cycle </th>
+                  <td mat-cell *matCellDef="let row"> {{row.loan_cycl_num}} </td>
+                </ng-container> -->
+
+                <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns," class="thead-light thead-blue"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                </tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator> -->
+
+            <!-- </div> -->
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!------  Set Training modal   -------------->
+
+
+  <div class="modal fade" id="taggingModel" role="dialog">
+    <div class="modal-dialog mymodal">
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Tagging Information</h5>
+        </div>
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol7">
+              <h6>Total Client Tagged: {{clients}}</h6>
+            </div>
+          </div>
+          <div class="cRow">
+            <div class="cCol7">
+              <h6> Total Amount Available for tagging: {{fundsAmt - totalAmont}}</h6>
+            </div>
+          </div>
+          <div class="cRow">
+            <div class="cCol7">
+              <h6>Tagged Amount : {{totalAmont}}</h6>
+            </div>
+          </div>
+          
+          <div class="modal-footer text-center">
+            <button type="button" data-dismiss="modal" class="btn btn-primary btn-min">Ok</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div class="modal fade" id="invalidLoans" role="dialog">
+  <form (ngSubmit)="addCityForm()" #cityForm="ngForm">
+    <div class="modal-dialog big mymodal">
+          <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Invalid loan Application Sequence</h5>
+      </div>
+      <form class="md-float-material">
+        <div class="modal-body pb-1 pt-2">
+          <div class="table-responsive">
+            <table class="table mb-0 last-left">
+              <thead class="thead-light last-left">
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Loan Application Seq</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let invalid of invalidLists; let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>{{invalid}}</td>
+                  <td>Invalid</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer text-center pb-3">
+          <button class="btn btn-primary" data-dismiss="modal">Ok</button>
+        </div>
+      </form>
+    </div>
+    </div>
+  </form>
+</div>

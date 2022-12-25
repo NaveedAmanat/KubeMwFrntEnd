@@ -1,0 +1,153 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">MCB Remittance Disbursement
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                <ng-select *ngIf="auth.role != 'bm'" [items]="branchs" required (change)="onSelectBranch($event)"
+                  bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+                  formControlName="branch">
+                </ng-select>
+              </form>
+            </div>
+          </div>
+
+          <div class="table-responsive mb-md-5">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort
+              matSortDirection="asc" matSortDisableClear>
+              <ng-container matColumnDef="clientId">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> Client ID </th>
+                <td mat-cell *matCellDef="let element"> {{element.clientId}} </td>
+              </ng-container>
+              <ng-container matColumnDef="clientName">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> Client Name</th>
+                <td mat-cell *matCellDef="let element"> {{element.clientName}} </td>
+              </ng-container>
+              <ng-container matColumnDef="loanAppId">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> Loan ID</th>
+                <td mat-cell *matCellDef="let element"> {{element.loanAppId}} </td>
+              </ng-container>
+              <ng-container matColumnDef="dsbmtAmt">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> Loan Amount</th>
+                <td mat-cell *matCellDef="let element"> {{element.dsbmtAmt}} </td>
+              </ng-container>
+              <ng-container matColumnDef="disburseSts">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> KF Fund Request Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.disburseSts}} </td>
+              </ng-container>
+              <ng-container matColumnDef="disburseDate">
+                <th class="td-center" mat-header-cell *matHeaderCellDef> KF Fund Request Status Date </th>
+                <td mat-cell *matCellDef="let element"> {{element.disburseDate}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="adcSts">
+                <th class="td-center" mat-header-cell *matHeaderCellDef> MCB Fund Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.adcSts}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="adcDate">
+                <th class="td-center" mat-header-cell *matHeaderCellDef> MCB Fund Status Date </th>
+                <td mat-cell *matCellDef="let element"> {{element.adcDate}}
+                </td>
+              </ng-container>
+
+              <!-- Added by Zohaib Asim - Dated 11-05-2022 - Loan Reversal Reason -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Reversal Request</th>
+                <td mat-cell *matCellDef="let adcDsbmt">
+                  <div>
+                    <a *ngIf="auth.role == 'bm' && adcDsbmt.adcSts != 'PAID' && (adcDsbmt.remarks == null || adcDsbmt.remarks == '')" matTooltip="text" data-toggle="modal" 
+                    (click)="fnReveralRemarks(adcDsbmt)" class="iconBtn"
+                    title="Loan Reversal Reason"><img alt=""><i _ngcontent-c19="" class="fa fa-comment"></i></a>
+
+                    <a *ngIf="auth.role == 'finance' && adcDsbmt.remarks != null && adcDsbmt.remarks != ''" matTooltip="text" matTooltipPosition="above" 
+                    (click)="discardReversalReason(adcDsbmt)" class="iconBtn"
+                    title="Discard Reversal Reason"><img alt=""><i _ngcontent-c19="" class="fa fa-recycle" style="color: red;"></i></a>
+                  </div>
+                </td>
+              </ng-container>
+              <!-- END -->
+            
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplay" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let element; columns: columnsToDisplay;">
+              </tr>
+            </table>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10]" [pageSize]="limit" (page)="changePage($event)">
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--  -->
+  <div class="modal fade" id="modalReveralRemarks" role="dialog">
+    <div class="modal-dialog mymodal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Loan Reversal Reason</h5>
+        </div>
+        <form class="md-float-material" [formGroup]="reasonForm" (ngSubmit)="onSubmitReversalReason()">
+          
+          <div class="modal-body">
+            <div class="cRow">
+              <div class="cCol8">
+                <div class="cRow mt-2">
+                  <input type="hidden" formControlName="loanAppId" />
+                  <div class="cCol3-col">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Loan No:" formControlName="loanAppId" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol3-col">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Client:" formControlName="clientId" readonly>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cRow">
+              <div class="cCol8">
+                <mat-form-field>
+                  <input matInput required formControlName="remarks" placeholder="Remarks:" />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button appNoDblClick type="button" (click)="onSubmitReversalReason()" class="btn btn-primary">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- -->
+</main>

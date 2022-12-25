@@ -1,0 +1,131 @@
+<main class="main">
+
+  <div class="container-fluid">
+    <app-voucher-info [totalRev]="totalRev" [frstInstDt]="frstInstDt" (prdSeq)="getPrdSeq($event)"></app-voucher-info>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-arrow">
+        <li>
+          <a>Disbursement Voucher</a>
+        </li>
+        <li class="ng-star-inserted active">
+          <a>Repayment Schedule</a>
+        </li>
+        <li>
+          <a>PDCs</a>
+        </li>
+
+      </ol>
+    </nav>
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-6 ">
+          <h6 class="colorBlack">Payment Schedule</h6>
+        </div>
+        <div class="col-sm-6 addBtn mb-2">
+          <button *ngIf="prdSeq!='0019'" class="btn btn-primary btn-sm" id="addrow" (click)="generateSchedule()">
+            {{isPaymentSchedle?'Regenerate':'Generate'}}</button>
+          <button appNoDblClick *ngIf="prdSeq=='0019'" class="btn btn-primary btn-sm" id="addrow"
+            (click)="kskLRSGenrate()">
+            {{isPaymentSchedle?'Regenerate':'Generate'}}</button>
+          <div class="modal fade" id="AssignCheque" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Charges Detail</h5>
+                </div>
+                <div class="modal-body">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th><b>Charge Type</b></th>
+                          <th><b>Amount</b></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let code of assignCheck">
+                          <td>{{code.chrgTyp}}/-</td>
+                          <td>{{code.amt}}/-</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer smmodal-footer text-center">
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="generatemodal" role="dialog">
+            <div class="modal-dialog mymodal">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Payment Schedule</h5>
+                </div>
+                <form class="md-float-material" [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
+                  <div class="modal-body">
+                    <div class="cRow">
+                      <div class="cCol2">
+                        <mat-form-field>
+                          <input [min]="minDate" [max]="maxDate" matInput required formControlName="frstInstDt"
+                            placeholder="First Installment Date:" [matDatepicker]="picker1" disabled readonly [matDatepickerFilter]="excludeWeekEnd"/>
+                          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                          <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                          <mat-error *ngIf="!scheduleForm.get('frstInstDt').valid">
+                            First Installment Date is <strong>required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="onSubmit()" [disabled]="regen"
+                      class="btn btn-primary">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mb-md-5">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>Installment No</th>
+              <th>Due Date</th>
+              <th>Principal Amount Due</th>
+              <th>Total Charged Amount Due</th>
+              <th>Total Amount Due</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let code of allItems">
+              <td>{{code.instNum}}</td>
+              <td>{{code.dueDt | date :'dd-MM-yyyy'}}</td>
+              <td>{{code.ppalAmtDue | currency:'PKR':''}}</td>
+              <td>{{code.totChrgDue | currency:'PKR':''}}</td>
+              <td>{{code.ppalAmtDue+code.totChrgDue | currency:'PKR':''}}</td>
+              <td><a (click)="onAssignCheque(code.paySchedDtlSeq)" class="iconBtn"><img src="assets/images/rs-icon.png"
+                    alt=""></a></td>
+            </tr>
+
+
+          </tbody>
+
+
+
+        </table>
+      </div>
+      <button class="btn btn-primary" routerLink="/disbursement/voucher">Back</button>
+      <button [disabled]="!isPaymentSchedle" class="btn btn-primary" routerLink="/disbursement/pdcs">Continue</button>
+
+    </div>
+  </div>
+</main>

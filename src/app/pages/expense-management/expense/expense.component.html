@@ -1,0 +1,320 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- <div class="col-md-3">
+
+      </div> -->
+      <div class="col-md-12">
+        <div class="content">
+          <div class="row">
+
+            <div class="col-sm-8">
+              <div class="row">
+                <div class="col-sm-6" *ngIf="expenses.length>0  || (this.auth.role == 'bm')">
+                  <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                    <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                      <i class="fa fa-search"> </i>
+                    </h6>
+                  </div>
+                  <div class="mysearch" *ngIf="showFields">
+                    <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                      <div class="col-sm-10" style="float:left;">
+                        <mat-form-field *ngIf="showFields">
+                          <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                            [(ngModel)]="searchVal" placeholder="Search">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2" style="float:right;">
+                        <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+              <div class="col-sm-6">
+                <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                  <!-- <mat-form-field *ngIf="auth.role != 'bm'">
+                    <mat-select placeholder="Select Branch" formControlName="branch"
+                      (selectionChange)="onSelectBranch()">
+                      <mat-option *ngFor="let b of branchs" [value]="b.brnchSeq">
+                        {{b.brnchNm}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field> -->
+
+
+                  <ng-select *ngIf="auth.role != 'bm'" [items]="branchs" required (change)="onSelectBranch($event)"
+                    bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+                    formControlName="branch">
+                  </ng-select>
+                </form>
+              </div>
+            </div>
+            </div>
+
+            <!-- <div class="col-sm-8 addBtn mt-3" *ngIf="!onBranchSelection">
+              <button [disabled]="!onBranchSelection" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#businessector"
+                (click)="onAddNewClick()"><i class="fa fa-plus"></i> Add</button>
+            </div> -->
+
+            <div class="col-sm-4 addBtn mt-3">
+              <button [disabled]="onBranchSelection" class="btn btn-primary btn-sm" data-toggle="modal"
+                data-target="#businessector" (click)="onAddNewClick()"><i class="fa fa-plus"></i> Add</button>
+            </div>
+          </div>
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive mb-md-5">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+              <!-- Reference Id Column -->
+              <ng-container matColumnDef="expnsId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference Code</th>
+                <td mat-cell *matCellDef="let exp">{{exp.expnsId}}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="expnsDscr">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+                <td mat-cell *matCellDef="let exp">{{exp.expnsDscr}}</td>
+              </ng-container>
+
+              <!-- Category Column -->
+              <ng-container matColumnDef="expnsTypSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+                <td mat-cell *matCellDef="let exp">{{findExpenseTypeKey(exp.expnsTypSeq)}}</td>
+              </ng-container>
+
+              <!-- Amount Column -->
+              <ng-container matColumnDef="expnsAmt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+                <td mat-cell *matCellDef="let exp">{{exp.expnsAmt | currency:'PKR':''}}</td>
+              </ng-container>
+
+              <!-- Instrument No. Column -->
+              <ng-container matColumnDef="instrNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Instrument No.</th>
+                <td mat-cell *matCellDef="let exp">{{exp.instrNum}}</td>
+              </ng-container>
+
+              <!-- Mode Column -->
+              <ng-container matColumnDef="pymtTypSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Mode</th>
+                <td mat-cell *matCellDef="let exp">{{findPaymentTypeKey(exp.pymtTypSeq)}}</td>
+              </ng-container>
+
+              <!-- Date Column -->
+              <ng-container matColumnDef="crtdDt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                <td mat-cell *matCellDef="let exp">{{exp.crtdDt |date :'dd-MM-yyyy' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="pymtRctFlg">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+                <td mat-cell *matCellDef="let exp">
+                  {{exp.delFlg===true && exp.crntRecFlg === true?'Reversal': exp.pymtRctFlg===1?'Payment':'Receipt' }}
+                </td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                <td mat-cell *matCellDef="let exp">
+                  <ng-container *ngIf="exp.delFlg===true && exp.crntRecFlg === true; else actions">
+
+                  </ng-container>
+                  <ng-template #actions>
+                    <a *ngIf="!exp.postFlg" class="iconBtn" (click)="onEdit(exp)"><i class="fa fa-pencil"></i></a>
+                    <a *ngIf="!exp.postFlg" data-toggle="tooltip" title="Delete" class="iconBtn delBtn"
+                      (click)="onDelete(exp.expSeq)"><i class="fa fa-trash-o"></i></a>
+                    <a *ngIf="exp.postFlg!=null && exp.postFlg && (role=='admin' || role ==='ho' || role ==='ra')"
+                      class="iconBtn delBtn" data-toggle="tooltip" title="Reversal" (click)="onReverse(exp)"><i
+                        class="fa fa-arrow-left"></i></a>
+                    <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+                    <a *ngIf="findPaymentTypeKey(exp.pymtTypSeq) == 'CASH'" (click)="printCash(exp.expSeq)"
+                      class="iconBtn" data-toggle="tooltip" title="Print"><img src="assets/images/print-icon.png"
+                        alt=""></a>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [length]="datalength"  [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+          <!-- <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>Expense ID</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Instrument No.</th>
+                  <th>Mode</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let exp of expenses">
+                  <td>{{exp.expnsId}}</td>
+                  <td>{{exp.expnsDscr}}</td>
+                  <td>{{findExpenseTypeKey(exp.expnsTypSeq)}}</td>
+                  <td>{{exp.expnsAmt | currency:'PKR':''}}</td>
+                  <td>{{exp.instrNum}}</td>
+                  <td>{{findPaymentTypeKey(exp.pymtTypSeq)}}</td>
+                  <td>
+                    <a *ngIf="!exp.postFlg" class="iconBtn" (click)="onEdit(exp)"><i class="fa fa-pencil"></i></a>
+                    <a *ngIf="!exp.postFlg" class="iconBtn delBtn" (click)="onDelete(exp.expSeq)"><i
+                        class="fa fa-trash-o"></i></a>
+                    <a *ngIf="exp.postFlg!=null && exp.postFlg && role=='admin'" class="iconBtn delBtn"
+                      (click)="onReverse(exp)"><i class="fa fa-pencil-square-o"></i></a>
+                     <a  class="iconBtn"><i class="fa fa-history"></i></a> 
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal fade" id="businessector" role="dialog">
+  <div class="modal-dialog big mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" *ngIf="isEdit">Edit Expense</h5>
+        <h5 class="modal-title" *ngIf="!isEdit">Add Expense</h5>
+      </div>
+
+      <form [formGroup]="expenseForm" (ngSubmit)="addExpensesSubmit()">
+        <div class="modal-body">
+          <ul class="infolist">
+          </ul>
+          <div class="cRow">
+
+            <div class="cCol6">
+              <label>Type:</label>
+              <mat-radio-group name="pymtRctFlg" required formControlName="pymtRctFlg">
+                <mat-radio-button class="w-100" [value]="1">Payment</mat-radio-button>
+                <mat-radio-button class="w-100" [value]="2">Receipt</mat-radio-button>
+
+              </mat-radio-group>
+
+            </div>
+          </div>
+
+          <div class="cRow">
+            <!-- <div class="cCol2" >
+                    <label>Expense Id:</label>
+                    <input type="text" formControlName="expnsId" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.expnsId.errors }" />
+                    <div *ngIf="submitted && form.expnsId.errors" class="invalid-feedback">
+                        <div *ngIf="form.expnsId.errors.required">Expense Id is required                                
+                        </div>
+                    </div>
+                </div> -->
+
+
+            <div class="cCol2">
+              <label>Description:</label>
+              <input type="text" formControlName="expnsDscr" class="form-control"
+                [ngClass]="{ 'is-invalid': form.expnsDscr.errors && form.expnsDscr.touched }" />
+              <div *ngIf="form.expnsDscr.errors" class="invalid-feedback">
+                <div *ngIf="form.expnsDscr.errors.required">Description is required</div>
+                <div *ngIf="form.expnsDscr.errors.maxlength">Description cannot be greater then 100 Characters </div>
+              </div>
+            </div>
+
+            <div class="cCol2">
+              <label>Category:</label>
+              <select type="" (change)="onSelectCategory($event)" formControlName="expnsTypSeq" class="form-control"
+                id="expnsTypSeq" [ngClass]="{ 'is-invalid': form.expnsTypSeq.errors && form.expnsTypSeq.touched }"
+                (change)="onSelectChange1($event)">
+                <option *ngFor="let expense of expenseArray" [value]="expense.typSeq">{{expense.typStr}}</option>
+              </select>
+              <div *ngIf="form.expnsTypSeq.errors" class="invalid-feedback">
+                <div *ngIf="form.expnsTypSeq.errors.required">Category is required</div>
+              </div>
+            </div>
+
+            <div class="cCol2">
+              <label>Amount:</label>
+              <input type="text" formControlName="expnsAmt" class="form-control"
+                [ngClass]="{ 'is-invalid': form.expnsAmt.errors && form.expnsAmt.touched  }" />
+              <div *ngIf="form.expnsAmt.errors" class="invalid-feedback">
+                <div *ngIf="form.expnsAmt.errors.required">Expense Amount is required
+                </div>
+              </div>
+            </div>
+            <div class="cCol2">
+              <label>Mode:</label>
+              <mat-select type="" formControlName="pymtTypSeq" class="form-control" id="payment"
+                [ngClass]="{ 'is-invalid': form.pymtTypSeq.errors?.required && form.pymtTypSeq.touched }"
+                (selectionChange)="onSelectChange()">
+                <mat-option *ngFor="let payment of paymentArray" [value]="payment.typSeq">{{payment.typStr}}</mat-option>
+              </mat-select>
+              <div *ngIf="form.pymtTypSeq.errors?.required" class="invalid-feedback">
+                Mode is required
+              </div>
+            </div>
+          </div>
+          <div class="cRow">
+            <div class="cCol2" *ngIf="!isCash">
+              <label>Instrument No.:</label>
+              <input type="text" formControlName="instrNum" class="form-control"
+                [ngClass]="{ 'is-invalid': form.instrNum.errors?.required && form.instrNum.touched }" />
+              <div *ngIf="form.instrNum.errors?.required" class="invalid-feedback">
+                <div>Instrument # is required
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button appNoDblClick type="button" (click)="addExpensesSubmit()" class="btn btn-primary btn-min">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+        <!-- </div> -->
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="reverse" role="dialog">
+  <div class="modal-dialog mymodal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reverse Expense</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="disgardForm" (ngSubmit)="onReverseSubmit()">
+        <input type="hidden" formControlName="expSeq" />
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol6">
+              <mat-form-field>
+                <input matInput required formControlName="rmrks" placeholder="Remarks:" />
+                <mat-error *ngIf="df.rmrks.errors?.required">
+                  Remarks are <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="df.rmrks.errors?.pattern">
+                  Special characters <strong>not allowed </strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button appNoDblClick type="button" (click)="onReverseSubmit()" class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

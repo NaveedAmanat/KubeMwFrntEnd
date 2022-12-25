@@ -1,0 +1,40 @@
+<div style="margin-left:15px ;">
+  <div class="content">
+    <div class="row">
+      <div>
+        <div class="mysearchbox">
+          <h6>Product wise Portfolio <i class="fa fa-print"> </i></h6>
+          <div class="mysearch">
+            <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..."
+              title="Type in a name">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <form [formGroup]="ngForm" (ngSubmit)="printReport()">
+        <div class="cRow">
+          <div>
+            <mat-form-field >
+              <input matInput [matDatepicker]="dp" [formControl]="toDt" [max]="maxDate" placeholder="Select Month:"
+              value=" " readonly required disabled>
+              <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+              <mat-datepicker #dp required disabled="false"
+                              startView="multi-year"
+                              (yearSelected)="chosenYearHandler($event)"
+                              (monthSelected)="chosenMonthHandler($event, dp)"
+                              panelClass="example-month-picker">
+              </mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button [disabled]="disablePrint" type="submit" class="btn btn-primary">Print</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

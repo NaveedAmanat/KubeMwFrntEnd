@@ -1,0 +1,35 @@
+<div style="margin-left:15px ;">
+  <div class="content">
+    <div class="row">
+      <div>
+        <div class="mysearchbox">
+          <h6>Branch wise Portfolio <i class="fa fa-print"> </i></h6>
+          <div class="mysearch">
+            <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..."
+              title="Type in a name">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <form [formGroup]="ngForm" (ngSubmit)="printReport()">
+        <div class="cRow">
+          <div>
+            <mat-form-field>
+              <input matInput required formControlName="toDt" [max]="maxDate"
+                placeholder="To Date:" [matDatepicker]="picker2" disabled readonly />
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

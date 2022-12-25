@@ -1,0 +1,258 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Training
+                </h6>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" type="button" (click)="openTrianingModel()"><i
+                  class="fa fa-plus"></i>
+                Add</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>Training ID</th>
+                  <th>Training Type</th>
+                  <th>Training Dates</th>
+                  <th>Trainer Name</th>
+                  <th>Branch</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let train of allTrainings">
+                  <td>{{train.trngSeq}}</td>
+                  <td>{{trainingTypeDescription(train.trngTypeSeq)}}</td>
+                  <!-- <td>{{train.trngTypeSeq}}</td> -->
+                  <td>{{train.trng_dates}}</td>
+                  <td>{{train.trnrNm}}</td>
+                  <td>{{gettingBracnchName(train.brnchSeq)}}</td>
+                  <td>{{gettingStatus(train.trngStsKey)}}</td>
+                  <td>
+                    <a data-toggle="tooltip" title="Participents" (click)="showParticipants(train)" class="iconBtn"><i
+                        class="fa fa-users"></i></a>
+
+                    <a data-toggle="tooltip" title="Attendance" (click)="onClickAttendance(train)" class="iconBtn"><i
+                        class="fa fa-bell"></i></a>
+
+                    <!--  Reports Menue   -->
+                    <span data-toggle="dropdown">
+                      <a class="iconBtn" data-toggle="tooltip" title="Training Reports"><i
+                          class="fa fa-file-text"></i></a>
+                    </span>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="openGESAreport(train)">GESA Report</a>
+                      <a class="dropdown-item" (click)="openAICGReport(train)">AICG Report</a>
+                    </div>
+
+                    <a *ngIf="train.trngStsKey == 0" data-toggle="tooltip" title="Edit" (click)="onEditTraining(train)"
+                      class="iconBtn"><i class="fa fa-pencil"></i></a>
+                    <a data-toggle="tooltip" title="Delete" (click)="onDeleteTraining(train)" class="iconBtn delBtn"><i
+                        class="fa fa-trash-o"></i></a>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!------  Training modal   -------------->
+
+
+      <div class="modal fade" id="training" role="dialog">
+        <div class="modal-dialog bigger9 mymodal">
+
+          <form (ngSubmit)="onSubmitTraining()" [formGroup]="trainingForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Training</h5>
+              </div>
+              <div class="modal-body">
+                <div class="cRow">
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input matInput placeholder="Trainer Name:" formControlName="trnrNm" readonly>
+                    </mat-form-field>
+
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-label>Training Types</mat-label>
+                      <mat-select formControlName="trngTypeSeq" name="refCdDscr"
+                        (selectionChange)="onSelectionTypes($event)">
+                        <mat-option *ngFor="let training of activeTypes" [value]="training.trngTypeSeq">
+                          {{training.trngType}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-select placeholder="Status:" formControlName="trngStsKey">
+                        <mat-option [value]="0">In Progress</mat-option>
+                        <mat-option [value]="1">Completed</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+
+                  <div class="cCol2">
+                    <ng-select [multiple]="false" placeholder="Branch" formControlName="brnchSeq">
+                      <ng-option *ngFor="let branch of allBranches" [value]="branch.brnchSeq">
+                        {{branch.brnchNm}}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+
+                  <div class="cCol3" *ngFor="let comp of trainingForm.get('trng_dat').controls; let i=index">
+                    <div formArrayName="trng_dat">
+                      <div [formGroupName]="i">
+
+                        <mat-form-field>
+                          <input matInput required formControlName="trng_dat" placeholder="Training Date:"
+                            [matDatepicker]="picker" disabled readonly />
+                          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                          <mat-datepicker required #picker disabled="false"></mat-datepicker>
+                        </mat-form-field>
+
+                        <a data-toggle="tooltip" title="Add Date" (click)="addNewDates()"><i class="fa fa-plus"></i></a>
+                        <a *ngIf="i > 0" data-toggle="tooltip" title="Delete Date" (click)="deleteDates(i)"
+                          class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+
+                <!-- <div class="collapse d-block mt-3">
+                  <label class="mr" id="IsConsecutive">IsConsecutive</label>
+                  <mat-radio-group formControlName="trngIsConFlag" aria-label="IsConsecutive">
+                    <mat-radio-button value="0">Yes</mat-radio-button>
+                    <mat-radio-button class="ml" value="1">No</mat-radio-button>
+                  </mat-radio-group>
+                </div> -->
+
+                <!-- <div class="collapse d-block mt-3">
+                  <label class="mr" style="margin-right: 10px;" id="Delay Attendance Request">Delay Attendance
+                    Request</label>
+                  <mat-radio-group formControlName="trngDlyAtndReqFlag" aria-label="Delay Attendance Request">
+                    <mat-radio-button value="0">Yes</mat-radio-button>
+                    <mat-radio-button class="ml" value="1">No</mat-radio-button>
+                  </mat-radio-group>
+                </div> -->
+
+
+                <div class="modal-footer text-center">
+                  <button type="submit" [disabled]=!trainingForm.valid class="btn btn-primary btn-min">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+      <!-----------    Attendance modal         -------------------->
+
+      <div class="modal fade" id="attendanceModal" role="dialog">
+        <div class="modal-dialog bigger9 mymodal">
+
+          <form (ngSubmit)="onSubmitAttendacneParticipants()" [formGroup]="trainingAttendanceForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Attendance</h5>
+              </div>
+              <div class="modal-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Participent Name</th>
+                        <th *ngIf="isKSS && (isClient || isALL || isBoth)">Staff</th>
+                        <th *ngFor="let item of trainingDates">{{item}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let part of allParticipants">
+                        <tr>
+                          <td>{{part.prtcpntNm}}</td>
+                          <td *ngIf="isKSS && (isClient || isALL || isBoth)" (click)="part.expanded = !part.expanded">
+
+                            <a data-toggle="tooltip" (click)="onStaffAttendance(part)" title="Staff Attendacne"
+                              class="iconBtn"><i class="fa fa-users"></i></a>
+
+                          </td>
+                          <td *ngFor="let item of part.trainingDates;let i = index">
+                            <mat-checkbox color="primary" [(ngModel)]="item.isChecked"
+                              (change)="onSelectChangePart($event, part, item.dateEle, i)" formControlName="atndncFlg">
+                            </mat-checkbox>
+                          </td>
+                        </tr>
+
+                        <ng-container *ngIf="part.expanded">
+                          <div class="table-responsive">
+                            <table class="table">
+                              <thead class="thead-light">
+                                <tr>
+                                  <th>Staff Name</th>
+                                  <th></th>
+                                  <th *ngFor="let item of trainingDates">{{item}}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let staf of allStaffForAttendance">
+                                  <td>{{staf.stfNm}}</td>
+                                  <td></td>
+                                  <td *ngFor="let item of trainingDates;let k = index">
+                                    <mat-checkbox [(ngModel)]="isCheckedStaff" color="primary"
+                                      (change)="onSelectChangeStaff($event, staf, item, k)" formControlName="atndncFlg">
+                                    </mat-checkbox>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </ng-container>
+
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+              <div class="modal-footer text-center">
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">OK</button>
+                <!-- <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button> -->
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

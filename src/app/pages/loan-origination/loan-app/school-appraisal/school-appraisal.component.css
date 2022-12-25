@@ -1,0 +1,24 @@
+.example-month-picker .mat-calendar-period-button {
+    pointer-events: none;
+  }
+  
+  .example-month-picker .mat-calendar-arrow {
+    display: none;
+  }
+
+  .dot {
+    margin-right: 5px;
+    height: 8px;
+    width: 8px;
+    
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .green{
+    background-color: #0ed30e;
+  }
+
+  .orange{
+    background-color:#f89a3b;
+  }

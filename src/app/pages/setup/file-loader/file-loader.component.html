@@ -1,0 +1,55 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+          <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+            <h6 class="d-inline-block searchshow">File Upload</h6>
+          <div class="cRow">
+                <div class="cCol1 pt-0">
+                  <label class="mb-0">File Type:</label>
+                  <select class="form-control" (change)="onSelectedIndexChanged($event.target.value)">
+                    <option value="" >Select</option>
+                    <option value="Budget">Budget</option>
+                    <option value="Recovery">Recovery</option>
+                    <option value="Target">Target</option>
+                    <option value="Tagging">Tagging</option>
+                    <option value="InsuranceClaim">Insurance Claim</option>
+                  </select>
+                </div>
+              </div>
+     <div class="cRow">
+        <div class="col-full pb-0"><label class="mb-0">File Path:</label></div>
+                <div class="cCol2 pt-0">
+                    <label class="mb-0">{{filePath}}</label>
+                <!-- <input type="text" text=  class="form-control"> -->
+                </div>
+         <!-- <div class="cCol2 pt-0">
+               <button class="btn btn-default btn-min btn-upload">Browse</button>
+                </div> -->
+              </div>	  
+          
+    <!-- <div class="cRow">
+                <div class="cCol1">
+                <label class="mb-0">Load Date:</label>
+                <div class="input-group date">
+                  <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div>
+              </div>
+              </div>  -->
+        
+        <div class="buttons mt-3">
+            <button [disabled]="buttonDisabled" (click)="uploadFile()" class="btn btn-primary btn-min mr-3">Process</button>
+      <button class="btn btn-default btn-min">Cancel</button>
+            
+        </div>               
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

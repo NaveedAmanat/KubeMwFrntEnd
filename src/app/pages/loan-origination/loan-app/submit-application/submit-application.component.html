@@ -1,0 +1,734 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="modal fade" id="scheduleModal" role="dialog">
+      <div class="modal-dialog bigger mymodal">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Payment Schedule </h5>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table last-left">
+                <thead class="thead-light last-left">
+                  <tr>
+                    <th width="20%">Installment No.</th>
+                    <th width="20%" style="text-align: right;">Principal Amount</th>
+                    <th width="30%" style="text-align: right;">Total Charge</th>
+                    <th width="30%" style="text-align: right;">Installment Amount</th>
+                  </tr>
+                </thead>
+                <tbody class="evenodd">
+                  <tr *ngFor="let schedule of paymentSchedule">
+                    <td>{{schedule.detail.instNum}} </td>
+                    <td style="text-align: right;">{{schedule.detail.ppalAmtDue | currency:'PKR':''}}</td>
+                    <td style="text-align: right;">{{schedule.detail.totChrgDue | currency:'PKR':''}}</td>
+                    <td style="text-align: right;">{{schedule.detail.ppalAmtDue + schedule.detail.totChrgDue + calculateTotalCharge(schedule.chargers) |
+                      currency:'PKR':''}}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="content">
+
+      <div class="row">
+        <!-- <div class="col-sm-6">
+              <h6>{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+            </div> -->
+        <div class="col-sm-9 addBtn">
+          <button type="button" (click)="onPaymentScheduleClick()" class="btn btn-primary btn-sm">
+            <i class="fa fa-plus"></i> Payment Schedule</button>
+          <!-- <a  class="btn btn-primary btn-sm" disabled> Fetch MFCIB</a> -->
+        </div>
+      </div>
+
+      <div class="pt-1">
+        <label>
+          <b>Client Information:</b>
+        </label>
+      </div>
+      <div class="row">
+        <div class="col-sm-9 mb-3">
+          <div class="borderbox pb-0">
+            <ul class="infolist mt-2 mb-2">
+              <li>User:
+                <span>{{auth.user.username | uppercase}}</span>
+              </li>
+              <li>Region:
+                <span>{{locationInfo.regName | uppercase}}</span>
+              </li>
+              <li>Area:
+                <span>{{locationInfo.areaName | uppercase}}</span>
+              </li>
+              <li>Branch:
+                <span>{{locationInfo.branchName | uppercase}}</span>
+              </li>
+              <li *ngIf="auth.role =='bm'">BDO:
+                <span>{{locationInfo.portName | uppercase}}</span>
+              </li>
+              <!-- <li>Application ID:
+                <span> {{model.loanAppSeq}}</span>
+              </li> -->
+              <li>Credit Application Date:
+                <span>{{model.startDate | date:'dd-MM-yyyy'}}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="pt-1">
+                <label>
+                  <b>Client Personal Information:</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-140">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="60%">Client ID:</td>
+                    <td>{{model.clientSeq}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Client CNIC:</td>
+                    <td>{{returnCNICPattern(model.cnicNum)}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Client Name:</td>
+                    <td>{{model.firstName}} {{model.lastName}}</td>
+                  </tr>
+
+                  <tr>
+                    <td width="60%">Marital Status:</td>
+                    <td>{{findValueFromKey(model.maritalStatusKey, maritalStatus)}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Occupation:</td>
+                    <td>{{findValueFromKey(model.occupationKey, occupation)}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="pt-1">
+                <label>
+                  <b>Household Information:</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-140">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="60%">Residence Status:</td>
+                    <td>{{findValueFromKey(model.residenceTypeKey, residenceArray)}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Residence Tenure:</td>
+                    <td>{{model.yearsOfResidence}} Year {{model.mnthsOfResidence}} Month</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Total Family Members:</td>
+                    <td>{{model.houseHoldMember}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Total No. of Children:</td>
+                    <td>{{model.numOfChidren}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Total No. of Earners:</td>
+                    <td>{{model.earningMembers}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <!-- <div class="col-sm-4">
+              <div class="pt-1">
+                <label>
+                  <b>Branch Data:</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-140">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="40%">Branch Code:</td>
+                    <td>{{locationInfo.branchCode}}</td>
+                  </tr>
+                  <tr>
+                    <td width="40%">Branch Name:</td>
+                    <td>{{locationInfo.branchName}}
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="40%">BDO Name:</td>
+                    <td>{{locationInfo.portName}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div> -->
+          </div>
+          <div class="row">
+            <div class="col-sm-4" *ngIf="hasBusinessApp">
+              <div class="pt-1">
+                <label>
+                  <b>Business Appraisal Summary (Monthly):</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-300">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="60%">Business Income:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{averageIncome | currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Business Expenses:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalBusinessExpense | currency:'PKR':''}}</td>
+                  </tr>
+
+                  <tr>
+                    <td width="60%">Business Profit:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{averageIncome - totalBusinessExpense |
+                      currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Husb./Father/Self Income:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalPrimaryIncome | currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%" class="colorBlue">
+                      <b>Total Primary Income:</b>
+                    </td>
+                    <td class="colorBlue" style="text-align:right; padding-right: 20px;">
+                      <b>{{averageIncome - totalBusinessExpense + totalPrimaryIncome | currency:'PKR':''}}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Secondary Income:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalSecondaryIncome | currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%" class="colorBlue">
+                      <b>Total Income:</b>
+                    </td>
+                    <td class="colorBlue" style="text-align:right; padding-right: 20px;">
+                      <b>{{averageIncome - totalBusinessExpense + totalPrimaryIncome + totalSecondaryIncome |
+                        currency:'PKR':''}}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Household Expenses: </td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalHouseholdExpense | currency:'PKR':''}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="60%" class="colorBlue">
+                      <b>Net Disposable Income:</b>
+                    </td>
+                    <td class="colorBlue" style="text-align:right; padding-right: 20px;">
+                      <b>{{averageIncome - totalBusinessExpense + totalPrimaryIncome + totalSecondaryIncome -
+                        totalHouseholdExpense | currency:'PKR':''}}</b>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="col-sm-4" *ngIf="hasSchoolApp">
+              <div class="pt-1">
+                <label>
+                  <b>School Appraisal Summary (Monthly):</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-300">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="60%">School Income:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalGrade.schoolRevenue | currency:'PKR':''}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="60%">School Expenses:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalGrade.totalBusinessExpense |
+                      currency:'PKR':''}}</td>
+                  </tr>
+
+                  <tr>
+                    <td width="60%">School Profit:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalGrade.schoolRevenue -
+                      totalGrade.totalBusinessExpense | currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Husb./Father/Self Income:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalGrade.totalPrimaryIncome |
+                      currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%" class="colorBlue">
+                      <b>Total School Income:</b>
+                    </td>
+                    <td class="colorBlue" style="text-align:right; padding-right: 20px;">
+                      <b>{{totalGrade.schoolRevenue - totalGrade.totalBusinessExpense + totalGrade.totalPrimaryIncome |
+                        currency:'PKR':''}}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Secondary Income:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalGrade.totalSecondaryIncome |
+                      currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%" class="colorBlue">
+                      <b>Total Income:</b>
+                    </td>
+                    <td class="colorBlue" style="text-align:right; padding-right: 20px;">
+                      <b>{{totalGrade.schoolRevenue - totalGrade.totalBusinessExpense + totalGrade.totalPrimaryIncome +
+                        totalGrade.totalSecondaryIncome |
+                        currency:'PKR':''}}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Household Expenses: </td>
+                    <td style="text-align:right; padding-right: 20px;">{{totalGrade.totalHouseholdExpense |
+                      currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%" class="colorBlue">
+                      <b>Net Disposable Income:</b>
+                    </td>
+                    <td class="colorBlue" style="text-align:right; padding-right: 20px;">
+                      <b>{{totalGrade.schoolRevenue - totalGrade.totalBusinessExpense + totalGrade.totalPrimaryIncome +
+                        totalGrade.totalSecondaryIncome -
+                        totalGrade.totalHouseholdExpense | currency:'PKR':''}}</b>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="pt-1">
+                <label>
+                  <b>{{titleValue}} Information</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-300">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="60%">Product:</td>
+                    <td>{{product.productName}} </td>
+                  </tr>
+                  <tr>
+                    <td width="60%">{{titleValue}} Cycle:</td>
+                    <td>{{model.loanCyclNum}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Previous {{titleValue}} Amount:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{model.previousAmount | currency:'PKR':''}}</td>
+                  </tr>
+
+                  <tr>
+                    <td width="60%">Requested Amount:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{model.reqAmount | currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Recommended Amount:</td>
+                    <td style="text-align:right; padding-right: 20px;">{{model.recAmount | currency:'PKR':''}}</td>
+                  </tr>
+                  <tr *ngIf="auth.role =='bm'">
+                    <td width="60%">Approved Amount:</td>
+                    <td>{{model.approvedAmount | currency:'PKR':''}}</td>
+                  </tr>
+                  <tr>
+                    <td width="60%">Service Charges:</td>
+                    <td>{{product.chargesStr}}</td>
+                  </tr>
+                  <!-- <tr>
+                    <td width="55%">Total Amount Payable:</td>
+                    <td>{{model.totalRecieveable}}</td>
+                  </tr> -->
+                  <tr>
+                    <td width="60%">No. of Installments:</td>
+                    <td>{{product.installments}}</td>
+                  </tr>
+
+                  <tr *ngIf="auth.role == 'bm'">
+                    <td width="60%">Screening Type:</td>
+                    <td *ngIf="!model.tblScrn">Table Screening</td>
+                    <td *ngIf="model.tblScrn">Field Screening</td>
+                  </tr>
+                  <!-- <tr>
+                    <td width="55%">Installment Amount:</td>
+                    <td>{{product.installmentAmount}}</td>
+                  </tr> -->
+                  <!-- <tr>
+                    <td width="55%">Credit Disbursement Date:</td>
+                    <td>5-Jun-18</td>
+                  </tr>
+                  <tr>
+                    <td width="55%">Credit Completion Date:</td>
+                    <td>05-Jun-18</td>
+                  </tr>
+                  <tr>
+                    <td width="55%">KSZB Plan:</td>
+                    <td>Plan-B</td>
+                  </tr> -->
+
+                </table>
+              </div>
+            </div>
+            <div class="col-sm-4" *ngIf="hasBusinessApp">
+              <div class="pt-1">
+                <label>
+                  <b>Business Information:</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-300">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td>Sector:</td>
+                    <td width="60%">{{findValueFromKeySector(model.businessAppraisal.sectorKey, sector)}}</td>
+                  </tr>
+                  <tr>
+                    <td>Business Tenure:
+                    </td>
+                    <td width="60%"> {{model.businessAppraisal.yearsInBusiness}} Year
+                      {{model.businessAppraisal.monthsInBusiness}}
+                      Months</td>
+                  </tr>
+                  <tr>
+                    <td>Business Address:
+                    </td>
+                    <td width="60%">House No. {{model.businessAppraisal.houseNum}},
+                      {{model.businessAppraisal.sreet_area}}, {{model.businessAppraisal.village}},
+                      {{model.businessAppraisal.otherDetails}}.</td>
+                  </tr>
+                  <tr>
+                    <td height="20"></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Persons Running the Business:
+                    </td>
+                    <td width="60%">{{findValueFromKey(model.businessAppraisal.personRunningBusinessKey,
+                      businessRunner)}}</td>
+                  </tr>
+                  <tr>
+                    <td>Business Owner:
+                    </td>
+                    <td width="60%">{{findValueFromKey(model.businessAppraisal.businessOwnerShip, businessOwnership)}}
+                    </td>
+                  </tr>
+
+
+                </table>
+              </div>
+            </div>
+
+            <div class="col-sm-4" *ngIf="hasSchoolApp">
+              <div class="pt-1">
+                <label>
+                  <b>School Information:</b>
+                </label>
+              </div>
+              <div class="borderbox p-2 mnh-300">
+                <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td>Sector: </td>
+                    <td width="60%">SCHOOL</td>
+                  </tr>
+                  <!-- <tr>
+                      <td width="50%">Business Tenure:
+                      </td>
+                      <td> {{model.businessAppraisal.yearsInBusiness}} Year {{model.businessAppraisal.monthsInBusiness}} Months</td>
+                    </tr> -->
+                  <tr>
+                    <td>School Address:
+                    </td>
+                    <td width="60%">House No. {{model.schoolAppraisal.addressDto.houseNum}}, Street No.
+                      {{model.schoolAppraisal.addressDto.sreet_area}}, {{model.schoolAppraisal.addressDto.village}},
+                      {{model.schoolAppraisal.addressDto.otherDetails}}.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="60%" height="20"></td>
+                    <td></td>
+                  </tr>
+
+                  <!-- <tr>
+                    <td width="50%">School Owner:
+                    </td>
+                    <td>{{findValueFromKey(model.schoolAppraisal.schOwnTypKey, schoolOwnerShip)}}</td>
+                  </tr>
+                  <tr>
+                      <td width="70%">School Type:
+                      </td>
+                      <td>{{findValueFromKey(model.schoolAppraisal.schTypKey, schoolType)}}</td>
+                    </tr>
+                  <tr>
+                    <td width="70%">Principal:
+                    </td>
+                    <td>{{findValueFromKey(model.schoolAppraisal.schPpalKey, principal)}}</td>
+                  </tr> -->
+
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="borderbox pb-0" *ngIf="hasBusinessApp">
+              <ul class="infolist mt-2 mb-2">
+                <!-- <li>
+                  <span>
+                    <b>Total Receivable Amount: {{product.totalRecieveable}}</b>
+                  </span>
+                </li> -->
+                <li>
+                  <span>
+                    <b>Net Disposable Income: {{averageIncome - totalBusinessExpense + totalPrimaryIncome +
+                      totalSecondaryIncome - totalHouseholdExpense | currency:'PKR':''}}</b>
+                  </span>
+                </li>
+                <!-- <li>
+                  <span>
+                    <b>Estimated Monthly Payment: {{product.installmentAmount}}</b>
+                  </span>
+                </li> -->
+              </ul>
+            </div>
+          </div>
+          <div class="mt-1">
+            <label>
+              <b>Comments:</b>
+            </label>
+
+            <!-- <div *ngFor="let comment of commentsArray">
+              <div>
+                <div *ngIf="comment.role == 'bdo'" class="container fl">
+                  <h6>{{comment.username}}</h6>
+                  <p>{{comment.comment}}</p>
+                  <span class="time-right">{{comment.date | date:'dd-MM-yyyy'}}</span>
+                </div>
+              </div>
+              <div>
+                <div *ngIf="comment.role == 'bm'" class="container darker fr">
+                  <h6>{{comment.username}}</h6>
+                  <p>{{comment.comment}}</p>
+                  <span class="time-right">{{comment.date | date:'dd-MM-yyyy'}}</span>
+                </div>
+              </div>
+            </div> -->
+            <textarea [(ngModel)]="comment" class="form-control"></textarea>
+          </div>
+
+
+          <div class="mt-4" *ngIf="auth.role != 'bm'">
+            <button appNoDblClick class="btn btn-primary" [disabled]="readonly" type="button"
+              (click)="submitApplication()">Submit
+              Application</button>
+            <button appNoDblClick type="button" [disabled]="readonly" (click)="cancelApplication()"
+              class="btn btn-primary">Cancel
+              Application</button>
+          </div>
+        </div>
+        <div class="col-sm-3 text-center">
+          <div class="picswrap" *ngIf="clientPic!=null">
+            <div class="borderpic">
+              <img [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,'+clientPic)"
+                (click)="loadModal(clientPic, 'Client\'s Picture')" width="160" height="160" alt="">
+            </div>
+            <h6 class="mt-2">Client Picture</h6>
+          </div>
+          <div class="picswrap" *ngIf="nomPic!=null">
+            <div class="borderpic">
+              <img [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,'+nomPic)"
+                (click)="loadModal(nomPic, 'Nominee\'s Picture')" width="160" height="160" alt="">
+            </div>
+            <h6 class="mt-2">Nominee Picture </h6>
+          </div>
+        </div>
+        <!-- PROCESS APPLICATION -->
+
+        <div class="col-sm-12 mt-4" *ngIf="auth.role == 'bm'">
+          <button class="btn btn-primary" appNoDblClick [disabled]="readonly"
+            (click)="approveApplication()">Approve</button>
+          <button class="btn btn-primary" appNoDblClick [disabled]="readonly" (click)="sendBackApplication()">Send
+            Back</button>
+          <button class="btn btn-primary" appNoDblClick [disabled]="readonly"
+            (click)="openRejectModal()">Reject</button>
+
+          <div class="modal fade" id="LoanApplication" role="dialog">
+            <div class="modal-dialog mymodal smallpop">
+              <form (ngSubmit)="approveApplication()" #aprroveForm="ngForm">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Approve Credit Application</h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="Row  mt-3">
+                      <div class="col-sm-8 offset-sm-2 text-center">
+                        <!-- <label>Enter Approved Amount:</label> -->
+                        <mat-form-field>
+                          <input type="text" class="form-control" (keypress)="onlyNumbers($event)" maxlength="6"
+                            matInput [readonly]="readonly" required [(ngModel)]="model.approvedAmount"
+                            name="approvedAmount" #approvedAmount="ngModel" placeholder="Approved Amount:">
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button appNoDblClick class="btn btn-primary btn-min" type="submit"
+                      [disabled]="!aprroveForm.form.valid">Approve</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="modal fade" id="SendBack" role="dialog">
+            <div class="modal-dialog mymodal smallpop">
+              <form (ngSubmit)="sendBackApplication()" #sendBack="ngForm">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Send Back</h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="Row  mt-3">
+                      <div class="col-sm-12 text-center">
+                        <label>Please comment on what should be reviewed:</label>
+                        <textarea class="form-control md-control" [(ngModel)]="model.comment" name="comment"
+                          #comment="ngModel"></textarea>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center pt-0">
+                    <button appNoDblClick type="button" class="btn btn-primary btn-min" type="submit"
+                      [disabled]="!sendBack.form.valid">Send</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="modal fade" id="RejectLoanApplication" role="dialog">
+            <div class="modal-dialog mymodal smallpop">
+              <form (ngSubmit)="rejectApplication()" #reject="ngForm">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Reject Applaication</h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="Row  mt-3">
+                      <div class="col-sm-12 text-center">
+                        <label>Please select a reason for rejection:</label>
+                        <!-- <textarea class="form-control md-control" [(ngModel)]="model.comment" name="comment" #comment="ngModel"></textarea> -->
+                        <!-- <div class="cCol2"> -->
+                        <div>
+                          <mat-form-field>
+                            <mat-select [disabled]="readonly" placeholder="Rejection Reason:"
+                              [(ngModel)]="model.rejectionReasonCd" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                              name="rejectionCode" required>
+                              <mat-option *ngFor="let edu of rejectionReasons" [value]="edu.codeKey">
+                                {{edu.codeValue}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <!-- </div> -->
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center pt-0">
+                    <button type="button" class="btn btn-primary btn-min"
+                      [disabled]="(model.rejectionReasonCd == null) || (model.rejectionReasonCd == 'undefined') || (model.rejectionReasonCd == 0) "
+                      (click)="rejectApplication()">Reject</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="deleteConfirmation" role="dialog">
+          <div class="modal-dialog mymodal">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Cancel Credit</h5>
+              </div>
+              <div class="modal-body">
+
+                <div class="table-responsive">
+                  <h6>Do you want to cancel application?</h6>
+                  <hr>
+                  <p><b>Note: </b> Application relevant data will be deleted.</p>
+                  <hr>
+
+                </div>
+
+                <div class="modal-footer smmodal-footer text-center">
+                  <button appNoDblClick type="button" (click)="confirmDelete()"
+                    class="btn btn-primary btn-min">Yes</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="modal fade" id="AMLNameDialog" role="dialog" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog mymodal">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title"> AML Name Match Found</h5>
+              </div>
+              <div class="modal-body">
+
+                <div class="table-responsive">
+                  <h6></h6>
+                  <hr>
+                  <p><b>Note: </b> {{amlNameMtch}}</p>
+                  <hr>
+
+                </div>
+
+                <div class="modal-footer smmodal-footer text-center">
+                  <button appNoDblClick type="button" (click)="closeAMlDialog()"
+                    class="btn btn-primary btn-min">Ok</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- END PROCESS APPLICATION -->
+        <!-- The Modal -->
+        <div id="myModal" class="modal-e">
+
+          <!-- The Close Button -->
+          <span (click)="closeModal()" class="close">&times;</span>
+
+          <!-- Modal Content (The Image) -->
+          <img class="modal-content-e" [src]="modelSrc">
+
+          <!-- Modal Caption (Image Text) -->
+          <div id="caption">{{modalCaption}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

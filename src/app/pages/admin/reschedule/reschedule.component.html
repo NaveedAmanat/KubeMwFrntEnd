@@ -1,0 +1,276 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>      
+    </div>
+      <div class="col-md-9">
+        <div class="content">
+            
+          <div class="row clearfix">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+            <h6 class="d-inline-block searchshow">Reschedule <i class="fa fa-search"> </i></h6>
+            <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+              <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by id" title="Type in a name">
+            </div>
+          </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+			<a class="btn btn-primary btn-sm" href="request.html"><i class="fa fa-plus"></i> Add</a>			             
+            </div>
+          </div>
+          
+	 
+			<div class="table-responsive mb-md-5">
+				<table class="table">
+					<thead class="thead-light">
+						<tr>
+							<th>Request ID</th>
+							<th>Description</th>
+							<th>Request Date</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>Description will be here</td>
+							<td>5/5/2018</td>
+							<td class="colorGreen">Active</td>
+							<td>
+								<a href="#" class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+								<a href="#" class="iconBtn"><img src="assets/images/check-icon.png" alt=""></a>
+							</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>Description will be here</td>
+							<td>5/5/2018</td>
+							<td class="colorBrown">Pending</td>
+							<td>
+								<a href="#" class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+								<a href="#" class="iconBtn"><img src="assets/images/check-icon.png" alt=""></a>
+							</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>Description will be here</td>
+							<td>5/5/2018</td>
+							<td class="colorRed">In-Active</td>
+							<td>
+								<a href="#" class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+								<a href="#" class="iconBtn"><img src="assets/images/check-icon.png" alt=""></a>
+							</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>Description will be here</td>
+							<td>5/5/2018</td>
+							<td class="colorGreen">Active</td>
+							<td>
+								<a href="#" class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+								<a href="#" class="iconBtn"><img src="assets/images/check-icon.png" alt=""></a>
+							</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>Description will be here</td>
+							<td>5/5/2018</td>
+							<td class="colorBrown">Pending</td>
+							<td>
+								<a href="#" class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+								<a href="#" class="iconBtn"><img src="assets/images/check-icon.png" alt=""></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal fade" id="AdjustLoan" role="dialog">
+            <div class="modal-dialog smallpop mymodal"> 
+              
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Adjust Credit</h5>
+                </div>
+                <div class="modal-body">
+                  <ul class="infolist infolistblock mt-1 mb-1">
+                    <li>Client:   <span>Shabnam</span></li>
+                    <li>Address:  <span>Client Address will be placed here.</span></li>
+                    <li>Credit Amount:<span>30,000/-</span></li>
+					<li>Disbursement Date:  <span> 05/05/2018</span></li>
+                    <li>Total Principle :<span> 30,000</span></li>
+                    <li>Total Charges : <span>3 0,000</span></li>
+                    <li>Remaining Principle : <span> 10,000</span></li>
+                    <li>Remaining Charges :  <span>10,000</span></li>
+                  </ul>
+                  
+				  
+				 
+				  
+				  <div class="cRow mt-3">
+                  <div class="cCol4">
+                    <label>Adjust Principle Amount:</label>
+                    <input type="text" class="form-control">
+                  </div>
+                  <div class="cCol4 ">
+                    <label>Adjust Charges:</label>
+                    <input type="text" class="form-control">
+                  </div>
+                </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">OK</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+		  
+		  <div class="modal fade" id="ClaimInsurance" role="dialog">
+            <div class="modal-dialog smallpop mymodal"> 
+              
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Submit Claim Insurance</h5>
+                </div>
+                <div class="modal-body">
+                  <ul class="infolist infolistblock mt-1 mb-1">
+                    <li>Client:   <span>Shabnam</span></li>
+                    <li>Address:  <span>Client Address will be placed here.</span></li>
+                    <li>Credit Amount:<span>30,000/-</span></li>
+					<li>Disbursement Date:  <span> 05/05/2018</span></li>
+                    <li>Total Principle :<span> 30,000</span></li>
+                    <li>Total Charges : <span>3 0,000</span></li>
+                    <li>Remaining Principle : <span> 10,000</span></li>
+                    <li>Remaining Charges :  <span>10,000</span></li>
+                  </ul>
+                  
+				  
+				 
+				  
+				  <div class="cRow mt-3">
+                  <div class="cCol4">
+                    <label>Adjust Principle Amount:</label>
+                    <input type="text" class="form-control">
+                  </div>
+                  <div class="cCol4 ">
+                    <label>Adjust Charges:</label>
+                    <input type="text" class="form-control">
+                  </div>
+                </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">OK</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+			
+				<div class="modal fade" id="cmmoncodes" role="dialog">
+            <div class="modal-dialog mymodal"> 
+              
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Taging</h5>
+                </div>
+                <div class="modal-body">
+                  <ul class="infolist infolistblock mt-1 mb-1">
+                    <li>Client:   <span>Shabnam</span></li>
+                    <li> Address:  <span>Client Address will be placse here.</span></li>
+                    <li> Credit Amount:<span>  30,000/-</span></li>
+                  </ul>
+                  
+				  <div class="checkbox mb-1 mt-4">
+						<div class="custom-control custom-checkbox">
+						  <input type="checkbox" id="checkbox2" name="coBorrower" class="custom-control-input">
+						  <label class="custom-control-label" for="checkbox2"> Block List</label>
+						</div>
+				  </div>
+				  <div class="checkbox mb-1">
+						<div class="custom-control custom-checkbox">
+						  <input type="checkbox" id="checkbox3" name="coBorrower" class="custom-control-input">
+						  <label class="custom-control-label" for="checkbox3"> Opportunist</label>
+						</div>
+				  </div>
+				  <div class="checkbox mb-1">
+						<div class="custom-control custom-checkbox">
+						  <input type="checkbox" id="checkbox4" name="coBorrower" class="custom-control-input">
+						  <label class="custom-control-label" for="checkbox4"> Danger</label>
+						</div>
+				  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">OK</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+		  
+		  <div class="modal fade" id="ReportDeath" role="dialog">
+            <div class="modal-dialog mymodal"> 
+              
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Report Death</h5>
+                </div>
+                <div class="modal-body">
+                  <ul class="infolist infolistblock mt-1 mb-1">
+                    <li>Client:   <span>Shabnam</span></li>
+                    <li> Address:  <span>Client Address will be placse here.</span></li>
+                    <li> Credit Amount:<span>  30,000/-</span></li>
+                  </ul>
+                  
+				  
+				  <div class="collapse d-block mt-3">
+               
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="Client" name="gender" class="custom-control-input">
+                  <label class="custom-control-label" for="Client">Client </label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="Nominee" name="gender" class="custom-control-input">
+                  <label class="custom-control-label" for="Nominee">Nominee</label>
+                </div>
+              </div>
+				  
+				  <div class="cRow mt-2">
+				  <div class="cCol3-col">
+                <label>Date of Death:</label>
+                <div class="input-group date">
+                  <input type="text" class="form-control" placeholder="">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div>
+              </div>
+                  <div class="cCol3-col">
+                    <label>Cause of Death:</label>
+                    <input type="text" class="form-control">
+                  </div>
+                  <div class="cCol3-col">
+                    <label>Death Certifications:</label>
+                    <input type="text" class="form-control">
+                  </div>
+                </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">OK</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

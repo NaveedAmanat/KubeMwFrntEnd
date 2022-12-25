@@ -1,0 +1,11 @@
+th, td{
+    font-size: 1em;
+}
+
+textarea{
+    resize: vertical;
+}
+#fundDetailModel{
+    max-width: 90%;
+    margin: 0 auto;
+}

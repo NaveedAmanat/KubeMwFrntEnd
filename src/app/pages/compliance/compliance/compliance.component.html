@@ -1,0 +1,530 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="">
+      <!-- <div class="col-md-3">
+        <div class="leftSideBar">
+          <p><i class="fa fa-sliders fa-lg"></i> Filter</p>
+          <div class="selectedFilter">
+            <ul>
+              <li>Region : 1 <a href="#"><i class="fa fa-times"></i></a></li>
+              <li>Branch : Johar Town <a href="#"><i class="fa fa-times"></i></a></li>
+              <li>Portfolio : Bahria <a href="#"><i class="fa fa-times"></i></a></li>
+            </ul>
+          </div>
+          <div class="filtersWrap">
+            <div class="filter"> <a href="#." class="acc_trigger">Organization</a>
+              <div class="collapse acc_container" id="region">
+                <div class="listmenu">
+                  <ul class="sub-menu">
+                    <li>LAHORE REGION
+                      <ul class="sub-menu">
+                        <li>ALAHORE-02
+                          <ul class="sub-menu">
+                            <li>SIRAJ PURA
+                              <ul class="sub-menu">
+                                <li>North</li>
+                              </ul>
+                            </li>
+                            <li>BEDIAN
+                              <ul class="sub-menu">
+                                <li>South</li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>SAHIWAL REGION
+                      <ul class="sub-menu">
+                        <li>KASUR-01
+                          <ul class="sub-menu">
+                            <li>KASUR-01
+                              <ul class="sub-menu">
+                                <li>East</li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>BAHAWALPUR REGION
+                      <ul class="sub-menu">
+                        <li>BAHAWALPUR-01
+                          <ul class="sub-menu">
+                            <li>BAHAWALPUR-01
+                              <ul class="sub-menu">
+                                <li>West</li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>KPK/PINDI REGION
+                      <ul class="sub-menu">
+                        <li>MARDAN
+                          <ul class="sub-menu">
+                            <li>MARDAN KHAAS
+                              <ul class="sub-menu">
+                                <li>South</li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="filter"> <a href="#." class="acc_trigger">Geography </a>
+              <div class="collapse acc_container" id="country">
+                <div class="listmenu">
+                  <ul>
+                    <li>PAKISTAN
+                      <ul class="sub-menu">
+                        <li>PUNJAB
+                          <ul class="sub-menu">
+                            <li>LAHORE
+                              <ul class="sub-menu">
+                                <li>LAHORE
+                                  <ul class="sub-menu">
+                                    <li>KAHNA NAU</li>
+                                    <li>REHMAT PURA</li>
+                                    <li>HARBANSPURA</li>
+                                    <li>ARIF ABAD</li>
+                                  </ul>
+                                </li>
+                                <li>PAKPATTAN</li>
+                              </ul>
+                            </li>
+                            <li>KASUR</li>
+                            <li>BAHAWALPUR</li>
+                          </ul>
+                        </li>
+                        <li>SINDH</li>
+                        <li>KHYBER PAKHTUNKHWA
+                          <ul class="sub-menu">
+                            <li>MARDAN</li>
+                          </ul>
+                        </li>
+                        <li>BALOCHISTAN</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="filter"> <a href="#." class="acc_trigger">More Filters</a>
+              <div class="collapse acc_container">
+                <label>Gender</label>
+                <br>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="male" name="gender" class="custom-control-input">
+                  <label class="custom-control-label" for="male">Male</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="female" name="gender" class="custom-control-input">
+                  <label class="custom-control-label" for="female">Female</label>
+                </div>
+                <br>
+                <label class="mt-2">Marital Status</label>
+                <br>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="yesM" name="mStatus" class="custom-control-input">
+                  <label class="custom-control-label" for="yesM">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="noM" name="mStatus" class="custom-control-input">
+                  <label class="custom-control-label" for="noM">No</label>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm">More Filters</button>
+          </div>
+        </div>
+      </div> -->
+      <div class="col-md-12">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <!-- <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Branch <i class="fa fa-search"> </i></h6>
+                <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."
+                    title="Type in a name">
+                </div>
+              </div> -->
+
+              <div class="mysearch">
+                <mat-form-field>
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="modal fade" id="cmmoncodes" role="dialog">
+              <div class="modal-dialog mymodal bigger" style="max-width:95%; top:10%">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Branch Details & History</h5>
+                  </div>
+                  <div class="modal-body pt-0">
+                    <div class="col-sm-12">
+                      <div class="content">
+                        <div class="tab-content pb-0 mb-md-3" id="kpiTabsContent">
+                          <div class="tab-pane fade show active" id="kpitab" role="tabpanel" aria-labelledby="kpi-tab">
+                            <div class="info-bloks">
+                              <div class="row">
+                                <div class="container-fluid">
+                                  <div class="content">
+                                    <div class="row">
+                                      <div class="col-sm-12 pt-10">
+                                        <div class="row">
+                                          <div class="col-sm-4">
+                                            <div class="pt-1">
+                                              <label><b>Branch Details:</b></label>
+                                            </div>
+                                            <div class="borderbox p-2 mnh-140">
+                                              <table class="simpletale" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                  <td width="60%"><b>Total Portfolios:</b> </td>
+                                                  <td>6</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Total Clients: </b></td>
+                                                  <td>350</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Total Communitites:</b> </td>
+                                                  <td>18</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Number of Loans Disbursed:</b> </td>
+                                                  <td>200</td>
+                                                </tr>
+                                                <tr>
+                                                  <td><b>Clients in OD:</b></td>
+                                                  <td>11</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Amount in OD:</b></td>
+                                                  <td>95,874</td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-4">
+                                            <div class="pt-1">
+                                              <label><b>Previous Weekly Visit:</b></label>
+                                            </div>
+                                            <div class="borderbox p-2 mnh-140">
+                                              <table class="simpletale" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                  <td width="60%"><b>Previous Branch Ranking:</b></td>
+                                                  <td>Policy Champion</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Last Visited:</b></td>
+                                                  <td>10/02/2018</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Date Checked Till Date:</b></td>
+                                                  <td>31/01/2018</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Visited By:</b></td>
+                                                  <td>Rafique</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Total Clients Visited:</b></td>
+                                                  <td>41</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Total Communities Visited:</b></td>
+                                                  <td>13</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Duration of Visit:</b></td>
+                                                  <td>7 Days</td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-4">
+                                            <div class="pt-1">
+                                              <label><b>Previous Floor Visit:</b></label>
+                                            </div>
+                                            <div class="borderbox p-2 mnh-140">
+                                              <table class="simpletale" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                  <td width="60%"><b>Previous Branch Ranking:</b></td>
+                                                  <td>Policy Champion</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Last Visited:</b></td>
+                                                  <td>10/02/2018</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Visited By:</b></td>
+                                                  <td>Rafique</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Duration of Visit:</b></td>
+                                                  <td>7 Days</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%"><b>Remarks:</b></td>
+                                                  <td>Previous marks will be populate here (if any)</td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="modal-footer text-center">
+                                          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">
+                                            Ok</button>
+                                          <button type="button" class="btn btn-primary btn-min"
+                                            data-dismiss="modal">Cancel</button>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 
+            <div class="table-responsive">
+              <table class="table" id="myTable">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Branch ID</th>
+                    <th>Branch Name</th>
+                    <th>Target Visits</th>
+                    <th>Last Visited Date</th>
+                    <th>Completed Visits</th>
+                    <th>Remaining</th>
+                    <th>Rank</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let obj of listing">
+                    <td>{{obj.brnchCd}}</td>
+                    <td><a href="" class="userImg" data-toggle="modal"
+                        data-target="#cmmoncodes"><span>{{obj.brnchNm}}</span></a></td>
+                    <td>{{obj.trgt}}</td>
+                    <td>10-10-2011</td>
+                    <td>{{obj.cmpltdVsts}}</td>
+                    <td>{{obj.trgt - obj.cmpltdVsts}}</td>
+                    <td>0</td>
+                    <td><a (click)="loadTargetVisits(obj)" class="iconBtn"><img src="assets/images/icon4.png"
+                          alt=""></a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div> -->
+
+
+            <div class="table-responsive mb-md-5">
+              <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+                <ng-container matColumnDef="regNm">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Region Name</th>
+                  <td mat-cell *matCellDef="let obj">
+                    <!-- <a href="" class="userImg" data-toggle="modal"
+                      data-target="#cmmoncodes"><span>{{obj.brnchNm}}</span></a> -->
+                    {{obj.regNm}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="areaNm">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Area Name</th>
+                  <td mat-cell *matCellDef="let obj">
+                    <!-- <a href="" class="userImg" data-toggle="modal"
+                      data-target="#cmmoncodes"><span>{{obj.brnchNm}}</span></a> -->
+                    {{obj.areaNm}}
+                  </td>
+                </ng-container>
+
+                <!-- Branch Name Column -->
+                <ng-container matColumnDef="brnchNm">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Branch Name</th>
+                  <td mat-cell *matCellDef="let obj">
+                    <!-- <a href="" class="userImg" data-toggle="modal"
+                      data-target="#cmmoncodes"><span>{{obj.brnchNm}}</span></a> -->
+                    {{obj.brnchNm}}
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="vstTyp">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Visit Type</th>
+                  <td mat-cell *matCellDef="let obj">{{findVisitType(obj.vstTyp)}}</td>
+                </ng-container>
+
+                
+                <!-- Target Visits Column -->
+                <ng-container matColumnDef="trgt">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Target Visits</th>
+                  <td mat-cell *matCellDef="let obj">{{obj.trgt}}</td>
+                </ng-container>
+
+                <!-- Last Visited Date Column -->
+                <!-- <ng-container matColumnDef="lstVstDt">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Visited Date</th>
+                  <td mat-cell *matCellDef="let obj">10-10-2011</td>
+                </ng-container> -->
+
+                <!-- Complete Visits Column -->
+                <ng-container matColumnDef="cmpltdVsts">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Complete Visits</th>
+                  <td mat-cell *matCellDef="let obj">{{obj.cmpltdVsts}}</td>
+                </ng-container>
+
+                <!-- Remaining Column -->
+                <ng-container matColumnDef="remaing">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Remaining</th>
+                  <td mat-cell *matCellDef="let obj">{{obj.trgt - obj.cmpltdVsts}}</td>
+                </ng-container>
+
+                <!-- Rank Column -->
+                <!-- <ng-container matColumnDef="rank">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Rank</th>
+                  <td mat-cell *matCellDef="let obj">0</td>
+                </ng-container> -->
+
+                <!-- Action Column -->
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                  <td mat-cell *matCellDef="let obj">
+                    <a (click)="loadTargetVisits(obj)" class="iconBtn"><img src="assets/images/icon4.png" alt=""></a>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+
+
+            <!-- <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item disabled"> <a class="page-link" href="#" tabindex="-1">Previous</a> </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                <li class="page-item"><a class="page-link" href="#">6</a></li>
+                <li class="page-item"><a class="page-link" href="#">7</a></li>
+                <li class="page-item"><a class="page-link" href="#">8</a></li>
+                <li class="page-item"><a class="page-link" href="#">9</a></li>
+                <li class="page-item"><a class="page-link" href="#">10</a></li>
+                <li class="page-item"><a class="page-link" href="#">11</a></li>
+                <li class="page-item"><a class="page-link" href="#">12</a></li>
+                <li class="page-item"><a class="page-link" href="#">13</a></li>
+                <li class="page-item"><a class="page-link" href="#">14</a></li>
+                <li class="page-item"><a class="page-link" href="#">15</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item"><a class="page-link" href="#">17</a></li>
+                <li class="page-item"><a class="page-link" href="#">18</a></li>
+                <li class="page-item"><a class="page-link" href="#">19</a></li>
+                <li class="page-item"> <a class="page-link" href="#">Next</a> </li>
+              </ul>
+            </nav> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--------------Modal on + ---------->
+
+    <div class="modal fade" id="addmember" role="dialog">
+      <div class="modal-dialog big mymodal">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Reschedual Visit</h5>
+          </div>
+          <div class="modal-body">
+            <div class="cRow">
+              <div class="blockfilter mt-2 mb-4">
+                <ul class="list-inline filterlist d-inline-block">
+                  <li><span>Region</span> : Lahore</li>
+                  <li><span>Area</span>: Johar Town</li>
+                  <li><span>Branch</span> : Johar Town</li>
+                </ul>
+              </div>
+              <div class="cCol2">
+                <label>Minimum Number of Clients:</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="cCol2">
+                <label>Assign To:</label>
+                <select class="form-control">
+                  <option value=""></option>
+                  <option value=""></option>
+                </select>
+              </div>
+
+              <div class="cCol2">
+                <label>Start Date:</label>
+                <div class="input-group date">
+                  <input type="text" class="form-control" placeholder="08/06/2018">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cCol2">
+                <label>End Date:</label>
+                <div class="input-group date">
+                  <input type="text" class="form-control" placeholder="08/06/2018">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="cCol2">
+                <label>Visit Type:</label>
+                <select class="form-control">
+                  <option value=""></option>
+                  <option value=""></option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</main>

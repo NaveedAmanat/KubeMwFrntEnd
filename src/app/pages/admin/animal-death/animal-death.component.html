@@ -1,0 +1,201 @@
+<main class="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content mb-md-5">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="d-inline-block searchshow">Report Animal Death</h6>
+                        </div>
+                        <div class="col-sm-6 addBtn">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table" id="myTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Tag Number</th>
+                                    <!-- <th>Animal Kind</th> -->
+                                    <th>Animal Type</th>
+                                    <th>Animal Breed</th>
+                                    <th>Purchase Date</th>
+                                    <th>Age</th>
+                                    <th>Purchase Amount</th>
+                                    <th>Date</th>
+                                    <th>Cause</th>
+                                    <th>Animal Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let anml of allItems">
+
+                                    <td>{{anml.tagNum}}</td>
+                                    <!-- <td>{{anml.anmlKnd}}</td> -->
+                                    <td>{{anml.anmlTyp}}</td>
+                                    <td>{{anml.anmlBrd}}</td>
+                                    <td>{{anml.prchDt | date: 'dd-MM-yyyy'}}</td>
+                                    <td>{{anml.ageYr+" Years "+anml.ageMnth+" Months"}}</td>
+                                    <td>{{anml.prchAmt}}</td>
+                                    <td>{{anml.dthDt | date: 'dd-MM-yyyy'}}</td>
+                                    <td>{{anml.dthCase}}</td>
+                                    <td>{{animalStatus(anml.anmlSts)}}</td>
+                                    <!-- <td>{{animalStatus(anml.dthCase)}}</td> -->
+                                    <td>
+                                        <a *ngIf="anml.anmlSts=='-1' || anml.anmlSts==''"
+                                            (click)="animalReportDeath(anml)" class="iconBtn" data-toggle="tooltip"
+                                            title="Report Death"><img src="assets/images/report-icon.png" alt=""></a>
+
+                                        <a *ngIf="anml.dthDt!='' && anml.flag===3"
+                                            (click)="printInsuClmForm(anml.anmlRgstrSeq)" class="iconBtn"
+                                            data-toggle="tooltip" title="Print"><img src="assets/images/print-icon.png"
+                                                alt=""></a>
+
+                                        <a *ngIf="anml.anmlSts == 3 || anml.anmlSts == 4" class="iconBtn"
+                                            data-toggle="tooltip" title="Animal Credit Adjustment"
+                                            (click)="onClickOpenDeathAdjustmentForm(anml)"><i class="fa fa-paw"></i>
+                                        </a>
+
+                                        <a *ngIf="(anml.anmlSts == 3 || anml.anmlSts == 4) && auth.role=='admin'"
+                                            (click)="reverseAnimal(anml)" class="iconBtn delBtn" data-toggle="tooltip"
+                                            title="Revert"> <i class="fa fa-undo"></i></a>
+
+                                        <a *ngIf="anml.anmlSts != 5" class="iconBtn" data-toggle="tooltip"
+                                            title="Print Death Claim" (click)="printInsuClmForm(anml.anmlRgstrSeq)"><i
+                                                class="fa fa-print"></i>
+                                        </a>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <a [routerLink]="['/admin/loan-servicing']" class="btn btn-primary">Back</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="reportAnimalDeath" role="dialog">
+        <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Report Death/Lost/Sold</h5>
+                </div>
+                <div class="alert alert-warning" *ngIf="isLastAnml">
+                    After posting this entry, insurance premium amount will be discarded in LRS for future installments
+                    in this application.
+                </div>
+
+                <form [formGroup]="animalDeathForm" (ngSubmit)="submitAnimalReportDeath()">
+                    <div class="modal-body">
+                        <div class="cRow mt-2">
+                            <input type="hidden" formControlName="anmlRgstrSeq" />
+                            <div class="cCol3-col">
+                                <mat-form-field>
+                                    <input type="text" matInput placeholder="Tag Number:" formControlName="tagNum">
+                                </mat-form-field>
+                            </div>
+                            <div class="cCol3-col">
+                                <mat-form-field>
+                                    <mat-select placeholder="Report" formControlName="type">
+                                        <mat-option [value]="3">
+                                            Death
+                                        </mat-option>
+                                        <mat-option [value]="4">
+                                            Theft
+                                        </mat-option>
+                                        <mat-option [value]="5">
+                                            Sold
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="cRow mt-2">
+                            <div class="cCol3-col">
+                                <mat-form-field>
+                                    <input matInput required [min]="minDate" [max]="maxDate" formControlName="dthDt"
+                                        placeholder="Date of Death/Lost/Sold:" [matDatepicker]="picker1" disabled
+                                        readonly />
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="cCol3-col">
+                                <mat-form-field>
+                                    <input type="text" matInput placeholder="Cause of Death/Lost/Sold:"
+                                        formControlName="dthCase">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button type="button" appNoDblClick (click)="submitAnimalReportDeath()"
+                            class="btn btn-primary btn-min">OK</button>
+                        <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+<div class="modal fade" id="reverseAnimal" role="dialog">
+    <div class="modal-dialog mymodal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reverse Death</h5>
+            </div>
+            <form class="md-float-material" [formGroup]="reverseForm" (ngSubmit)="onSubmitReverseAnimal()">
+                <input type="hidden" formControlName="dthRptSeq" />
+                <div class="modal-body">
+                    <div class="cRow">
+                        <div class="cCol6">
+                            <mat-form-field>
+                                <input matInput required formControlName="cmnt" placeholder="Remarks:" />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="submit" class="btn btn-primary">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deathAdjustment" role="dialog">
+    <div class="modal-dialog mymodal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Animal Death Adjustment</h5>
+            </div>
+            <form class="md-float-material" [formGroup]="deathAdjustmentForm"
+                (ngSubmit)="onSubmitAnimalDeathAdjustmentForm()">
+                <div class="modal-body">
+                    <div class="cRow">
+                        <div class="cCol6">
+
+                            <mat-form-field>
+                                <input matInput (keypress)="onlyNumbers($event)" formControlName="anmlDthAdj" maxlength="7"
+                                    placeholder="Animal Death Adjustment:" />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="onSubmitAnimalDeathAdjustmentForm()"
+                        [disabled]="!deathAdjustmentForm.valid" class="btn btn-primary">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

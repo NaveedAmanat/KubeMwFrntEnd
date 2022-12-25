@@ -1,0 +1,232 @@
+<main class="main">
+
+  <div class="container-fluid">
+    <app-voucher-info (disbursementAmt)="recievemsg($event)" (isPaymentReq)="paymentReq($event)"
+      (prdSeq)="getPrdSeq($event)" (appSts)="getAppSts($event)"></app-voucher-info>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-arrow">
+        <li class="ng-star-inserted active">
+          <a>{{prdSeq==='0010' && appSts==='0004'?"Agency Creation":"Disbursement Voucher"}}</a>
+        </li>
+        <li *ngIf="isPaymentReq">
+          <a>Repayment Schedule</a>
+        </li>
+        <li>
+          <a>PDCs</a>
+        </li>
+
+      </ol>
+    </nav>
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-6 ">
+          <h6 class="colorBlack">{{prdSeq==='0010' && appSts==='0004'?"Agency Creation":"Disbursement Voucher"}}</h6>
+        </div>
+        <div class="col-sm-6 addBtn mb-2">
+          <button class="btn btn-primary btn-sm" (click)="openAddVoucher()">
+            <i class="fa fa-plus"></i> Add </button>
+          <div class="modal fade" id="addVoucher" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Voucher</h5>
+                </div>
+                <form class="md-float-material" [formGroup]="agencyForm" (ngSubmit)="onSubmit()">
+                  <div class="modal-body">
+                    <div class="cRow">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <mat-select placeholder="Payment Mode" formControlName="pymtTypSeq"
+                            (selectionChange)="onRecoveryChange(true)" [errorStateMatcher]="matcher">
+                            <mat-option *ngFor="let code of paymentModes" [value]="code">
+                              {{code.typStr}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="!agencyForm.get('pymtTypSeq').valid">
+                            Payment Mode is <strong>required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col" *ngIf="isCheck">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="{{instrNumPlaceHolder}}" formControlName="instrNum"
+                            [errorStateMatcher]="matcher" [attr.maxlength]="isWallet ? 12 : 20">
+                          <mat-error *ngIf="!agencyForm.get('instrNum').valid">
+                            {{instrNumPlaceHolder}} is <strong> required </strong>. {{instrNumFormat}}
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Amount:" formControlName="amt"
+                            [errorStateMatcher]="matcher" pattern="[0-9]{1,6}" readonly>
+                          <mat-error *ngIf="!agencyForm.get('amt').valid">
+                            Amount is <strong>invalid</strong>
+                          </mat-error>
+                          <mat-error *ngIf="agencyForm.errors?.pattern">
+                            Voucher amount is <strong>invalid </strong>
+                          </mat-error>
+                          <mat-error *ngIf="!agencyForm.get('amt').valid">
+                            The amount should not be greater than <strong>45,000</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="cRow" *ngIf="!isWallet">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <mat-select placeholder="Mobile Wallet Channel" formControlName="mobWalChnl" [disabled]="isWallet"
+                          (selectionChange)="onMobileWalletChange()">
+                            <mat-option *ngFor="let code of paymentModesWallet" [value]="code.typId">
+                              {{code.typStr}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Mobile Wallet Number" formControlName="mobWalNum"
+                          [attr.maxlength]="isWallet ? 12 : 12">
+                          <mat-error *ngIf="!agencyForm.get('mobWalNum').valid">
+                            Mobile Wallet Number<strong> Invalid </strong>. e.g. 923001234567
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="cRow" *ngIf="isWallet">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <mat-select placeholder="Mobile Wallet Channel" formControlName="mobWalChnl"
+                         [(ngModel)]="mobWalChnlNgModel" >   <!-- update by Naveed - Date - 02-02-2022 -->
+                            <mat-option *ngFor="let code of paymentModesWallet" [value]="code.typId" >
+                              {{code.typStr}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Mobile Wallet Number" formControlName="mobWalNum"
+                            [errorStateMatcher]="matcher" [(ngModel)]="agencyForm.get('instrNum').value">
+                          <mat-error *ngIf="!agencyForm.get('mobWalNum').valid">
+                            Mobile Wallet Number <strong>Invalid</strong>. e.g. 923001234567
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="onSubmit()" class="btn btn-primary"
+                      [disabled]="!agencyForm.valid">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mb-md-5">
+        <table class="table order-list" id="myTable">
+          <thead class="thead-light">
+            <tr>
+              <th>Payment Mode</th>
+              <th>Instrument/Mobile Wallet No.</th>
+              <th>Amount</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let code of allItems">
+              <td>
+                <!-- <div *ngFor="let pm of paymentModes">
+                  <div *ngIf="code.pymtTypSeq === pm.typSeq">
+                    {{pm.typStr}}
+                  </div>
+                </div> -->
+                {{getCashModes(code.pymtTypSeq)}}
+              </td>
+              <td>{{code.instrNum}}</td>
+              <td>{{code.amt | currency:'PKR':''}}</td>
+              <td>
+                <a *ngIf="editDisableButton" (click)="editVoucher(code)" class="iconBtn"><i
+                    class="fa fa-pencil"></i></a>
+                <a *ngIf="thingsForKm?.prdSeq !== '0010' && thingsForKm?.loanAppStatus !== '1305'"
+                  (click)="deleteItem(code)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                <!-- <a class="iconBtn"><i class="fa fa-history"></i></a>-->
+              </td>
+            </tr>
+
+          </tbody>
+          <tbody>
+            <tr class="total-info">
+              <td></td>
+              <td class="text-right"><b>Total Amount:</b></td>
+              <td>{{totalAmount | currency:'PKR':''}}</td>
+              <td>
+              </td>
+            </tr>
+          </tbody>
+
+
+
+        </table>
+      </div>
+      <button *ngIf="isPaymentReq" [disabled]="totalAmount!=disbursementAmt" class="btn btn-primary"
+        routerLink="/disbursement/payment-schedule">Continue</button>
+      <button *ngIf="!isPaymentReq" [disabled]="totalAmount!=disbursementAmt" class="btn btn-primary"
+        routerLink="/disbursement/pdcs">Continue</button>
+      <!--<button class="btn btn-default">Save</button>-->
+    </div>
+  </div>
+</main>
+
+<script>
+  $('.date').datepicker({
+    //format: ‘dd/mm/yyyy’;
+  });
+  $('#rowadd').click(function () {
+    $('.addrow').show();
+  });
+
+
+  $(document).ready(function () {
+    var counter = 0;
+
+    $("#addrow").on("click", function () {
+      var newRow = $("<tr>");
+      var cols = "";
+
+      cols += '<td><select class="form-control tbl-form"><option value="">Cheque</option><option value="">Cash</option></select></td>';
+      cols += ' <td><input type="text" placeholder="" class="form-control tbl-form"></td>';
+      cols += ' <td><input type="text" placeholder="" class="form-control tbl-form"></td>';
+
+      cols += '<td><a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a> <a href="#" class="iconBtn ibtnDel delBtn"><i class="fa fa-trash-o"></i></a> <a href="#" class="iconBtn"><i class="fa fa-history"></i></a></td>';
+      newRow.append(cols);
+      $("table.order-list").append(newRow);
+      counter++;
+    });
+
+
+
+    $("table.order-list").on("click", ".ibtnDel", function (event) {
+      $(this).closest("tr").remove();
+      counter -= 1
+    });
+
+  });
+  function calculateRow(row) {
+    var price = +row.find('input[name^="price"]').val();
+
+  }
+  function calculateGrandTotal() {
+    var grandTotal = 0;
+    $("table.order-list").find('input[name^="price"]').each(function () {
+      grandTotal += +$(this).val();
+    });
+    $("#grandtotal").text(grandTotal.toFixed(2));
+  }
+
+</script>

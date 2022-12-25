@@ -1,0 +1,1160 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+      <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basincinfo" role="tab" aria-controls="home"
+            aria-selected="true">Basic
+            Info</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="address-tab" data-toggle="tab" href="#addressTab" role="tab"
+            aria-controls="addressTab" aria-selected="false">Business
+            Address Detail</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="incomeid" data-toggle="tab" href="#incomeTab" role="tab" aria-controls="incomeTab"
+            aria-selected="false">Income</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="expensesid" data-toggle="tab" href="#expensesTab" role="tab"
+            aria-controls="expensesTab" aria-selected="false">Expenses</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" id="livestockid" data-toggle="tab" href="#livestockTab" role="tab"
+            aria-controls="livestockTab" aria-selected="false">Existing Livestock</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="financeid" data-toggle="tab" href="#financeTab" role="tab" aria-controls="financeTab"
+            aria-selected="false">Est. Cost To Finance New Livestock</a>
+        </li> -->
+      </ul>
+      <form (ngSubmit)="onBusinessAppraisalFormSubmit()" #businessAppraisalForm="ngForm">
+        <div class="tab-content borrowerTabsContent mb-md-5" id="borrowerTabsContent">
+          <div class="tab-pane fade show active" id="basincinfo" role="tabpanel" aria-labelledby="basic-tab">
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Business Sector"
+                    (selectionChange)="onSectorChange()" [(ngModel)]="model.businessAppraisal.sectorKey"
+                    [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="sectorKey" required>
+                    <mat-option *ngFor="let edu of filterBy('bizSectSortOrdr', sector)" [value]="edu.bizSectSeq">
+                      {{edu.bizSectNm}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <!-- <ng-select [items]="sector" bindLabel="codeValue" bindValue="codeKey" placeholdevr="Select Sector" name="codeValue" [(ngModel)]="model.businessAppraisal.sectorKey">
+                </ng-select> -->
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Activity"
+                    [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" [(ngModel)]="model.businessAppraisal.activityKey"
+                    name="activityKey" required>
+                    <mat-option *ngFor="let edu of activity" [value]="edu.bizActySeq">
+                      {{edu.bizActyNm}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <!-- <ng-select [items]="activity" bindLabel="codeValue" bindValue="codeKey" placeholder="Select Activity" name="codeValue" [(ngModel)]="model.businessAppraisal.activityKey">
+                </ng-select> -->
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input (keypress)="onlyLetters($event)" matInput [disabled]="readonly && !hasPermission" type="text"
+                    required [(ngModel)]="model.businessAppraisal.businessDetailStr" id="businessDetailStrId"
+                    name="businessDetailStr" #businessDetailStr="ngModel" pattern="([a-zA-Z 0-9/ ,]\s*)+"
+                    [errorStateMatcher]="matcher" placeholder="Business Detail">
+                  <mat-error *ngIf="businessDetailStr.invalid">
+                    Business Detail is <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+                <!-- <ng-select [items]="['Manufacturing Of Cloth','Production of Textile']" bindLabel="name" bindValue="id" placeholder="Business detail"
+                  name="codeValue" [(ngModel)]="model.businessAppraisal.businessDetailKey">
+                </ng-select> -->
+              </div>
+              <div class="cCol1-5">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Personal(s) Running Business"
+                    [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" (selectionChange)="onPersonelChange()"
+                    [(ngModel)]="model.businessAppraisal.personRunningBusinessKey" name="personRunningBusinessKey"
+                    required>
+                    <mat-option *ngFor="let edu of businessRunner" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <!-- <ng-select [items]="businessRunner" bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Personnel(s) Running the Business"
+                  [(ngModel)]="model.businessAppraisal.personRunningBusinessKey">
+                </ng-select> -->
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Business ownership"
+                    [(ngModel)]="model.businessAppraisal.businessOwnerShip" [errorStateMatcher]="matcher"
+                    pattern="^[1-9]\d*$" name="businessOwnerShip" required>
+                    <mat-option *ngFor="let edu of businessOwnership" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Business Property Ownership"
+                    [(ngModel)]="model.businessAppraisal.bizPropertyOwnKey" [errorStateMatcher]="matcher"
+                    pattern="^[1-9]\d*$" name="bizPropertyOwnKey" required>
+                    <mat-option *ngFor="let edu of propertyOwnership" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" placeholder="Business Phone number"
+                    [disabled]="readonly && !hasPermission" matInput id="phoneNumber" name="bizPhoneNum" maxlength="11"
+                    pattern="^[0-9]{11}$" [errorStateMatcher]="matcher"
+                    [(ngModel)]="model.businessAppraisal.bizPhoneNum">
+                </mat-form-field>
+              </div>
+              <div class="cCol1-5" style="display:none">
+                <mat-form-field>
+                  <input type="text" placeholder="Client Participation Percentage" matInput
+                    [disabled]="readonly && !hasPermission" id="clientPercentage" name="clientPercentage" readonly
+                    [(ngModel)]="cpPercentage" disabled>
+                </mat-form-field>
+              </div>
+              <div class="clearfix"></div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" maxlength="2" pattern="\d*" max="99" min="0"
+                    required id="noYears" name="noYears" #years="ngModel" [errorStateMatcher]="matcher"
+                    (change)="calculateTotalMonth()" [(ngModel)]="model.businessAppraisal.yearsInBusiness" matInput
+                    [disabled]="readonly && !hasPermission" placeholder="No. of Years in Business">
+                  <mat-error *ngIf="years.invalid">
+                    business years are
+                    <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" maxlength="2" pattern="^(0?[0-9]|1[012])$" min="1"
+                    max="12" max="12" required id="noMonths" name="noMonths" [errorStateMatcher]="matcher"
+                    (change)="calculateTotalMonth()" [(ngModel)]="model.businessAppraisal.monthsInBusiness"
+                    placeholder="No. of Months in Business" matInput [disabled]="readonly && !hasPermission"
+                    #months="ngModel">
+                  <mat-error *ngIf="months.invalid">
+                    business months are
+                    <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" placeholder="Business Duration Months" id="totalmnths" name="totalmnths" matInput
+                    [disabled]="readonly && !hasPermission" [(ngModel)]="totalmnths" readonly disabled>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="addressTab" role="tabpanel" aria-labelledby="address-tab">
+            <div class="pt-1 pb-1">
+              <mat-label>Is Business Address same as Client's home address ?</mat-label>
+              <br>
+              <mat-radio-group [disabled]="readonly && !hasPermission"
+                [(ngModel)]="model.businessAppraisal.isbizAddrSAC" (change)="sameAsClientAddressChange()"
+                name="isbizAddrSAC" required>
+                <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" [value]="disFlag.value">
+                  {{disFlag.name}}</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div *ngIf="!model.businessAppraisal.isbizAddrSAC">
+              <div class="cRow">
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="province" name="province"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.provinceName" readonly
+                      placeholder="Province">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input required matInput readonly id="district" name="district"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.districtName" readonly
+                      placeholder="District">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="tehsil" name="tehsil"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.tehsilName" readonly placeholder="Tehsil">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="uc" name="uc"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.ucName" readonly placeholder="UC">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="city" name="city"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.cityName" readonly placeholder="City">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 mt-3" *ngIf="!model.businessAppraisal.isbizAddrSAC">
+                  <button [disabled]="readonly && !hasPermission" type="button" class="btn btn-dots" data-toggle="modal"
+                    data-target="#Location"></button>
+                  <div class="modal fade" id="Location" role="dialog">
+                    <div class="modal-dialog bigger mymodal">
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Location </h5>
+                        </div>
+                        <div class="modal-body">
+                          <div class="table-responsive">
+                            <table class="table last-left">
+                              <thead class="thead-light last-left">
+                                <tr>
+                                  <th>Province</th>
+                                  <th>District</th>
+                                  <th>Tehsil</th>
+                                  <th width="20%">UC</th>
+                                  <th>City</th>
+                                  <th>Select</th>
+                                </tr>
+                              </thead>
+                              <tbody class="evenodd">
+                                <tr *ngFor="let address of addresses">
+                                  <td>{{address.provinceName}} </td>
+                                  <td>{{address.districtName}}</td>
+                                  <td>{{address.tehsilName}}</td>
+                                  <td>{{address.ucName}}</td>
+                                  <td>{{address.cityName}}</td>
+                                  <td>
+                                    <button type="button" data-dismiss="modal" class="btn btn-primary btn-min"
+                                      (click)="selectAddress(address)">Select</button>
+                                  </td>
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="houseNum" name="houseHum"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.houseNum" matInput
+                      [disabled]="readonly && !hasPermission" placeholder="House Number" required
+                      [disabled]="model.businessAppraisal.isbizAddrSAC">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="street" name="street"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.sreet_area" matInput
+                      [disabled]="readonly && !hasPermission" placeholder="Street/Area" required
+                      [disabled]="model.businessAppraisal.isbizAddrSAC">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <ng-select [disabled]="readonly && !hasPermission" [items]="communityArray" required
+                    bindLabel="cmntyNm" bindValue="cmntySeq" name="cmntyNm" placeholder="Select Community"
+                    [(ngModel)]="model.businessAppraisal.businessAddress.community">
+                  </ng-select>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" required id="village" name="village"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.village" matInput
+                      [disabled]="readonly && !hasPermission" placeholder="Village"
+                      [disabled]="model.businessAppraisal.isbizAddrSAC">
+                  </mat-form-field>
+                </div>
+                <div class="cCol2">
+                  <mat-form-field>
+                    <input type="text" id="other" required name="other"
+                      [(ngModel)]="model.businessAppraisal.businessAddress.otherDetails" matInput
+                      [disabled]="readonly && !hasPermission" placeholder="Other Details"
+                      [disabled]="model.businessAppraisal.isbizAddrSAC">
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="tab-pane fade" id="incomeTab" role="tabpanel" aria-labelledby="incomeTab">
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" (change)="incomeChange()" min="0"
+                    (change)="incomeChange()" placeholder="Max Monthly Sale" id="maxMonthSale" name="maxMonthSale"
+                    maxlength="6" #maxMonthlySale="ngModel" [(ngModel)]="model.businessAppraisal.maxMonthSale" matInput
+                    [disabled]="readonly && !hasPermission" required [errorStateMatcher]="matcher">
+                  <mat-error *ngIf="maxMonthlySale.invalid">
+                    max monthly sale is
+                    <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" min="0" max="12" (keypress)="onlyNumbers($event)" matInput
+                    [disabled]="readonly && !hasPermission" required maxlength="2" pattern="^(0?[1-9]|1[012])$"
+                    #maxSaleMonth="ngModel" [errorStateMatcher]="matcher" (change)="maxMonthChange()"
+                    placeholder="No. of Month" id="maxSaleMonth" name="maxSaleMonth"
+                    [(ngModel)]="model.businessAppraisal.maxSaleMonth">
+                  <mat-error *ngIf="maxSaleMonth.invalid">
+                    max sale month is
+                    <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" min="0" (keypress)="onlyNumbers($event)" (change)="incomeChange()"
+                    placeholder="Minimum Monthly Sale" id="minMonthSale" name="minMonthSale" maxlength="6"
+                    #minMonthlySale="ngModel" [(ngModel)]="model.businessAppraisal.minMonthSale" matInput
+                    [disabled]="readonly && !hasPermission" required [errorStateMatcher]="matcher">
+                  <mat-error *ngIf="minMonthlySale.invalid">
+                    min monthly sale is
+                    <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" min="0" max="12" (change)="minMonthChange()" placeholder="No. of Month"
+                    id="minSaleMonth" name="minSaleMonth" min="0" max="12" matInput
+                    [disabled]="readonly && !hasPermission" required (keypress)="onlyNumbers($event)" maxlength="2"
+                    pattern="^(0?[1-9]|1[012])$" #minSaleMonth="ngModel"
+                    [(ngModel)]="model.businessAppraisal.minSaleMonth" matInput [disabled]="readonly && !hasPermission"
+                    required>
+                  <mat-error *ngIf="minSaleMonth.invalid">
+                    min sale month is
+                    <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" matInput disabled placeholder="Average Monthly Income" id="averageMonthIncome"
+                    name="averageMonthIncome" [(ngModel)]="averageIncome" readonly>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row mt-3">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">Primary Income</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+                      (click)="addPrimaryIncome()">
+                      <i class="fa fa-plus"></i> Add</button>
+                    <div class="modal fade" id="addPrimaryIncome" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onPrimaryIncomeFormSubmit()" #primaryIncomeForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Primary Income</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Primary Income"
+                                      [(ngModel)]="primaryIncome.incomeTypeKey" [errorStateMatcher]="matcher"
+                                      pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of primaryIncomeType" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput [disabled]="readonly && !hasPermission" type="text" pattern="\d*"
+                                      min="0" maxlength="7" required id="primaryIncome" name="primaryIncome"
+                                      [(ngModel)]="primaryIncome.incomeAmount" [errorStateMatcher]="matcher"
+                                      (keypress)="onlyNumbers($event)" placeholder="Primary Income Amount"
+                                      #primaryIncomeAmount="ngModel">
+                                    <mat-error *ngIf="primaryIncomeAmount.invalid">
+                                      primary income is
+                                      <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!primaryIncomeForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()"
+                                data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Primary Income</th>
+                        <th>Primary Income Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let primary of model.businessAppraisal.primaryIncome">
+                        <td>{{findValueFromKey(primary.incomeTypeKey, primaryIncomeTypeOrig)}}</td>
+                        <td>{{primary.incomeAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button [disabled]="readonly && !hasPermission" (click)="editPIncome(primary)"
+                            class="iconBtn simplebtn ">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button [disabled]="readonly && !hasPermission" (click)="deletePIncome(primary)"
+                            class="iconBtn delBtn simplebtn ">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr class="total-info">
+                        <td>
+                          <b>Total Primary Income:</b>
+                        </td>
+                        <td>
+                          <input style="text-align: right" type="text" readonly class="form-control small"
+                            value="{{totalPrimaryIncome  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row mt-3">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">Secondary Income</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+                      (click)="addSecondaryIncome()">
+                      <i class="fa fa-plus"></i> Add</button>
+
+                    <div class="modal fade" id="addSecondaryIncome" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onSecondaryIncomeFormSubmit()" #secondaryIncomeForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Secondary Income</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Secondary Income"
+                                      [(ngModel)]="secondaryIncome.incomeTypeKey" [errorStateMatcher]="matcher"
+                                      pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of secondaryIncomeType" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput [disabled]="readonly && !hasPermission" type="text" pattern="\d*"
+                                      min="0" maxlength="7" required id="secondryIncomeAmount"
+                                      name="secondryIncomeAmount" [(ngModel)]="secondaryIncome.incomeAmount"
+                                      [errorStateMatcher]="matcher" (keypress)="onlyNumbers($event)"
+                                      placeholder="Secondary Income Amount" #secondryIncomeAmount="ngModel">
+                                    <mat-error *ngIf="secondryIncomeAmount.invalid">
+                                      secondary income is
+                                      <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!secondaryIncomeForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()"
+                                data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Secondary Income</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let secondary of model.businessAppraisal.secondaryIncome">
+                        <td>{{findValueFromKey(secondary.incomeTypeKey, secondaryIncomeTypeOrig)}}</td>
+                        <td>{{secondary.incomeAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button [disabled]="readonly && !hasPermission" (click)="editSIncome(secondary)"
+                            class="iconBtn simplebtn ">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button [disabled]="readonly && !hasPermission" (click)="deleteSIncome(secondary)"
+                            class="iconBtn delBtn simplebtn ">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                          <!-- <a href="#" class="iconBtn simplebtn ">
+                            <i class="fa fa-history"></i>
+                          </a> -->
+                        </td>
+                      </tr>
+                      <tr class="total-info">
+                        <td>
+                          <b>Total Secondary Income:</b>
+                        </td>
+                        <td>
+                          <input style="text-align: right" type="text" readonly class="form-control small"
+                            value="{{totalSecondaryIncome  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="expensesTab" role="tabpanel" aria-labelledby="expensesTab">
+            <div class="profitwrap">
+              <div class="profitbx text-right mb-2 ml-2">
+                <div>
+                  <b>Total Business Profit: {{businessProfit | currency:'PKR':''}}</b>
+                </div>
+              </div>
+              <div class="profitbx text-right mb-2">
+                <div>
+                  <b>Net Desposable Income: {{netDeposible | currency:'PKR':''}}</b>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">Business Expenses</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+                      (click)="BusinessExpenses()">
+                      <i class="fa fa-plus"></i> Add</button>
+
+                    <div class="modal fade" id="BusinessExpenses" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onBusinessExpenseFormSubmit()" #businessExpenseForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Business Expenses</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select [disabled]="readonly && !hasPermission"
+                                      placeholder="Business Expenses Type" [(ngModel)]="businessExpense.expTypKey"
+                                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of businessExpenseType" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput [disabled]="readonly && !hasPermission" type="text" pattern="\d*"
+                                      min="0" maxlength="7" required id="businessExpAmount" name="businessExpAmount"
+                                      [(ngModel)]="businessExpense.expAmount" [errorStateMatcher]="matcher"
+                                      (keypress)="onlyNumbers($event)" placeholder="Expense Amount"
+                                      #businessExpAmount="ngModel">
+                                    <mat-error *ngIf="businessExpAmount.invalid">
+                                      business expense amount is
+                                      <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!businessExpenseForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()"
+                                data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Expense Type</th>
+                        <th>Expense Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let bExpense of model.businessAppraisal.businessExpense">
+                        <td>{{findValueFromKey(bExpense.expTypKey, businessExpenseTypeOrig)}}</td>
+                        <td>{{bExpense.expAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button [disabled]="readonly && !hasPermission" (click)="editBExpense(bExpense)"
+                            class="iconBtn simplebtn ">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button [disabled]="readonly && !hasPermission" (click)="deleteBExpense(bExpense)"
+                            class="iconBtn delBtn simplebtn ">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                          <!-- <a class="iconBtn simplebtn "><i class="fa fa-history"></i></a>-->
+                        </td>
+                      </tr>
+                      <tr class="total-info">
+                        <td>
+                          <b>Total Business Expense:</b>
+                          <br>
+                        </td>
+                        <td>
+                          <input style="text-align: right" type="text" readonly class="form-control small"
+                            value="{{totalBusinessExpense  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">Household Expenses</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+                      (click)="HouseholdExpenses()">
+                      <i class="fa fa-plus"></i> Add</button>
+
+                    <div class="modal fade" id="HouseholdExpenses" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onHouseholdExpenseFormSubmit()" #householdExpenseForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Household Expenses</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select [disabled]="readonly && !hasPermission"
+                                      placeholder="Household Expenses Type" [(ngModel)]="householdExpense.expTypKey"
+                                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of houseHoldExpenseType" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput [disabled]="readonly && !hasPermission" type="text" pattern="\d*"
+                                      min="0" maxlength="7" required id="hhExpAmount" name="hhExpAmount"
+                                      [(ngModel)]="householdExpense.expAmount" [errorStateMatcher]="matcher"
+                                      (keypress)="onlyNumbers($event)" placeholder="Household Amount"
+                                      #hhExpAmount="ngModel">
+                                    <mat-error *ngIf="hhExpAmount.invalid">
+                                      house hold expense amount is
+                                      <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!householdExpenseForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()"
+                                data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Expense Type</th>
+                        <th>Expense Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let hExpense of model.businessAppraisal.householdExpense">
+                        <td>{{findValueFromKey(hExpense.expTypKey, houseHoldExpenseTypeOrig)}}</td>
+                        <td>{{hExpense.expAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button [disabled]="readonly && !hasPermission" *ngIf="!hExpense.DSED"
+                            (click)="editHExpense(hExpense)" class="iconBtn simplebtn ">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button [disabled]="readonly && !hasPermission" *ngIf="!hExpense.DSED"
+                            (click)="deleteHExpense(hExpense)" class="iconBtn delBtn simplebtn ">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                          <!-- <a class="iconBtn simplebtn "><i class="fa fa-history"></i></a>-->
+                        </td>
+                      </tr>
+                      <!-- <tr *ngFor="let hExpense of model.businessAppraisal.householdExpense">
+                        <td>Other Credits</td>
+                        <td>{{hExpense.expAmount}}</td>
+                        <td>
+                          <a (click)="editHExpense(hExpense)" class="iconBtn simplebtn ">
+                            <i class="fa fa-pencil"></i>
+                          </a>
+                          <a (click)="deleteHExpense(hExpense)" class="iconBtn delBtn simplebtn ">
+                            <i class="fa fa-trash-o"></i>
+                          </a>
+                           <a class="iconBtn simplebtn "><i class="fa fa-history"></i></a>
+                        </td>
+                      </tr> -->
+                      <tr class="total-info">
+                        <td>
+                          <b>Total Household Expense:</b>
+                          <br>
+                        </td>
+                        <td>
+                          <input style="text-align: right" type="text" readonly class="form-control small"
+                            value="{{totalHouseholdExpense  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="colorBlack">Remarks</h6>
+                <mat-form-field>
+                  <textarea matInput [disabled]="readonly && !hasPermission" 
+                    required id="remarks" name="remarks"
+                    [(ngModel)]="model.businessAppraisal.remarks" [errorStateMatcher]="matcher">
+                  </textarea>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="livestockTab" role="tabpanel" aria-labelledby="livestockTab">
+            <div class="row">
+              <div class="profitbx text-right mb-2 mr-2 ml-2">
+                <div>
+                  <b>Total Head Count:</b>
+                </div>
+              </div>
+              <div class="profitbx text-right mb-2">
+                <div>
+                  <b>Total Est. Market Value:</b>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 addBtn">
+                <button class="btn btn-primary btn-sm" [disabled]="readonly && !hasPermission" type="button"
+                  data-toggle="modal" (click)="openLivestock()"><i class="fa fa-plus"></i> Add</button>
+                <div class="modal fade" id="livestock" role="dialog">
+                  <div class="modal-dialog big mymodal">
+
+                    <!-- Modal content-->
+                    <form (ngSubmit)="onSubmitLivestock()" [formGroup]="livestockForm">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Add Animal</h5>
+                        </div>
+                        <div class="modal-body">
+                          <div class="cRow">
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <mat-select [disabled]="readonly && !hasPermission" placeholder="Kind Of Animal:"
+                                  formControlName="kindOfAnimal" name="key" [errorStateMatcher]="matcher">
+                                  <mat-option [value]="1">A 1</mat-option>
+                                  <mat-option [value]="2">C 2</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <mat-select [disabled]="readonly && !hasPermission" placeholder="Type:"
+                                  formControlName="animalType" name="key1" [errorStateMatcher]="matcher">
+                                  <mat-option [value]="1">D2</mat-option>
+                                  <mat-option [value]="2">E2</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" name="key2" [disabled]="readonly && !hasPermission" matInput
+                                  placeholder="Breed:" [errorStateMatcher]="matcher" formControlName="breedVal">
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" matInput [disabled]="readonly && !hasPermission" name="key3"
+                                  placeholder="Headcount:" (keypress)="onlyNumbers($event)"
+                                  [errorStateMatcher]="matcher" formControlName="headcount">
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" matInput [disabled]="readonly && !hasPermission" name="key4"
+                                  placeholder="Est. Market Value:" (keypress)="onlyNumbers($event)"
+                                  [errorStateMatcher]="matcher" formControlName="marketVal">
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer text-center">
+                          <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="myTable">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Kind Of Animal</th>
+                    <th>Type</th>
+                    <th>Breed</th>
+                    <th>Head Count</th>
+                    <th>Est. Market Value</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let stock of livestock">
+                    <td>1</td>
+                    <td>{{stock.kindOfAnimal}}</td>
+                    <td>{{stock.animalType}}</td>
+                    <td>{{stock.breedVal}}</td>
+                    <td>{{stock.headcount}}</td>
+                    <td>{{stock.marketVal}}</td>
+                    <td>
+                      <a href="" class="iconBtn simplebtn "><i class="fa fa-pencil"></i></a>
+                      <a href="" class="iconBtn delBtn simplebtn "><i class="fa fa-trash-o"></i></a>
+                      <a href="" class="iconBtn simplebtn "><i class="fa fa-history"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="financeTab" role="tabpanel" aria-labelledby="financeTab">
+            <div class="row">
+              <div class="profitbx text-right mb-2 mr-2 ml-2">
+                <div>
+                  <b>Total Head Count:</b>
+                </div>
+              </div>
+              <div class="profitbx text-right mr-2 mb-2">
+                <div>
+                  <b>Total Est. Market Value:</b>
+                </div>
+              </div>
+              <div class="profitbx text-right mr-2 mb-2">
+                <div>
+                  <b>% Funded by Client:</b>
+                </div>
+              </div>
+              <div class="profitbx text-right mr-2 mb-2">
+                <div>
+                  <b>% Funded by Kashf:</b>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 addBtn">
+                <button class="btn btn-primary btn-sm" type="button" [disabled]="readonly && !hasPermission"
+                  data-toggle="modal" (click)="openFinance()"><i class="fa fa-plus"></i> Add</button>
+                <div class="modal fade" id="finance" role="dialog">
+                  <div class="modal-dialog big mymodal">
+
+                    <!-- Modal content-->
+                    <form (ngSubmit)="onSubmitFinance()" [formGroup]="financeForm">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Add Animal</h5>
+                        </div>
+                        <div class="modal-body">
+                          <div class="cRow">
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <mat-select [disabled]="readonly && !hasPermission" placeholder="Kind Of Animal:"
+                                  formControlName="kindOfAnimal" name="prdGrpSts" [errorStateMatcher]="matcher">
+                                  <mat-option [value]="1"></mat-option>
+                                  <mat-option [value]="2"></mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <mat-select [disabled]="readonly && !hasPermission" placeholder="Type:"
+                                  formControlName="animalType" name="key1" [errorStateMatcher]="matcher">
+                                  <mat-option [value]="1"></mat-option>
+                                  <mat-option [value]="2"></mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" name="key2" matInput [disabled]="readonly && !hasPermission"
+                                  placeholder="Breed:" [errorStateMatcher]="matcher" formControlName="breedVal">
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" matInput [disabled]="readonly && !hasPermission" name="key3"
+                                  placeholder="Headcount:" (keypress)="onlyNumbers($event)"
+                                  [errorStateMatcher]="matcher" formControlName="headcount">
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" matInput [disabled]="readonly && !hasPermission" name="key4"
+                                  placeholder="Est. Purchase Value:" (keypress)="onlyNumbers($event)"
+                                  [errorStateMatcher]="matcher" formControlName="purchaseVal">
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" matInput [disabled]="readonly && !hasPermission" name="key5"
+                                  placeholder="Amount Financed By Client:" (keypress)="onlyNumbers($event)"
+                                  [errorStateMatcher]="matcher" formControlName="finCliVal">
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" matInput [disabled]="readonly && !hasPermission" name="key6"
+                                  placeholder="Amount Financed By Kashf:" (keypress)="onlyNumbers($event)"
+                                  [errorStateMatcher]="matcher" formControlName="finKshVal">
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer text-center">
+                          <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="myTable">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Kind Of Animal</th>
+                    <th>Type</th>
+                    <th>Breed</th>
+                    <th>Head Count</th>
+                    <th>Est. Purcahase Value</th>
+                    <th>Amount Financed by Client</th>
+                    <th>Amount Financed by Kashf</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let fin of finance">
+                    <td>1</td>
+                    <td>{{fin.kindOfAnimal}}</td>
+                    <td>{{fin.animalType}}</td>
+                    <td>{{fin.breedVal}}</td>
+                    <td>{{fin.headcount}}</td>
+                    <td>{{fin.purchaseVal}}</td>
+                    <td>{{fin.finCliVal}}</td>
+                    <td>{{fin.finKshVal}}</td>
+                    <td>
+                      <a href="" class="iconBtn simplebtn "><i class="fa fa-pencil"></i></a>
+                      <a href="" class="iconBtn delBtn simplebtn "><i class="fa fa-trash-o"></i></a>
+                      <a href="" class="iconBtn simplebtn "><i class="fa fa-history"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+        <button (click)="continueClicked()" [disabled]="!formSaved" type="button"
+          class="btn btn-primary">Continue</button>
+        <button class="btn btn-default" [disabled]="readonly && !hasPermission" type="submit">Save</button>
+      </form>
+
+      <div class="modal fade" id="deletePConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Primary Income</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmPDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal fade" id="deleteSConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Secondary Income</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmSDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal fade" id="deleteBConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Business Expense</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmBDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal fade" id="deleteHConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Household Expense</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmHDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>

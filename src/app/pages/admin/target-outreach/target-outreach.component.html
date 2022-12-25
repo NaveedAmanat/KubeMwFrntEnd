@@ -1,0 +1,313 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-md-6">
+              <form [formGroup]="ngForm">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="dp" [formControl]="date" [max]="maxDate" [min]="minDate"
+                        placeholder="Select Month:" value=" " [disabled]="true">
+                      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                      <mat-datepicker #dp required disabled="false" startView="multi-year"
+                        (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)"
+                        panelClass="example-month-picker">
+                      </mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6">
+                    <ng-select [items]="typesArr" required bindLabel="title" bindValue="type" name="type"
+                      placeholder="Select:" formControlName="type" (change)="onTypeChange()">
+                    </ng-select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <button class="btn btn-primary btn-sm" id="initiate" (click)="generateData()">
+                <i class="fa fa-play"></i> Fetch Data
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <!-- showField -->
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer">
+                  Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <!-- showFields & applyFilter -->
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float: left">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float: right">
+                    <button class="btn btn-primary btn-lg" type="submit">
+                      Search
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="col-sm-8 addBtn" *ngIf="ngForm.value.type == 1 && displayedColumns != null">
+              <button type="button" [disabled]="!canAdd" class="btn btn-primary btn-sm" (click)="addBranchTarget()">
+                <i class="fa fa-plus"></i> Add</button>
+            </div>
+            <div class="col-sm-8 addBtn" *ngIf="ngForm.value.type == 2 && displayedColumns != null">
+              <button type="button" [disabled]="!canAdd" class="btn btn-primary btn-sm" (click)="addOutreach()">
+                <i class="fa fa-plus"></i> Add</button>
+            </div>
+            <!-- ==================== Add New Branch Target ==================== -->
+            <div class="modal fade" id="addBranchTarget" role="dialog">
+              <div class="modal-dialog mymodal">
+
+                <!-- Modal content-->
+                <form (ngSubmit)="onBranchTargetFormSubmit(targetForm.value)" [formGroup]="targetForm">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 *ngIf="!onBrnchTrgtEdit" class="modal-title">New Branch Target</h5>
+                      <h5 *ngIf="onBrnchTrgtEdit" class="modal-title">Update Branch Target</h5>
+                    </div>
+                    <div class="modal-body text-left">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Target Clients" id="trgtClients" name="trgtClients" matInput
+                              required (keypress)="onlyNumbers($event)" maxlength="10" formControlName="trgtClients">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Target Amount" id="trgtAmt" name="trgtAmt" matInput required
+                              (keypress)="onlyNumbers($event)" maxlength="10" formControlName="trgtAmt">
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <mat-select placeholder="Select Branch" formControlName="brnchSeq"
+                              [errorStateMatcher]="matcher" name="brnchSeq" id="brnchSeq" required
+                              (selectionChange)="onBranchSelected($event)">
+                              <mat-option *ngFor="let brnch of branches" [value]="brnch.brnchSeq">
+                                {{brnch.brnchNm}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <mat-select placeholder="Select Product" formControlName="prdSeq"
+                              [errorStateMatcher]="matcher" name="prdSeq" id="prdSeq" required
+                              [disabled]="branchSelected">
+                              <mat-option *ngFor="let prd of products" [value]="prd.prdGrpSeq">
+                                {{prd.prdGrpNm}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button type="submit" class="btn btn-primary btn-min" [disabled]="!targetForm.valid">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- ==================== Add New Outreach ==================== -->
+            <div class="modal fade" id="addOutreach" role="dialog">
+              <div class="modal-dialog mymodal">
+
+                <!-- Modal content-->
+                <form (ngSubmit)="onOutreachFormSubmit(outreachForm.value)" [formGroup]="outreachForm">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 *ngIf="!onOutreachEdit" class="modal-title">New Region Wise Outreach</h5>
+                      <h5 *ngIf="onOutreachEdit" class="modal-title">Update Region Wise Outreach</h5>
+                    </div>
+                    <div class="modal-body text-left">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Opening" id="opening" name="opening" matInput required
+                              (keypress)="onlyNumbers($event)" maxlength="10" formControlName="opening">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Targets" id="targets" name="targets" matInput required
+                              (keypress)="onlyNumbers($event)" maxlength="10" formControlName="targets">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Maturing Loans" id="maturingLoans" name="maturingLoans"
+                              matInput required (keypress)="onlyNumbers($event)" maxlength="10"
+                              formControlName="maturingLoans">
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Closing" id="closing" name="closing" matInput required
+                              (keypress)="onlyNumbers($event)" maxlength="10" formControlName="closing">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <mat-select placeholder="Select Region" formControlName="regionCd"
+                              [errorStateMatcher]="matcher" name="regionCd" id="regionCd" required>
+                              <mat-option *ngFor="let reg of regions" [value]="reg.regSeq">
+                                {{reg.regNm}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button type="submit" class="btn btn-primary btn-min" [disabled]="!outreachForm.valid">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ================== DATA TABLE ================== -->
+
+          <div class="table-responsive mb-md-5">
+            <table class="table" id="myTable" mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows
+              matSort>
+
+              <!-- Category Column -->
+              <ng-container matColumnDef="trgtYr" *ngIf="ngForm.value.type == 1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Year</th>
+                <td mat-cell *matCellDef="let dtl" class="text-center">{{ dtl.trgtYr }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="trgtPerd" *ngIf="ngForm.value.type == 1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Period</th>
+                <td mat-cell *matCellDef="let dtl" class="text-center">{{ dtl.trgtPerd }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="brnchNm" *ngIf="ngForm.value.type == 1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Branch</th>
+                <td mat-cell *matCellDef="let dtl" class="text-center">{{ dtl.brnchNm }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="prdNm" *ngIf="ngForm.value.type == 1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Product</th>
+                <td mat-cell *matCellDef="let dtl" class="text-center">{{ dtl.prdNm }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="trgtClients" *ngIf="ngForm.value.type == 1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Clients</th>
+                <td mat-cell *matCellDef="let dtl" class="text-center">{{ dtl.trgtClients }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="trgtAmt" *ngIf="ngForm.value.type == 1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+                <td mat-cell *matCellDef="let dtl" class="text-center">{{ dtl.trgtAmt }}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action" *ngIf="ngForm.value.type == 1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                <td mat-cell *matCellDef="let data" class="text-center">
+                  <div>
+                    <!-- Edit button -->
+                    <a (click)="editBranchTarget(data)" href="javascript:void(0);" class="iconBtn" *ngIf="canAdd"><i
+                        class="fa fa-pencil"></i></a>
+                    <a (click)="deleteBranchTarget(data)" class="iconBtn delBtn" *ngIf="canAdd"><i
+                        class="fa fa-trash-o"></i></a>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-------------------->
+              <!-- Category Column -->
+              <ng-container matColumnDef="regNm" *ngIf="ngForm.value.type == 2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Region</th>
+                <td mat-cell *matCellDef="let data" class="text-center">{{ data.regNm }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="outreachMonth" *ngIf="ngForm.value.type == 2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Month</th>
+                <td mat-cell *matCellDef="let data" class="text-center">{{ data.outreachMonth | date : 'dd-MM-yyyy' }}
+                </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="opening" *ngIf="ngForm.value.type == 2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Opening</th>
+                <td mat-cell *matCellDef="let data" class="text-center">{{ data.opening }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="targets" *ngIf="ngForm.value.type == 2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Targets</th>
+                <td mat-cell *matCellDef="let data" class="text-center">{{ data.targets }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="maturingLoans" *ngIf="ngForm.value.type == 2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Maturing Loans</th>
+                <td mat-cell *matCellDef="let data" class="text-center">{{ data.maturingLoans }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="closing" *ngIf="ngForm.value.type == 2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Closing</th>
+                <td mat-cell *matCellDef="let data" class="text-center">{{ data.closing }}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action" *ngIf="ngForm.value.type == 2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                <td mat-cell *matCellDef="let data" class="text-center">
+                  <div>
+                    <!-- Edit button -->
+                    <a (click)="editOutreach(data)" href="javascript:void(0);" class="iconBtn" *ngIf="canAdd"><i
+                        class="fa fa-pencil"></i></a>
+                    <!-- <a (click)="onDeleteRel(data)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

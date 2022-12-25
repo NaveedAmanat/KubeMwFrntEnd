@@ -1,0 +1,30 @@
+<div class="row" style="margin-left: 6%;" class="wi">
+  <div class="col-md-12">
+    <div class="row">
+      <div>
+        <h6 class="d-inline-block">
+         MCB Collect Dues <i class="fa fa-print"> </i>
+        </h6>
+      </div>
+    </div>
+    <div class="row">
+      <form [formGroup]="ngForm" (ngSubmit)="mcbCollectDues()">
+        <mat-radio-group formControlName="isXls">
+          <mat-radio-button value="1" checked>Excel </mat-radio-button>
+          <!-- <mat-radio-button class="ml-3" checked value="0"
+            >PDF
+          </mat-radio-button> -->
+        </mat-radio-group>
+        <div class="modal-footer text-center">
+          <button
+            [disabled]="!ngForm.valid"
+            type="submit"
+            class="btn btn-primary"
+          >
+            Print
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

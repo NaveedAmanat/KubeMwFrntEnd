@@ -1,0 +1,253 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+              <div class="col-sm-6">
+                <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                  <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                    <i class="fa fa-search"> </i>
+                  </h6>
+                </div>
+                <div class="mysearch" *ngIf="showFields">
+                  <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                    <div class="col-sm-10" style="float:left;">
+                      <mat-form-field *ngIf="showFields">
+                        <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                          [(ngModel)]="searchVal" placeholder="Search">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-2" style="float:right;">
+                      <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                  <ng-select  [items]="allBrnches" required  (change)="loadPayment($event)"
+                    bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+                    formControlName="branch">
+                  </ng-select>
+                </form>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-primary btn-sm" (click)="openTypeModal()"><i class="fa fa-plus"></i> Add</button>
+              </div>
+            </div>
+          <div class="row-sm-6">
+            <div class="col-sm-6 addBtn">
+              <div class="modal fade" id="addprduct" role="dialog">
+                <div class="modal-dialog bigger mymodal">
+
+                  <!-- Modal content-->
+                  <div class="modal-content text-left">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Expense Type</h5>
+                    </div>
+                    <form [formGroup]="paymentTypesForm" (ngSubmit)="onSubmit()">
+                      <div class="modal-body" style="overflow:visible;">
+                        <div class="cRow">
+                          <div class="cCol2">
+                            <mat-form-field>
+                              <input type="text" matInput placeholder="Id:" formControlName="typId"
+                                [errorStateMatcher]="matcher">
+                              <mat-error *ngIf="!paymentTypesForm.get('typId').valid">
+                                Id is <strong>required</strong>
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                          <div class="cCol2">
+                            <mat-form-field>
+                              <input type="text" matInput placeholder="Type:" formControlName="typStr"
+                                [errorStateMatcher]="matcher">
+                              <mat-error *ngIf="!paymentTypesForm.get('typStr').valid">
+                                Type is <strong>required</strong>
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                          <div class="cCol2">
+                            <!-- <mat-form-field>
+                              <input type="text" matInput placeholder="GL Account Mappping:" formControlName="glAcctNum"
+                                     [errorStateMatcher]="matcher">
+                              <mat-error *ngIf="!paymentTypesForm.get('glAcctNum').valid">
+                                Mapping is <strong>required</strong>
+                              </mat-error>
+                            </mat-form-field> -->
+                            <mat-form-field>
+                                <mat-select placeholder="Select Branch:" formControlName="brnchSeq" name="brnchSeq"
+                                  [errorStateMatcher]="matcher">
+                                  <mat-option [value]="0">Global</mat-option>
+                                  <mat-option *ngFor="let edu of allBrnches" [value]="edu.brnchSeq">
+                                    ({{edu.brnchCd}}) - {{edu.brnchNm}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            
+                          </div>
+                          <div class="cCol2">
+                            <mat-form-field>
+                              <mat-select placeholder="Select Status:" formControlName="typStsKey" name="typStsKey"
+                                [errorStateMatcher]="matcher">
+                                <mat-option *ngFor="let edu of statusArray" [value]="edu.codeKey">
+                                  {{edu.codeValue}}
+                                </mat-option>
+                              </mat-select>
+                              <mat-error *ngIf="!paymentTypesForm.get('typStsKey').valid">
+                                Institution Name is <strong>required</strong>
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="cRow">
+                          <div class="cCol4">
+                              <ng-select [items]="GlAccounts" required required bindLabel="desc" bindValue="accNum"
+                              name="glMapping" placeholder="Select GL Account Mapping" formControlName="glAcctNum">
+                            </ng-select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer text-center">
+                        <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                        <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+              <tr>
+                <th>Expense Type ID</th>
+                <th>Expense Type</th>
+                <th>GL Account Mappping</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let code of pagedItems">
+                <td>{{code.typId}}</td>
+                <td>{{code.typStr}}</td>
+                <td>{{findDscForAccountNo(code.glAcctNum)}}</td>
+                <td>{{findValueByKey(code.typStsKey)}}</td>
+                <td>
+                  <a (click)="editItem(code)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a (click)="deleteItem(code)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                  <a  class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div> -->
+
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+              <!-- Payment Type ID Column -->
+              <ng-container matColumnDef="typId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Expense Type ID</th>
+                <td mat-cell *matCellDef="let pymnt">{{pymnt.typId}}</td>
+              </ng-container>
+
+              <!--Payment Type -->
+              <ng-container matColumnDef="typStr">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Expense Type</th>
+                <td mat-cell *matCellDef="let pymnt">{{pymnt.typStr}}</td>
+              </ng-container>
+
+              <!-- GL Account Mapping Column -->
+              <ng-container matColumnDef="glAcctNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>GL Account Mapping</th>
+                <td mat-cell *matCellDef="let pymnt">{{findDscForAccountNo(pymnt.glAcctNum)}}</td>
+              </ng-container>
+              <!-- Branch Column -->
+              <ng-container matColumnDef="brnchSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Branch</th>
+                <td mat-cell *matCellDef="let pymnt">{{findBranchBySeq(pymnt.brnchSeq)}}</td>
+              </ng-container>
+              <!-- Status Column -->
+              <ng-container matColumnDef="typStsKey">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <td mat-cell *matCellDef="let pymnt">{{findValueByKey(pymnt.typStsKey)}}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let pymnt">
+                  <a (click)="editItem(pymnt)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a (click)="deleteItem(pymnt)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                  <a class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+<script>
+  $(".searchshow").click(function () {
+    $(".mysearchbox").addClass("intro");
+  });
+  $(".remove-search").click(function () {
+    $(".mysearchbox").removeClass("intro");
+  });
+
+  function myFunction() {
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+<script>
+  var index = 1;
+  $('ul.moreless li:gt(' + index + ')').hide();
+  $('ul.moreless').append('<li class="more">more..</li>');
+  $('ul.moreless li.more').click(function () {
+    $('ul.moreless li.more').remove();
+    $('ul.moreless li:gt(' + index + ')').show();
+    $('ul.moreless').append('<li class="less">Less..</li>');
+    $('ul.moreless li.less').click(function () {
+      $('ul.moreless li.less').remove();
+      $('ul.moreless li:gt(' + index + ')').remove();
+      $('ul.moreless').append('<li class="more">more..</li>');
+    });
+  });
+</script>

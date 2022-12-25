@@ -1,0 +1,8 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb breadcrumb-arrow">
+    <li [routerLinkActive]="['active']" *ngFor="let b of breadcrumbs; let last = last">
+      <a [routerLink]="b.href">{{ b.label }}</a>
+    </li>
+
+  </ol>
+</nav>

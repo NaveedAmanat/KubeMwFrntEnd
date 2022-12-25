@@ -1,0 +1,64 @@
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb breadcrumb-arrow">
+    <li [routerLinkActive]="['active']" *ngFor="let b of breadcrumbs; let last = last" [ngClass]="{'is-disable': b.isDisable == true}">
+      <a [routerLink]="b.isDisable ?  null : b.href"> <i
+        class="fa " [ngClass]="{'fa-user fa-check-square ':(b.isSaved === true && b.isDisable == false),
+      'fa-user fa-exclamation ':(b.isSaved !== true && b.isDisable == false)}"
+      ></i>  {{ b.label }}</a>
+    </li>
+
+    <!--<li [routerLinkActive]="['active']">-->
+      <!--<a  [routerLink]="['/loan-origination/personal-info']">-->
+      <!--<i-->
+      <!--class="fa fa-user" [ngClass]="{'fa-check-square':isSavedPersonalInfo === true,-->
+      <!--'fa-exclamation':isSavedPersonalInfo !== true}"-->
+    <!--&gt;</i> -->
+      <!--Personal Info</a>-->
+    <!--</li>-->
+
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/loan-info']">Credit Info-->
+      <!--<i class="fa fa-user"-->
+         <!--[ngClass]="{'fa-check-square':isSavedLoanInfo === true,-->
+      <!--'fa-exclamation':isSavedLoanInfo !== true}"></i></a></li>-->
+    <!---->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/mfcib']">MFCIB and Other Credit-->
+      <!--<i class="fa fa-user "-->
+         <!--[ngClass]="{'fa-check-square':isSavedMFCIB === true,-->
+      <!--'fa-exclamation':isSavedMFCIB !== true}"></i></a></li>-->
+    <!---->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/insurance-info']">Insurance Info-->
+      <!--<i class="fa fa-user "-->
+         <!--[ngClass]="{'fa-check-square':isSavedInsurance === true,-->
+      <!--'fa-exclamation':isSavedInsurance !== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/nominee']">Nominee Info-->
+      <!--<i class="fa fa-user "-->
+         <!--[ngClass]="{'fa-check-square':isSavedNominee === true,-->
+      <!--'fa-exclamation':isSavedNominee !== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/co-borrower']"> Co-borrower Info-->
+      <!--<i class="fa fa-user "-->
+         <!--[ngClass]="{'fa-check-square':isSavedBorrower === true,-->
+      <!--'fa-exclamation':isSavedBorrower !== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/business-appraisal']">Business Appraisal-->
+      <!--<i class="fa fa-user "-->
+         <!--[ngClass]="{'fa-check-square':isSavedbusiness === true,-->
+      <!--'fa-exclamation':isSavedbusiness !== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/school-appraisal']">School Appraisal-->
+      <!--<i class="fa fa-user "-->
+         <!--[ngClass]="{'fa-check-square':isSavedSchool === true,-->
+    <!--'fa-exclamation':isSavedSchool !== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/expected-loan-utilication']">Expected Credit Utilization-->
+      <!--<i class="fa fa-user "-->
+     <!--[ngClass]="{'fa-check-square':isSavedExpected === true,'fa-exclamation':isSavedExpected-->
+      <!--!== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/psc']">PSC-->
+      <!--<i class="fa fa-user " [ngClass]="{'fa-check-square':isSavedPsc === true,-->
+      <!--'fa-exclamation':isSavedPsc !== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/documents']">Documeants-->
+      <!--<i class="fa fa-user " [ngClass]="{'fa-check-square':isSavedDocuments === true,-->
+      <!--'fa-exclamation':isSavedDocuments !== true}"></i></a></li>-->
+    <!--<li [routerLinkActive]="['active']"><a [routerLink]="['/loan-origination/submit']">Submit Application-->
+      <!--<i class="fa fa-user " [ngClass]="{'fa-check-square':isSavedSubmit === true,-->
+      <!--'fa-exclamation':isSavedSubmit !== true}"></i></a></li>-->
+  </ol>
+</nav>

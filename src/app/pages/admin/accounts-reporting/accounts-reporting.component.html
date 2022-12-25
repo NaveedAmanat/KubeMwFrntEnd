@@ -1,0 +1,71 @@
+<main class="main"> 
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+            <h6 class="d-inline-block">Monthly Accounts Processes</h6>
+            <div class="buttons mt-3">
+              <label for="initiate">Press button to initiate processes: </label>
+              &nbsp;
+              <button class="btn btn-primary btn-sm" id="initiate" (click) = "callPrcMonProcesses()">
+                <i class="fa fa-play"></i> Initiate
+              </button>
+            </div>
+
+          <!-- ================== DATA TABLE ================== -->
+
+          <div class="table-responsive mb-md-5">
+            <table class="table" id="myTable" mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows
+              matSort>
+
+              <!--- Reference Id Column -->
+              <ng-container matColumnDef="srNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr. #</th>
+                <td mat-cell *matCellDef="let tag; let i = renderIndex" class="text-left">{{ tag.pkSeq }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="process">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Process</th>
+                <td mat-cell *matCellDef="let tag" class="text-left">{{ tag.process }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="dtTime">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Process Date and Time</th>
+                <td mat-cell *matCellDef="let tag" class="text-left">{{ tag.dtTime | date:"dd-MMM-yyyy hh:mm:ss aa"}}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <td mat-cell *matCellDef="let tag" class="text-left">{{ tag.remarks }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator #paginatorRef [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+<script>
+  $(".searchshow").click(function () {
+    $(".mysearchbox").addClass("intro");
+  });
+  $(".remove-search").click(function () {
+    $(".mysearchbox").removeClass("intro");
+  });
+</script>
+

@@ -1,0 +1,42 @@
+<div class="col-md-12">
+  <div class="content">
+    <div class="mysearchbox">
+      <h6 class="d-inline-block searchshow">IBFT And IFT Funds</h6>
+      <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+      </div>
+    </div>
+    <form class="md-float-material" [formGroup]="ngForm" (ngSubmit)="print()">
+    <div class="cRow">
+      <div class="cCol6">
+        <mat-form-field>
+          <input matInput required formControlName="frmDt" placeholder="From Date:" [matDatepicker]="picker1"
+            disabled readonly />
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput required formControlName="toDt" [min]="ngForm.controls['frmDt'].value"
+            placeholder="To Date:" [matDatepicker]="picker2" disabled readonly />
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Select Report Type" formControlName="type">
+            <mat-option [value]="0">IFT</mat-option>
+            <mat-option [value]="1">IBFT</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-radio-group formControlName="isXls">
+          <mat-radio-button value="1">Excel </mat-radio-button>
+          <mat-radio-button class="ml-3" checked value="0">PDF </mat-radio-button>
+        </mat-radio-group>
+        </div>
+    </div>
+      <div class="cRow">
+        <button type="submit" class="btn btn-primary">Print</button>
+      </div>
+      </form>
+  </div>
+</div>

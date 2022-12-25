@@ -1,0 +1,205 @@
+<main class="main">
+    <div class="container-fluid">
+      <app-breadcrumb></app-breadcrumb>
+      <form (ngSubmit)="onNomineeFormSubmit()" #nomineeForm="ngForm">
+        <div class="content">
+          <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+  
+          <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="nominee-tab" data-toggle="tab" href="#nominee" role="tab" aria-controls="home" aria-selected="true">Next Of Kin Info</a>
+            </li>
+          </ul>
+
+          <div class="pt-1 pb-1" *ngIf="hasBoth">
+            <mat-label>Is Nominee Detail Available ?</mat-label>
+            <br>
+            <mat-radio-group [disabled]="readonly" [(ngModel)]="model.isNomDetailAvailable" name="isNomDetailAvailable" required>
+              <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" [value]="disFlag.value">{{disFlag.name}}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div class="tab-content borrowerTabsContent mb-md-5" id="borrowerTabsContent" *ngIf="!model.isNomDetailAvailable">
+            <div class="tab-pane fade show active" id="nominee" role="tabpanel" aria-labelledby="nominee-tab">
+              <!-- <div class="pt-1 pb-1" *ngIf="!model.selfPDC">
+                <mat-label>Co-borrower Same as Next Of Kin ?</mat-label>
+                <br>
+                <mat-radio-group [(ngModel)]="model.nextOfKin.isSAN" name="isSAN" required>
+                  <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" [value]="disFlag.value">{{disFlag.name}}</mat-radio-button>
+                </mat-radio-group>
+              </div> -->
+              <div class="pt-1 pb-1">
+                <mat-label>Is Next Of Kin same as Client’s Father or Spouse ?</mat-label>
+                <br>
+                <mat-radio-group [disabled]="readonly" [(ngModel)]="model.nextOfKin.fatherSpzFlag" (change)="sameAsClientSpaouseChange()" name="fatherSpzFlag" required>
+                  <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" [value]="disFlag.value">{{disFlag.name}}</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <h6 class="colorBlack mt-2 mb-2">Next Of Kin Detail</h6>
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keyup)="cnicPattern($event, 'nextOfKin')" required [required]="cnicMandatory" pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$" maxlength="15"
+                      minlength="15" id="cnicNum" name="cnicNum" [disabled]="readonly && !hasPermission" matInput placeholder="CNIC" [(ngModel)]="cnicPatternObj.nomCnic"
+                      #nomCnic="ngModel" [errorStateMatcher]="matcher" >
+                    <mat-error *ngIf="nomCnic.invalid">
+                      cnic number is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput required [matDatepicker]="picker2" placeholder="CNIC Issue Date"
+                      (dateChange)="onExpChange(model.nextOfKin.cnicIssueDate)" name="cnicIssueDate" 
+                      [(ngModel)]="model.nextOfKin.cnicIssueDate"
+                      [disabled]="!hasPermission">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker startView="year" [disabled]="readonly && !hasPermission" #picker2></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput required [disabled]="readonly && !hasPermission" [required]="cnicMandatory" 
+                    name="Expiry" min="{{date}}" id="cnicExpryDate" [(ngModel)]="model.nextOfKin.cnicExpryDate" readonly
+                      disabled placeholder="CNIC Expiry Date" [matDatepicker]="picker1" 
+                      [errorStateMatcher]="matcher" #cnicExpryDate="ngModel">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker startView="multi-year" #picker1 [disabled]="readonly && !hasPermission"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+  
+                <div class="cCol1">
+                  <button class="velBtn" type="button" *ngIf="!validated" [disabled]="nomCnic.invalid || model.nextOfKin.cnicExpryDate == ''" (click)="validate()">Validate with KASHF</button>
+                </div>
+  
+              </div>
+              <div *ngIf="validated">
+                <div class="cRow">
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyLetters($event)" required matInput [disabled]="readonly && !hasPermission" id="firstName" pattern="([a-zA-Z ]{3,30}\s*)+" [errorStateMatcher]="matcher"
+                        #firstName="ngModel" name="firstName" [(ngModel)]="model.nextOfKin.firstName" placeholder="First Name"
+                        [disabled]="model.nextOfKin.fatherSpzFlag">
+                      <mat-error *ngIf="firstName.invalid">
+                        first name is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyLetters($event)" value="" id="lastName" name="lastName" pattern="([a-zA-Z ]{3,30}\s*)+"
+                        [errorStateMatcher]="matcher" [(ngModel)]="model.nextOfKin.lastName" placeholder="Last Name" matInput [disabled]="readonly && !hasPermission"
+                        #lastName="ngModel" [disabled]="model.nextOfKin.fatherSpzFlag">
+                      <mat-error *ngIf="lastName.invalid">
+                        last name is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyLetters($event)" pattern="([a-zA-Z ]{3,30}\s*)+" id="fatherFirstName" name="fatherFirstName"
+                        [(ngModel)]="model.nextOfKin.fatherFirstName" required placeholder="Father First Name" matInput [disabled]="readonly">
+                      <mat-error *ngIf="lastName.invalid">
+                        first name is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyLetters($event)" pattern="([a-zA-Z ]{3,30}\s*)+" id="fatherLastName" name="fatherLastName"
+                        [(ngModel)]="model.nextOfKin.fatherLastName" placeholder="Father Last Name" matInput [disabled]="readonly">
+                      <mat-error *ngIf="lastName.invalid">
+                        last name is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div> 
+                  <div class="cCol1 ">
+                    <mat-form-field>
+                      <input matInput [disabled]="readonly && !hasPermission" (keypress)="onlyNumbers($event)" type="text" required maxlength="11" pattern="^[0-9]{11}$" [errorStateMatcher]="matcher"
+                        [(ngModel)]="model.nextOfKin.phone" id="phone" name="phone" placeholder="Phone No." #phone="ngModel">
+                      <mat-error *ngIf="phone.invalid">
+                        phone number is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                   <div class="cCol1">
+                    <mat-form-field>
+                        <!-- [max]="eightenYearsBefore" [min]="minDobYear" -->
+                      <input matInput [disabled]="readonly && !hasPermission" required name="dob" [matDatepicker]="picker3" placeholder="Date of birth"
+                        (dateChange)="onDOBChange(model.nextOfKin.dob)" [value]="date.value" [(ngModel)]="model.nextOfKin.dob">
+                      <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                      <mat-datepicker startView="multi-year" #picker3 disabled="false"></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1 ">
+                    <mat-form-field>
+                      <input matInput [disabled]="readonly" type="text" readonly disabled [(ngModel)]="age" id="age" name="age" placeholder="Age">
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Gender" [(ngModel)]="model.nextOfKin.genderKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                        name="genderKey" required>
+                        <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="gender" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Gender"
+                    [(ngModel)]="model.nextOfKin.genderKey">
+                  </ng-select> -->
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Occupation" [(ngModel)]="model.nextOfKin.occupationKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                        name="occupationKey" required>
+                        <mat-option *ngFor="let edu of occupation" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="occupation" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Occupation"
+                    [(ngModel)]="model.nextOfKin.occupationKey"></ng-select> -->
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Relation" [(ngModel)]="model.nextOfKin.relationKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                        name="relationKey" required>
+                        <mat-option *ngFor="let edu of relationType" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="relationType" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Relationship with Client"
+                    [(ngModel)]="model.nextOfKin.relationKey"></ng-select> -->
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Marital Status" [(ngModel)]="model.nextOfKin.maritalStatusKey" [errorStateMatcher]="matcher"
+                        pattern="^[1-9]\d*$" name="maritalStatusKey" required>
+                        <mat-option *ngFor="let edu of maritalStatus" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="maritalStatus" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Marital Status"
+                    [(ngModel)]="model.nextOfKin.maritalStatusKey"></ng-select> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button (click)="continueClicked()" [disabled]="!formSaved" type="button" class="btn btn-primary">Continue</button>
+          <button class="btn btn-default" [disabled]="(!nomineeForm.form.valid || readonly) && !hasPermission" type="submit">Save</button>
+  
+        </div>
+      </form>
+    </div>
+  </main>

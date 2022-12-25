@@ -1,0 +1,33 @@
+export class AppDto {
+    isChecked:boolean;
+    portSeq:string;
+    loanAppId:String;
+	loanAppStatus:String;
+	firstName:String;
+	lastName:String;
+	clientId:String;
+	cnicNum:String;
+	gender:String;
+	maritalStatus:String;
+	house_num:String;
+	city:String;
+	uc:String;
+	tehsil:String;
+	dist:String;
+	state:String;
+	country:String;
+	portfolio:String;
+	branch:String;
+	branchSeq:number;
+	area:String;
+	region:String;
+	stsDate:String;
+	recAmount:String;
+	aprAmount:String;
+	prdNm:String;
+	cmntyNm:String;
+    street:String;
+    clntSeq;
+    constructor()
+    {}
+}

@@ -1,0 +1,1017 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-6">
+          <h6>{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+        </div>
+        <div class="col-sm-6 addBtn">
+          <button type="button" [disabled]="readonly && !hasPermission" (click)="onAddClick()" class="btn btn-primary btn-sm">
+            <i class="fa fa-plus"></i> Add</button>
+          <!-- <button type="button" (click)="onMfcibForm()" class="btn btn-primary btn-sm">MFCIB Form</button> -->
+          <!-- <button type="button" (click)="onFetchClick()" class="btn btn-primary btn-sm"> Fetch MFCIB</button> -->
+          <!-- <a  class="btn btn-primary btn-sm" disabled> Fetch MFCIB</a> -->
+        </div>
+      </div>
+
+      <div class="modal fade" id="Addmfcib" role="dialog">
+        <div class="modal-dialog mymodal fullpop">
+          <form (ngSubmit)="onAddMfcibFormSubmit()" #addMfcibForm="ngForm">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Other Credit</h5>
+              </div>
+              <div class="modal-body">
+
+                <div class="table-responsive mb-md-5">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Name of Institute:</th>
+                        <th>Total Credit Amount:</th>
+                        <th>Credit Purpose:</th>
+                        <th>Current Amount Outstanding</th>
+                        <th>Credit Completion Date:</th>
+                        <th>Include in Expenses</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <mat-form-field>
+                            <input [readonly]="readonly && !hasPermission" matInput (keypress)="onlyLetters($event)" type="text"
+                              maxlength="32" value="" required [(ngModel)]="mfcibLoan.instituteName" id="instituteName"
+                              [errorStateMatcher]="matcher" name="instituteName" placeholder="Name of Institute"
+                              #instituteName="ngModel">
+                            <mat-error *ngIf="instituteName.invalid">
+                              institute name is <strong>invalid</strong>
+                            </mat-error>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field>
+                            <input [readonly]="readonly && !hasPermission" (keypress)="onlyNumbers($event)" type="text" matInput required
+                              [(ngModel)]="mfcibLoan.totalAmount" min="0" maxlength="6" [errorStateMatcher]="matcher"
+                              pattern="^[1-9]\d*$" id="totalAmount" name="totalAmount" placeholder="Total Amount"
+                              #totalAmount="ngModel">
+                            <mat-error *ngIf="totalAmount.invalid">
+                              total amount is <strong>invalid</strong>
+                            </mat-error>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field>
+                            <input [readonly]="readonly && !hasPermission" matInput (keypress)="onlyLetters($event)" maxlength="250"
+                              type="text" value="" required [(ngModel)]="mfcibLoan.loanPurpose" id="loanPurpose"
+                              name="loanPurpose" placeholder="Purpose" #loanPurpose="ngModel">
+                            <mat-error *ngIf="loanPurpose.invalid">
+                              Credit purpose is <strong>invalid</strong>
+                            </mat-error>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field>
+                            <input [readonly]="readonly && !hasPermission" matInput (keypress)="onlyNumbers($event)" type="text"
+                              maxlength="6" value="" required [(ngModel)]="mfcibLoan.currentOutStandingAmount"
+                              id="currentOutStandingAmount" name="currentOutStandingAmount"
+                              placeholder="Outstanding Amount" #currentOutStandingAmount="ngModel">
+                            <mat-error *ngIf="currentOutStandingAmount.invalid">
+                              current outstanding amount is <strong>invalid</strong>
+                            </mat-error>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field>
+                            <input [readonly]="readonly && !hasPermission" matInput required name="loanCompletionDate"
+                              #loanCompletionDate="ngModel" [matDatepicker]="picker3" readonly min="{{today}}"
+                              placeholder="Completion Date" [(ngModel)]="mfcibLoan.loanCompletionDate">
+                            <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                            <mat-datepicker startView="multi-year" required #picker3 [disabled]="readonly && !hasPermission"></mat-datepicker>
+                          </mat-form-field>
+
+                        </td>
+                        <td class="text-center">
+                          <mat-checkbox [disabled]="readonly && !hasPermission" class="example-margin" #isExpense="ngModel"
+                            name="isExpense" [(ngModel)]="mfcibLoan.isExpense"></mat-checkbox>
+                          <!-- <mat-radio-group [(ngModel)]="mfcibLoan.isExpense"
+                                         #isExpense="ngModel" name="isExpense">
+                          <mat-radio-button class="w-50" [value]="true"></mat-radio-button>
+                        </mat-radio-group> -->
+                        </td>
+
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+
+
+                <div class="modal-footer smmodal-footer text-center">
+                  <button type="submit" [disabled]="!addMfcibForm.form.valid"
+                    class="btn btn-primary btn-min">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+      <div class="table-responsive mb-md-5">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>Name of Institute:</th>
+              <th>Total Credit Amount:</th>
+              <th>Credit Purpose:</th>
+              <th>Current Amount Outstanding</th>
+              <th>Credit Completion Date:</th>
+              <th>Include in Expenses</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let loan of model.mfcibArray">
+              <td>
+                {{loan.instituteName}}
+              </td>
+              <td>
+                {{loan.totalAmount  | currency:'PKR':''}}
+              </td>
+              <td>
+                {{loan.loanPurpose}}
+              </td>
+              <td>
+                {{loan.currentOutStandingAmount  | currency:'PKR':''}}
+              </td>
+              <td>
+                {{loan.loanCompletionDate | date: 'dd-MM-yyyy' }}
+              </td>
+              <td class="text-center">
+                <div class="checkbox mb-1 d-inline-block">
+                  <div class="custom-control custom-checkbox">
+                    <input [readonly]="readonly" type="checkbox" id="checkbox5" name="coBorrower" value="true"
+                      class="custom-control-input" [(ngModel)]="loan.isExpense" readonly disabled>
+                    <label class="custom-control-label" for="checkbox5" style="float:  left;"></label>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <button [disabled]="readonly && !hasPermission" type="button" (click)="onEditClicked(loan)" class="iconBtn simplebtn">
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <button [disabled]="readonly && !hasPermission" type="button" (click)="deleteItem(loan)" class="iconBtn delBtn simplebtn">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+                <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+              </td>
+
+              <!-- </tr>
+            <tr>
+              <td><input type="text" class="form-control" value="FMFB"></td>
+              <td><input type="text" class="form-control" value="35,000"></td>
+              <td><input type="text" class="form-control" value="Start Business"></td>
+              <td><input type="text" class="form-control" value="9568"></td>
+              <td><div class="input-group date">
+                  <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div></td>
+              <td class="text-center"><div class="checkbox mb-1 d-inline-block">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="checkbox6" name="coBorrower" class="custom-control-input">
+                    <label class="custom-control-label" for="checkbox6"></label>
+                  </div>
+                </div></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="form-control" value="FMFB"></td>
+              <td><input type="text" class="form-control" value="35,000"></td>
+              <td><input type="text" class="form-control" value="Start Business"></td>
+              <td><input type="text" class="form-control" value="9568"></td>
+              <td><div class="input-group date">
+                  <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div></td>
+              <td class="text-center"><div class="checkbox mb-1 d-inline-block">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="checkbox7" name="coBorrower" class="custom-control-input">
+                    <label class="custom-control-label" for="checkbox7"></label>
+                  </div>
+                </div></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="form-control" value="FMFB"></td>
+              <td><input type="text" class="form-control" value="35,000"></td>
+              <td><input type="text" class="form-control" value="Start Business"></td>
+              <td><input type="text" class="form-control" value="9568"></td>
+              <td><div class="input-group date">
+                  <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div></td>
+              <td class="text-center"><div class="checkbox mb-1 d-inline-block">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="checkbox8" name="coBorrower" class="custom-control-input">
+                    <label class="custom-control-label" for="checkbox8"></label>
+                  </div>
+                </div></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="form-control" value="FMFB"></td>
+              <td><input type="text" class="form-control" value="35,000"></td>
+              <td><input type="text" class="form-control" value="Start Business"></td>
+              <td><input type="text" class="form-control" value="9568"></td>
+              <td><div class="input-group date">
+                  <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div></td>
+              <td class="text-center"><div class="checkbox mb-1 d-inline-block">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="checkbox9" name="coBorrower" class="custom-control-input">
+                    <label class="custom-control-label" for="checkbox9"></label>
+                  </div>
+                </div></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="form-control" value="FMFB"></td>
+              <td><input type="text" class="form-control" value="35,000"></td>
+              <td><input type="text" class="form-control" value="Start Business"></td>
+              <td><input type="text" class="form-control" value="9568"></td>
+              <td><div class="input-group date">
+                  <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div></td>
+              <td class="text-center"><div class="checkbox mb-1 d-inline-block">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="checkbox10" name="coBorrower" class="custom-control-input">
+                    <label class="custom-control-label" for="checkbox10"></label>
+                  </div>
+                </div></td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="continueClicked()"
+        [disabled]="!formSaved">Continue</button>
+      <button class="btn btn-default" (click)="onSave()">Save</button>
+    </div>
+
+
+    <div class="modal fade" id="deleteConfirmation" role="dialog">
+      <div class="modal-dialog mymodal">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete MFCIB</h5>
+          </div>
+          <div class="modal-body">
+
+            <div class="table-responsive">
+              <h6>Do you want to delete?</h6>
+            </div>
+
+
+            <div class="modal-footer smmodal-footer text-center">
+              <button type="button" (click)="confirmDelete()" class="btn btn-primary btn-min">Yes</button>
+              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+    <!--------------------------     START MFCIB Form                  ----------------------------->
+
+
+    <div class="modal fade" id="mfcibForm" role="dialog">
+      <div class="modal-dialog mymodal bigger" style="max-width:95%; top:10%">
+        <form [formGroup]="mfcibForm" (ngSubmit)="onMFCIBFormSubmit()">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">MFCIB Form</h5>
+            </div>
+            <div class="modal-body" style="max-height:50%; top:1%">
+
+              <div class="borderbox">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="appId" readonly matInput placeholder="Application ID:"
+                      (keypress)="onlyNumbers($event)" formControlName="appId" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('appId', 'required')">Application ID is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="memCod" readonly matInput placeholder="Member Code:"
+                      (keypress)="onlyNumbers($event)" formControlName="memCod" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('memCod', 'required')">Member Code is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="ctrlBrnchCod" matInput placeholder="Control Branch Code:"
+                      (keypress)="onlyNumbers($event)" formControlName="ctrlBrnchCod" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('ctrlBrnchCod', 'required')">Control Branch Code is
+                      <strong>required</strong></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="sbBrnchCod" matInput placeholder="Sub Branch Code:"
+                      (keypress)="onlyNumbers($event)" formControlName="sbBrnchCod" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('sbBrnchCod', 'required')">Sub Branch Code is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="chkUsrNam" matInput placeholder="Checker Username:"
+                      formControlName="chkUsrNam" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('chkUsrNam', 'required')">Checker Username is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="mkUsrNam" matInput placeholder="Maker Username:" formControlName="mkUsrNam"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('mkUsrNam', 'required')">Maker Username <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <!-- <input type="password" name="mkrpas" matInput placeholder="Maker Password:" formControlName="mkrpas"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('mkrpas', 'required')">Maker Password <strong>required</strong>
+                    </mat-error> -->
+
+
+                    <input matInput placeholder="Maker Password" [type]="hide ? 'password' : 'text'"
+                      formControlName="mkrpas" [errorStateMatcher]="matcher">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                      [attr.aria-pressed]="hide">
+                    </button>
+                    <mat-error *ngIf="hasError('mkrpas', 'required')">Maker Password <strong>required</strong>
+                    </mat-error>
+
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="cnic" matInput placeholder="CNIC:" formControlName="cnic"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('cnic', 'required')">CNIC <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="nicPass" matInput placeholder="NIC No / Passport No:"
+                      formControlName="nicPass" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('nicPass', 'required')">NIC No / Passport No <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="frstNam" matInput placeholder="First Name:" formControlName="frstNam"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('frstNam', 'required')">First Name <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="midNam" matInput placeholder="Middle Name:" formControlName="midNam"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('midNam', 'required')">Middle Name <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="lstName" matInput placeholder="Last Name:" formControlName="lstName"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('lstName', 'required')">Last Name <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="gen" matInput placeholder="Gender:" formControlName="gen"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('gen', 'required')">Gender <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker" placeholder="Date Of Birth:" formControlName="dob"
+                      [errorStateMatcher]="matcher">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="hasError('dob', 'required')">Date Of Birth <strong>required</strong></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="fhfstNam" matInput placeholder="Father/Husband First Name:"
+                      formControlName="fhfstNam" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('dob', 'required')">Father/Husband First Name is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="fhMidNam" matInput placeholder="Father/Husband Middle Name:"
+                      formControlName="fhMidNam" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('fhMidNam', 'required')">Father/Husband Middle Name is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="fhLstNam" matInput placeholder="Father/Husband Last Name:"
+                      formControlName="fhLstNam" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('fhLstNam', 'required')">Father/Husband Last Name is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="ctDis" matInput placeholder="City Or District:" formControlName="ctDis"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('ctDis', 'required')">City Or District is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="addr" matInput placeholder="Address:" formControlName="addr"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('addr', 'required')">Address is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="phnum" matInput placeholder="Phone Number:" formControlName="phnum"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('phnum', 'required')">Phone Number is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="cellNum" matInput placeholder="Cell Number:" formControlName="cellNum"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('cellNum', 'required')">Cell Number is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="emailAdd" matInput placeholder="Email Address:" formControlName="emailAdd"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('emailAdd', 'required')">Email Address is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="amtTyp" matInput placeholder="Amount Type:" formControlName="amtTyp"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('amtTyp', 'required')">Amount Type is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empCmpNam" matInput placeholder="Employer Company Name:"
+                      formControlName="empCmpNam" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empCmpNam', 'required')">Employer Company Name is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empOwnStat" matInput placeholder="Employer Ownership Status:"
+                      formControlName="empOwnStat" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empOwnStat', 'required')">Employer Ownership Status is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empBusCat" matInput placeholder="Employer Business Category:"
+                      formControlName="empBusCat" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empBusCat', 'required')">Employer Business Category is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empAdd" matInput placeholder="Employer Address:" formControlName="empAdd"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empAdd', 'required')">Employer Address is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empCtDis" matInput placeholder="Employer City/District:"
+                      formControlName="empCtDis" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empCtDis', 'required')">Employer City/District is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empPhNum" matInput placeholder="Employer Phone Number:"
+                      formControlName="empPhNum" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empPhNum', 'required')">Employer Phone Number is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empCelNum" matInput placeholder="Employer Cell Number:"
+                      formControlName="empCelNum" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empCelNum', 'required')">Employer Cell Number is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="empEmlAdd" matInput placeholder="Employer Email Address:"
+                      formControlName="empEmlAdd" [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('empEmlAdd', 'required')">Employer Email Address is
+                      <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="assType" matInput placeholder="Association Type:" formControlName="assType"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('assType', 'required')">Association Type is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="gpId" matInput placeholder="Group ID:" formControlName="gpId"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('gpId', 'required')">Group ID is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" name="amnts" matInput placeholder="Amount:" formControlName="amnt"
+                      [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="hasError('amnt', 'required')">Amount is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cRow">
+                  <div class="modal-footer smmodal-footer text-center">
+                  </div>
+                </div>
+
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-min">Ok</button>
+              <button type="button" class="btn btn-primary btn-min" (click)="cancelMfcibForm()">Cancel</button>
+            </div>
+          </div>
+
+
+        </form>
+
+      </div>
+    </div>
+
+
+
+    <!-----------------------    End MFCIB Form                 ----------------->
+
+
+
+
+    <!----------------------------      START FETCH MFCIB                 --------------------------->
+
+
+
+    <div class="modal fade" id="fetchmfcib" role="dialog">
+      <div class="modal-dialog mymodal bigger" style="max-width:95%; top:1%">
+        <form (ngSubmit)="onFetchMFCIB()">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Other Credit</h5>
+            </div>
+            <div class="modal-body pt-0" style="max-height:50%; top:1%" *ngIf="obj.report.status == 'CR'">
+
+              <div class="col-sm-12 mb-3 mt-2">
+
+
+                <!----------------- Individual Credit Report ------------------------------->
+
+                <h5>Individual Credit Report (Sample Report)</h5>
+                <div class="borderbox pb-0">
+                  <ul class="infolist mt-2 mb-2">
+                    <li><b>File #:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.FILE_NO}}</span></li>
+                    <li><b>Creation Date:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.CREATION_DATE}}</span></li>
+                    <li><b>Name: </b><span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.FIRST_NAME}}
+                        {{obj.report.ROOT.INDIVIDUAL_DETAIL.LAST_NAME}}</span></li>
+                    <li>CNIC: <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.CNIC}}</span></li>
+                  </ul>
+                  <hr>
+                  <ul class="infolist mt-2 mb-2">
+                    <li><b>Transaction #:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.TRANX_NO}}</span></li>
+                    <li><b>Transaction Date:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.TRANX_DATE}}</span></li>
+                    <li><b>NIC #:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.NIC}}</span></li>
+                    <li><b>Gender:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.GENDER}}</span></li>
+                  </ul>
+                  <hr>
+                  <ul class="infolist mt-2 mb-2">
+                    <li><b>Maker:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.MAKER}} </span></li>
+                    <li><b>Checker:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.CHECKER}}</span></li>
+                    <li><b>DOB:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.DOB}}</span></li>
+                  </ul>
+                  <hr>
+                  <ul class="infolist mt-2 mb-2">
+                    <li><b>Realations</b></li>
+                    <li><b>Father/Husband:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.FATHER_HUSBAND_FNAME}}</span>
+                    </li>
+                    <li><b>Member:</b> <span> {{obj.report.ROOT.INDIVIDUAL_DETAIL.DOB}}</span></li>
+                  </ul>
+                  <br>
+                </div>
+              </div>
+
+              <!------------------ Latest Address Information --------------------------->
+
+              <div class="col-sm-12">
+                <div class="pt-1">
+                  <label><b>LATEST ADDRESS INFORMATION</b></label>
+                </div>
+                <div class="borderbox p-2 mnh-140">
+                  <table class="simpletale" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td width=""><b>Residential Address:</b> </td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[0].ADDRESS}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>City: </b></td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[0].CITY}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Tehsil/Town:</b> </td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>Chak:</b></td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>UC:</b></td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>Phone Number:</b></td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[0].PHONE2}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Cell Number:</b></td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[0].PHONE1}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Gas Consumer#:</b></td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>Electricity Consumer #:</b> </td>
+                      <td>N/A</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+              <!------------------ Previous Address Information --------------------------->
+
+
+              <div class="col-sm-12">
+                <div class="pt-1">
+                  <label><b>PREVIOUS ADDRESS INFORMATION</b></label>
+                </div>
+                <div class="borderbox p-2 mnh-140">
+                  <table class="simpletale" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td width=""><b>Residential Address:</b> </td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[1].ADDRESS}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>City: </b></td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[1].CITY}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Tehsil/Town:</b> </td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>Chak:</b></td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>UC:</b></td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>Phone Number:</b></td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[1].PHONE2}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Cell Number:</b></td>
+                      <td>{{obj.report.ROOT.HOME_INFORMATION[1].PHONE1}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Gas Consumer#:</b></td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td><b>Electricity Consumer #:</b> </td>
+                      <td>N/A</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+              <!---------------------- Default History ------------------------------>
+
+              <h5>Default History</h5>
+              <div class="table-responsive mb-md-5">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Member</th>
+                      <th>Branch</th>
+                      <th>Date</th>
+                      <th>Account #</th>
+                      <th>Amount</th>
+                      <th>TY</th>
+                      <th>ST</th>
+                      <th>RR</th>
+                      <th>AC</th>
+                      <th>Group ID</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of defaults">
+                      <td>{{item.MEM_NAME}}</td>
+                      <td>{{item.SUBBRN_NAME}}</td>
+                      <td>{{item.UPD_STATUS_DATE}}</td>
+                      <td>{{item.UPD_ACCT_NO}}</td>
+                      <td>{{item.UPD_AMOUNT}}</td>
+                      <td>{{item.UPD_ACCT_TY}}</td>
+                      <td>{{item.UPD_STATUS}}</td>
+                      <td>{{item.UPD_RTR}}</td>
+                      <td>{{item.ASSOC_TY}}</td>
+                      <td>{{item.GROUP_ID}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!--------------------  File Notes ---------------------------->
+
+              <h5>File Notes</h5>
+              <div class="table-responsive mb-md-5">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Ref. Date</th>
+                      <th>Account#</th>
+                      <th>Comments</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{obj.report.ROOT.FILE_NOTES.REF_DATE}}</td>
+                      <td>{{obj.report.ROOT.FILE_NOTES.ACCT_NO}}</td>
+                      <td>{{obj.report.ROOT.FILE_NOTES.COMMENTS}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!--------------- CCP ------------------------------------>
+
+              <h5>CCP</h5>
+              <div class="table-responsive" *ngFor="let master of obj.report.ROOT.CCP_MASTER">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Member, Branch</th>
+                      <th>Account #</th>
+                      <th>Term, TY, ST</th>
+                      <th>Amount Disbursed</th>
+                      <th>Open Date</th>
+                      <th>Maturity Date</th>
+                      <th>AC</th>
+                      <th>Status Date</th>
+                      <th>Last Payment</th>
+                      <th>OverDue Amount</th>
+                      <th>Outstanding Balnace</th>
+                      <th>Payment Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{master.MEM_NAME}},{{master.SUBBRN_NAME}}</td>
+                      <td>{{master.ACCT_NO}}</td>
+                      <td>{{master.TERM}}, {{master.ACCT_TY}}, {{master.ACCT_STATUS}}</td>
+                      <td>{{master.LIMIT}}</td>
+                      <td>{{master.OPEN_DATE}}</td>
+                      <td>{{master.MATURITY_DATE}}</td>
+                      <td>{{master.ACCT_TY}}</td>
+                      <td>{{master.STATUS_DATE}}</td>
+                      <td>{{master.LAST_PAYMENT}}</td>
+                      <td>{{master.OVERDUEAMOUNT}}</td>
+                      <td>{{master.BALANCE}}</td>
+                      <td>{{master.PAYMENT_STATUS}}</td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+              </div>
+              <hr style="margin-top: 0rem;margin-bottom: 0.5rem;">
+              <div class="table-responsive mb-md-5" *ngFor="let master of obj.report.ROOT.CCP_MASTER">
+                <table class="table">
+                    <tr >
+                      <td *ngFor="let detailhdr of master.CCP_DETAIL">{{getFormatedmonth(detailhdr.STATUS_MONTH)}}</td>
+                    </tr>
+                    <tr >
+                      <td *ngFor="let detailsts of master.CCP_DETAIL">{{detailsts.PAYMENT_STATUS}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!---------------------- Deliquency Summary ---------------------------------->
+
+              <h5>Delinquency Summary (12 Months)</h5>
+              <div class="table-responsive mb-md-5">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Member, Branch</th>
+                      <th>AC Type</th>
+                      <th>Amount Disbursed</th>
+                      <th>A/C Status</th>
+                      <th>OK</th>
+                      <th>X</th>
+                      <th>30+</th>
+                      <th>60+</th>
+                      <th>90+</th>
+                      <th>120+</th>
+                      <th>150+</th>
+                      <th>180+</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let summary of ccpList">
+                      <td>{{summary.MEM_NAME}}, {{SUBBRN_NAME}}</td>
+                      <td>{{summary.ACCT_TY}}</td>
+                      <td>{{summary.OVERDUEAMOUNT}}</td>
+                      <td>{{summary.ACCT_STATUS}}</td>
+                      <td>{{summary.CCP_SUMMARY.OK}}</td>
+                      <td>{{summary.CCP_SUMMARY.X}}</td>
+                      <td>{{summary.CCP_SUMMARY.P30}}</td>
+                      <td>{{summary.CCP_SUMMARY.P60}}</td>
+                      <td>{{summary.CCP_SUMMARY.P90}}</td>
+                      <td>{{summary.CCP_SUMMARY.P120}}</td>
+                      <td>{{summary.CCP_SUMMARY.P150}}</td>
+                      <td>{{summary.CCP_SUMMARY.P180}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+
+              <!----------------- Credit App ------------------------>
+
+              <h5>Credit Apps:</h5>
+              <div class="table-responsive mb-md-5">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Member </th>
+                      <th>Branch </th>
+                      <th>Application Date</th>
+                      <th>Application Id</th>
+                      <th>Amount </th>
+                      <th>TY </th>
+                      <th>AC </th>
+                      <th>Group Id</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of obj.report.ROOT.ENQUIRIES">
+                      <td>{{item.MEM_NAME}}</td>
+                      <td>{{item.SUBBRN_NAME}}</td>
+                      <td>{{item.REFERENCE_DATE}}</td>
+                      <td>{{item.REFERENCE_NO}}</td>
+                      <td>{{item.AMOUNT}}</td>
+                      <td>{{item.ACCT_TY}}</td>
+                      <td>{{item.ASSOC_TY}}</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" (click)="cancelFetchClick()">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+
+
+    <!----------------------------      END FETCH MFCIB                 --------------------------->
+
+  </div>
+</main>

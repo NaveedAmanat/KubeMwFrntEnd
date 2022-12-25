@@ -1,0 +1,519 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="content">
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="">Participants</h6>
+        </div>
+        <div class="col-sm-6 addBtn" *ngIf="completedTraining">
+          <button *ngIf="!isNonClient" class="btn btn-primary btn-sm" (click)="onCheckCnicButton()"> Validate CNIC & Add
+            Participants</button>
+          <button *ngIf="isNonClient" class="btn btn-primary btn-sm" (click)="onAddButton()"> Add Non
+            Client Participants</button>
+        </div>
+      </div>
+      <div class="table-responsive mb-md-3">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>Participant ID</th>
+              <th>Participant CNIC</th>
+              <th>Participant Name</th>
+              <th>Loan Cycle</th>
+              <th>Disbursement Date</th>
+              <th>Gender</th>
+              <!-- <th>Relation</th> -->
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let part of allParticipants">
+              <td>{{part.prtcpntSeq}}</td>
+              <td>{{part.prtcpntCnic}}</td>
+              <td>{{part.prtcpntNm}}</td>
+              <td>{{loanCycleForNonClients(part.loanCyclNum)}}</td>
+              <td>{{disbursmentDateForNonClients(part.dsbmtDt) | date}}</td>
+              <td>{{getGender(part.prtcpntGndrKey)}}</td>
+              <!-- <td>{{part.prtcpntTRelKey}}</td> -->
+              <td>
+                <a *ngIf="part.dsbmtDt == null || part.dsbmtDt == undefined" data-toggle="tooltip" title="Edit"
+                  (click)="onEditParticipants(part)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                <!-- <a *ngIf="isKSS && (isClient || isALL || isBoth)" data-toggle="tooltip" title="Add Staff"
+                  (click)="onAddStaff(part)" class="iconBtn"><i class="fa fa-address-card-o"></i></a> -->
+                <a *ngIf="completedTraining" data-toggle="tooltip" title="Delete" (click)="onDeleteParticipants(part)"
+                  class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <a class="btn btn-primary" [routerLink]="['/training/client-training']">Back To Training</a>
+    </div>
+
+  </div>
+
+
+  <!----------------           ADD PARTICIPANTS               ------------------------------>
+
+  <div class="modal fade" id="addParticipants" role="dialog">
+    <div class="modal-dialog big mymodal">
+
+      <form (ngSubmit)="onSubmitClientTraining()" [formGroup]="addParticipantsForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Participants</h5>
+          </div>
+          <div class="modal-body" style="overflow-y:unset;">
+            <div class="cRow">
+
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Participant CNIC:"
+                    formControlName="prtcpntCnicNum" maxlength="13" minlength="13" id="cnincNum">
+                  <mat-hint align="end">NOT LESS THAN 13 NUMBERS</mat-hint>
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Participant Name:" formControlName="prtcpntNm">
+                </mat-form-field>
+              </div>
+
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyLetters($event)" matInput placeholder="Participant Gender:"
+                    formControlName="prtcpntGndrKey" readonly>
+                </mat-form-field>
+              </div> -->
+
+
+              <div class="cCol2 ">
+                <mat-form-field>
+                  <mat-select [disabled]="isEdit" formControlName="prtcpntGndrKey" placeholder="Gender"
+                    pattern="^[1-9]\d*$">
+                    <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <mat-select placeholder="Participant Gender:" formControlName="prtcpntGndrKey">
+                    <mat-option [value]="0">Male</mat-option>
+                    <mat-option [value]="1">Female</mat-option>
+                    <mat-option [value]="2">Others</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <mat-select placeholder="Participant Relation:" formControlName="prtcpnrRelKey">
+                    <mat-option [value]="0">Relation With Client</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyLetters($event)" matInput placeholder="Loan Cycle:"
+                    formControlName="loanCyclNum">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyLetters($event)" matInput placeholder="Disbursement Date:"
+                    formControlName="dsbmtDt">
+                </mat-form-field>
+              </div>
+
+              <!-- <div class="cCol2">
+
+                <mat-form-field>
+                  <input matInput required formControlName="dsbmtDt" placeholder="Disbursement Date:"
+                    [matDatepicker]="picker1" disabled readonly />
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                </mat-form-field>
+
+              </div> -->
+
+              <!-- <div class="cCol2" *ngIf="isKSS">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="School Name:" formControlName="schNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2" *ngIf="isKSS">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Teacher Name:" formControlName="tchrNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2" *ngIf="isKSS">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Total Students:"
+                    formControlName="totStdnt">
+                </mat-form-field>
+              </div> -->
+
+
+              <!-- <div class="cCol2">
+                <ng-select [items]="allTrainingTypes" bindValue="refCdDscr" name="refCdDscr" bindLabel="refCdDscr"
+                  placeholder="Training Types" formControlName="trngTypStr">
+                </ng-select>
+              </div> -->
+
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <mat-label>Training Types</mat-label>
+                  <mat-select formControlName="trngTypStr" name="refCdDscr">
+                    <mat-option *ngFor="let training of allTrainingTypes" [value]="training.refCdDscr">
+                      {{training.refCdDscr}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+              <!-- <div class="cCol2">
+
+                <mat-form-field>
+                  <input matInput formControlName="training_date" [owlDateTimeTrigger]="dt" [owlDateTime]="dt"
+                    [selectMode]="'range'" placeholder="Select Range">
+                  <owl-date-time [pickerType]="'calendar'" #dt></owl-date-time>
+                </mat-form-field>
+
+              </div> -->
+
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput (keypress)="onlyLetters($event)" placeholder="Trainer Name:"
+                    formControlName="trainer_name">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <mat-select placeholder="Training Status:" formControlName="training_status">
+                    <mat-option [value]="1">Active</mat-option>
+                    <mat-option [value]="2">Inactive</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+
+
+              <!-- <div class="cCol2" *ngFor="let comp of addParticipantsForm.get('training_date').controls; let i=index">
+                <div formArrayName="training_date">
+                  <div [formGroupName]="i">
+
+                    <mat-form-field>
+                      <input matInput required formControlName="training_date" placeholder="Training Date:"
+                        [matDatepicker]="picker" disabled readonly />
+                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker required #picker disabled="false"></mat-datepicker>
+                    </mat-form-field>
+
+                    <a data-toggle="tooltip" title="Add Date" (click)="addNewDates()"><i class="fa fa-plus"></i></a>
+                    <a *ngIf="i > 0" data-toggle="tooltip" title="Delete Date" (click)="deleteDates(i)"
+                      class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+                  </div>
+                </div>
+              </div> -->
+
+
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput (keypress)="onlyLetters($event)" placeholder="Training Status:"
+                    formControlName="training_status">
+                </mat-form-field>
+              </div> -->
+
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="submit" [disabled]=!addParticipantsForm.valid class="btn btn-primary btn-min">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-----------------         ADD NON CLIENT PARTICIPENTS                     ------------------------->
+
+  <div class="modal fade" id="addNonClientParticipants" role="dialog">
+    <div class="modal-dialog big mymodal">
+
+      <form (ngSubmit)="onSubmitNonClientParticipants()" [formGroup]="addNonClientParticipantsForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Non Client Participants</h5>
+          </div>
+          <div class="modal-body" style="overflow-y:unset;">
+            <div class="cRow">
+
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Participant CNIC:"
+                    formControlName="prtcpntCnicNum" maxlength="13" minlength="13" id="cnincNum">
+                  <mat-hint align="end">NOT LESS THAN 13 NUMBERS</mat-hint>
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Participant Name:" formControlName="prtcpntNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2 ">
+                <mat-form-field>
+                  <mat-select formControlName="prtcpntGndrKey" placeholder="Gender" pattern="^[1-9]\d*$">
+                    <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <mat-select placeholder="Participant Relation:" formControlName="prtcpnrRelKey">
+                    <mat-option *ngFor="let rel of relationshipClient" [value]="rel.codeKey">{{rel.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="School Name:" formControlName="schNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Teacher Name:" formControlName="tchrNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Total Students:"
+                    formControlName="totStdnt">
+                </mat-form-field>
+              </div> -->
+
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="submit" [disabled]=!addNonClientParticipantsForm.valid
+              class="btn btn-primary btn-min">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+
+  <!-----------------         ADD KSS PARTICIPENTS                     ------------------------->
+
+  <div class="modal fade" id="addKssParticipants" role="dialog">
+    <div class="modal-dialog big mymodal">
+
+      <form (ngSubmit)="onSubmitKSSClientsParticipants()" [formGroup]="addKssClientsParticipantsForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add KSS Client Participants</h5>
+          </div>
+          <div class="modal-body" style="overflow-y:unset;">
+            <div class="cRow">
+
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Participant CNIC:"
+                    formControlName="prtcpntCnicNum" maxlength="13" minlength="13" id="cnincNum">
+                  <mat-hint align="end">NOT LESS THAN 13 NUMBERS</mat-hint>
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Participant Name:" formControlName="prtcpntNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2 ">
+                <mat-form-field>
+                  <mat-select formControlName="prtcpntGndrKey" placeholder="Gender" pattern="^[1-9]\d*$">
+                    <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Disbursement Date:" formControlName="dsbmtDt">
+                </mat-form-field>
+              </div>
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker" placeholder="Disbursement Date:" formControlName="dsbmtDt">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div> -->
+              <!-- <div class="cCol2">
+                <mat-form-field>
+                  <mat-select placeholder="Participant Relation:" formControlName="prtcpnrRelKey">
+                    <mat-option [value]="0">Relation With Client</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="School Name:" formControlName="schNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Teacher Name:" formControlName="tchrNm">
+                </mat-form-field>
+              </div>
+
+              <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Total Students:"
+                    formControlName="totStdnt">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="submit" [disabled]=!addKssClientsParticipantsForm.valid
+              class="btn btn-primary btn-min">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+
+  <!-----------             Check Cnic             ------------------->
+
+
+  <div class="modal fade" id="checkClient" role="dialog">
+    <div class="modal-dialog big mymodal">
+
+      <form (ngSubmit)="onSubmitCheckClient()" [formGroup]="checkClientForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Validate CNIC</h5>
+          </div>
+          <div class="modal-body" style="overflow-y:unset;">
+            <div class="cRow">
+
+
+              <div class="cCol4">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Enter CNIC:"
+                    formControlName="nomCnic" maxlength="13" minlength="13" id="nomCnic">
+                  <mat-hint align="end">NOT LESS THAN 13 NUMBERS</mat-hint>
+                  <!-- <mat-error *ngIf="hasError('cnincNum', 'required')">CNIC is required</mat-error> -->
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="submit" [disabled]=!checkClientForm.valid class="btn btn-primary btn-min">Validate</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!--------------------    Teachers Add Pop up                  ----------->
+
+
+  <div class="modal fade" id="addTeaceherForKSS" role="dialog">
+    <div class="modal-dialog big mymodal">
+
+      <form (ngSubmit)="onSubmitTeachersForm()" [formGroup]="kssTeacherForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Staff Trained</h5>
+          </div>
+          <div class="modal-body">
+
+            <div formArrayName="address"
+              *ngFor="let a of kssTeacherForm.get('address').controls; let i = index; let first = first; let last = last;">
+              <div [formGroupName]="i">
+
+                <div class="cRow">
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Staff Name:" formControlName="stfNm">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Contact Info:"
+                        formControlName="stfCntct">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-select placeholder="Designation:" formControlName="stfTypKey">
+                        <mat-option [value]="1">Owner</mat-option>
+                        <mat-option [value]="2">Principal</mat-option>
+                        <mat-option [value]="2">Teacher</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="cCol2">
+                    <!-- <button type="button" class="btn btn-primary btn-sm" (click)=" addNewAddressGroup()">Add
+                    </button> -->
+
+                    <button type="button" class="btn btn-danger btn-sm button" (click)=" deleteAddressGroup(i)">Delete
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cRow">
+              <button type="button" class="btn btn-primary btn-sm" (click)=" addNewAddressGroup()">Add Staff</button>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="submit" class="btn btn-primary btn-min">OK</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</main>

@@ -1,0 +1,167 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <h5 class="mt-3">HR Travelling</h5>
+          <div class="row mt-3">
+            <div class="col-sm-4">
+              <form #branchForm="ngForm" (ngSubmit)="onSubmitBranchForm(branchForm.value)">
+                <mat-form-field>
+                  <mat-select placeholder="Select Category" [(ngModel)]="category" [errorStateMatcher]="matcher"
+                    name="category" id="category" (selectionChange)="changeCat($event)">
+                    <mat-option *ngFor="let rol of trvlngRol" [value]="rol.codeKey">
+                      {{rol.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
+            </div>
+
+            <div class="col-sm-8 addBtn">
+              <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+                (click)="addTrvlng()">
+                <i class="fa fa-plus"></i> Add</button>
+            </div>
+            <!-- ==================== Add New Travelling ==================== -->
+            <div class="modal fade" id="addTrvlng" role="dialog">
+              <div class="modal-dialog mymodal">
+
+                <!-- Modal content-->
+                <form (ngSubmit)="onTrvlngFormSubmit(trvlngForm.value)" #trvlngForm="ngForm">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 *ngIf="!onEdit" class="modal-title">New HR Travelling Expense</h5>
+                      <h5 *ngIf="onEdit" class="modal-title">Update HR Travelling Expense</h5>
+                    </div>
+                    <div class="modal-body text-left">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <mat-select placeholder="Select Category" [(ngModel)]="refCdTrvlngRol"
+                              [errorStateMatcher]="matcher" name="refCdTrvlngRol" id="refCdTrvlngRol" required
+                              (selectionChange)="onLoadDates($event,trvlngForm.value)" [disabled]="disbCategory">
+                              <mat-option *ngFor="let rol of trvlngRol" [value]="rol.codeKey">
+                                {{rol.codeValue}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <mat-select [disabled]="readonly && !hasPermission" placeholder="Calculation Type"
+                              [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="refCdCalcTyp" id="refCdCalcTyp"
+                              required [(ngModel)]="refCdCalcTyp" (selectionChange)="onChangeCalculation($event)">
+                              <mat-option *ngFor="let calc of calcTyp" [value]="calc.codeKey">
+                              {{calc.codeValue}}
+                            </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+
+                          <mat-form-field>
+                            <mat-select [disabled]="readonly && !hasPermission" placeholder="Portfolio Type"
+                              [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="refCdPortTypSeq"
+                              id="refCdPortTypSeq" required [(ngModel)]="refCdPortTypSeq"
+                              (selectionChange)="onLoadDates($event,trvlngForm.value)">
+                              <mat-option *ngFor="let port of portTyp" [value]="port.codeKey">
+                                {{port.codeValue}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input matInput required [(ngModel)]="fromDt" [matDatepickerFilter]="dateFilter"
+                              placeholder="From Date:" [matDatepicker]="picker1" readonly name="fromDt" id="fromDt"
+                              (dateChange)="onFromDateChange($event)" [disabled] = "true" />
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker required #picker1 [disabled]="dateDisabled"></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input matInput required [(ngModel)]="toDt" [min]="fromDt"
+                              [matDatepickerFilter]="dateFilter" placeholder="To Date:" [matDatepicker]="picker2"
+                              [disabled]="true" readonly name="toDt" id="toDt" (dateChange)="onToDateChange($event)" />
+                            <!-- [matDatepickerFilter]="myFilter" -->
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker required #picker2 [disabled]="dateDisabled"></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Value" id="amt" name="amt" matInput
+                              [disabled]="calcDisabled || readonly && !hasPermission" required
+                              (keypress)="onlyNumbers($event)" maxlength="6" [(ngModel)]="amt" *ngIf="!percentage">
+                            <input type="text" placeholder="Value" id="amt" name="amt" matInput
+                              [disabled]="calcDisabled || readonly && !hasPermission" (keypress)="onlyNumbers($event)"
+                              maxlength="3" [(ngModel)]="amt" *ngIf="percentage" required>
+                              
+                          </mat-form-field>
+                          <label *ngIf="!percentCheck" style="color:red"> Enter value between 0 & 100</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button type="submit" class="btn btn-primary btn-min"
+                        [disabled]="!trvlngForm.form.valid">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- <h6 *ngIf="entyTyp =='Portfolio'" style="color: black;">By Portfolio</h6>
+          <h6 *ngIf="entyTyp =='Branch'" style="color: black;">By Branch</h6> -->
+          <div class="row">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Portfolio Category</th>
+                    <th>Monthly Travel Value</th>
+                    <th>Calculation Type</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let trvl of trvlng">
+                    <td>{{trvl.portTyp}}</td>
+                    <td>{{trvl.amt}}</td>
+                    <td>{{trvl.calcTyp}}</td>
+                    <td>{{trvl.fromDt | date:"dd-MMM-yyyy"}}</td>
+                    <td>{{trvl.toDt | date:"dd-MMM-yyyy"}}</td>
+                    <td>
+                      <button [disabled]="readonly && !hasPermission" (click)="editTrvlng(trvl)"
+                        class="iconBtn simplebtn ">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button [disabled]="readonly && !hasPermission" (click)="deleteTrvlng(trvl)"
+                        class="iconBtn delBtn simplebtn ">
+                        <i class="fa fa-trash-o"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ====================================================================== -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>

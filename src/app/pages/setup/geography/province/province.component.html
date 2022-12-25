@@ -1,0 +1,118 @@
+
+<main class="main">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+			</div>
+			<div class="col-md-9">
+				<div class="content mb-md-5">
+                <div class="row">
+					<div class="col-sm-6">
+						<div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+						  <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+							<i class="fa fa-search"> </i>
+						  </h6>
+						</div>
+						<div class="mysearch" *ngIf="showFields">
+						  <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+							<div class="col-sm-10" style="float:left;">
+							  <mat-form-field *ngIf="showFields">
+								<input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+								  [(ngModel)]="searchVal" placeholder="Search">
+							  </mat-form-field>
+							</div>
+							<div class="col-sm-2" style="float:right;">
+							  <button class="btn btn-primary btn-lg" type="submit">Search</button>
+							</div>
+						  </form>
+						</div>
+					  </div>
+						 <div class="col-sm-6 addBtn">
+          <button class="btn btn-primary btn-sm" data-toggle="modal" (click)="addItem()"><i class="fa fa-plus"></i> Add</button>
+        </div>
+					</div>
+					<div class="table-responsive">
+				<table class="table" id="myTable">
+					<thead class="thead-light">
+						<tr>
+							<th>Province  Code</th>
+							<th>Province  Name</th>
+							<th>Description</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>	
+						<tr *ngFor="let province of pagedItems">
+							<td>{{province.stCd}}</td>
+							<td><a (click)="provinceFun(province.stSeq)">{{province.stNm}}</a></td>
+							<td>{{province.stCmnt}}</td>
+							<td>
+                             <!--<a href="#" class="iconBtn marker"><i class="fa fa-map-marker"></i></a>-->
+								<a (click)="editItem(province.stSeq)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                                <a (click)="deleteItem(province.stSeq)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+								<!-- <a href="#" class="iconBtn"><i class="fa fa-history"></i></a> -->
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>	
+            <div class="back">
+            	<a routerLink="/setup/geography" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+            </div>
+            <nav aria-label="Page navigation ">
+				<ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+					<li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+					<a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+					</li>
+					<li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+					<a class="page-link" (click)="setPage(page)">{{page}}</a>
+					</li>
+					<li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+					<a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+					</li>
+				</ul>
+			</nav>
+					
+                </div>
+			</div>
+		</div>
+	</div>
+</main>
+<div class="modal fade" id="Province" role="dialog">
+          <div class="modal-dialog mymodal"> 
+            
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Province</h5>
+              </div>
+              <form class="md-float-material" [formGroup]="provinceForm" (ngSubmit)="onProvinceSubmit()" >
+              <div class="modal-body">
+                <div class="cRow">
+                  <div class="cCol3-col">
+                    <label>Province Name:</label>
+                    <input type="text" class="form-control" formControlName="provName" [ngClass]="{ 'is-invalid': submitted && f.provName.errors }" />
+                  </div>
+                  <div class="cCol3-col">
+                    <label>Description:</label>
+                    <input type="text" class="form-control" formControlName="provDescription" [ngClass]="{ 'is-invalid': submitted && f.provDescription.errors }" />
+                  </div>
+                </div>
+              </div>
+                <div *ngIf="submitted && f.provName.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.provName.errors">Please Enter Province Name</strong>
+                </div>
+                <div *ngIf="submitted && f.provDescription.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.provDescription.errors">Please Enter Province Description</strong>
+               </div>
+              <div class="modal-footer text-center">
+                <button  class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>

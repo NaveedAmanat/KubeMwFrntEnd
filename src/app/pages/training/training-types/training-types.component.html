@@ -1,0 +1,228 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Training Type
+                </h6>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" type="button" (click)="openTrainingTypesModel()"><i
+                  class="fa fa-plus"></i>
+                Add</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>Training ID</th>
+                  <th>Training Types</th>
+                  <th>Training Tenure</th>
+                  <th>Training Lifecycle</th>
+                  <!-- <th>Daily Attendance</th> -->
+                  <th>Training Due</th>
+                  <th>Participants Category</th>
+                  <th>Client Category</th>
+                  <th>Training Type Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let train of allTypesTraining">
+                  <td>{{train.trngTypeSeq}}</td>
+                  <td>{{train.trngType}}</td>
+                  <td>{{train.trngTnur}}</td>
+                  <td>{{trainingLifeCycle(train.trngLfCycl)}}</td>
+                  <!-- <td>{{attendacneRequest(train.dailyAttendFlag)}}</td> -->
+                  <td>{{trainingDueDays(train.trngDueAftrDys)}}</td>
+                  <td>{{participantsTypes(train.trngPrtcpntTypSeq)}}</td>
+                  <td>{{clientCategory(train.trngClntCtgrtSeq)}}</td>
+                  <td>{{trainingStatus(train.trngStsKey)}}</td>
+                  <td>
+                    <!-- <a data-toggle="tooltip" title="Participents"
+                      [routerLink]="['/training/participants', train.trngTypeSeq]" class="iconBtn"><i
+                        class="fa fa-child"></i></a> -->
+                    <a data-toggle="tooltip" title="Edit" (click)="onEditTrainingType(train)" class="iconBtn"><i
+                        class="fa fa-pencil"></i></a>
+                    <!-- <a data-toggle="tooltip" title="Delete" (click)="onDeleteTrainingType(train)"
+                      class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!------  Set Training modal   -------------->
+
+
+      <div class="modal fade" id="trainingTypes" role="dialog">
+        <div class="modal-dialog big mymodal">
+
+          <form (ngSubmit)="onSubmitTrainingTypes()" [formGroup]="trainingTypesFrom">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Training Type</h5>
+              </div>
+              <div class="modal-body">
+                <div class="cRow">
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Training Type:" formControlName="trngTyp">
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngTyp.errors?.required && trainingTypesFormsControl.trngTyp.touched">
+                      Training Type is <strong>required</strong>
+                    </mat-error>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Training Tenure:"
+                        formControlName="trngTnur">
+                      <mat-hint align="end">Enter Tenure In Days.</mat-hint>
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngTnur.errors?.required && trainingTypesFormsControl.trngTnur.touched">
+                      Training Tenure is <strong>required</strong>
+                    </mat-error>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-select (selectionChange)="onSelectionParticipantsTypes($event)"
+                        placeholder="Participants Category:" formControlName="trngPrtcpntTypSeq">
+                        <mat-option [value]="0">Clients</mat-option>
+                        <mat-option [value]="1">Non Clients</mat-option>
+                        <mat-option [value]="2">Both</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngPrtcpntTypSeq.errors?.required && trainingTypesFormsControl.trngPrtcpntTypSeq.touched">
+                      Participant Category is <strong>required</strong>
+                    </mat-error>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-select [disabled]="isTrainingNonClient" (selectionChange)="onSelectionClientsTypes($event)"
+                        placeholder="Client Category:" formControlName="trngClntCtgrySeq">
+                        <mat-option [value]="0">KKK Clients Only</mat-option>
+                        <mat-option [value]="1">KSS Clients Only</mat-option>
+                        <mat-option [value]="2">KEL Clients Only</mat-option>
+                        <mat-option [value]="3">KMWK Clients Only</mat-option>
+                        <mat-option [value]="4">All Clients</mat-option>
+                        <mat-option [disabled]="shouldNotBeNonClientForBoth" [value]="5">All Non Clients</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngClntCtgrySeq.errors?.required && trainingTypesFormsControl.trngClntCtgrySeq.touched">
+                      Client Category is <strong>required</strong>
+                    </mat-error>
+                  </div>
+
+                </div>
+
+                <div class="cRow">
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-select placeholder="Training Lifecycle:" formControlName="trngLfeCycl">
+                        <mat-option [value]=false>Once in Tenure with Kashf</mat-option>
+                        <mat-option [value]=true>Once Every Loan Cycle</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngLfeCycl.errors?.required && trainingTypesFormsControl.trngLfeCycl.touched">
+                      Training Lifecycle is <strong>required</strong>
+                    </mat-error>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-select placeholder="Trainng Due Per Individual:" formControlName="trngDueAftrDys">
+                        <mat-option [value]="30">30 Days After DD</mat-option>
+                        <mat-option [value]="60">60 Days After DD</mat-option>
+                        <mat-option [value]="90">90 Days After DD</mat-option>
+                        <mat-option [value]="120">120 Days After DD</mat-option>
+                        <mat-option [value]="150">150 Days After DD</mat-option>
+                        <mat-option [value]="180">180 Days After DD</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngDueAftrDys.errors?.required && trainingTypesFormsControl.trngDueAftrDys.touched">
+                      Trainng Due Per Individual is <strong>required</strong>
+                    </mat-error>
+                  </div>
+
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <mat-select placeholder="Training Type Status:" formControlName="trngStsKey">
+                        <mat-option [value]="1">Active</mat-option>
+                        <mat-option [value]="2">Inactive</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngStsKey.errors?.required && trainingTypesFormsControl.trngStsKey.touched">
+                      Trainng Type Status is <strong>required</strong>
+                    </mat-error>
+                  </div>
+                </div>
+
+                <div class="cRow">
+                  <div class="cCol4">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Comments:" formControlName="trngTypeCmnt">
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="trainingTypesFormsControl.trngTypeCmnt.errors?.required && trainingTypesFormsControl.trngTypeCmnt.touched">
+                      Comments are <strong>required</strong>
+                    </mat-error>
+                  </div>
+
+
+                </div>
+
+                <!-- <div class="collapse d-block mt-3">
+                  <label class="mr" id="IsConsecutive">IsConsecutive</label>
+                  <mat-radio-group formControlName="trngIsConFlag" aria-label="IsConsecutive">
+                    <mat-radio-button value="0">Yes</mat-radio-button>
+                    <mat-radio-button class="ml" value="1">No</mat-radio-button>
+                  </mat-radio-group>
+                </div>-->
+
+                <!-- <div class="collapse d-block mt-3">
+                  <label class="mr" style="margin-right: 10px;" id="Daily Attendance Request">Daily Attendance
+                    Request</label>
+                  <mat-radio-group formControlName="trngDlyAtndReqFlag" aria-label="Daily Attendance Request">
+                    <mat-radio-button value="0">Yes</mat-radio-button>
+                    <mat-radio-button class="ml" value="1">No</mat-radio-button>
+                  </mat-radio-group>
+                </div> -->
+
+
+                <div class="modal-footer text-center">
+                  <button type="submit" [disabled]=!trainingTypesFrom.valid class="btn btn-primary btn-min">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

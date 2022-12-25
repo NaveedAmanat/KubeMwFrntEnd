@@ -1,0 +1,255 @@
+<main class="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <app-left-side-bar></app-left-side-bar>
+            </div>
+            <div class="col-md-9">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mysearchbox">
+                                <h6 class="d-inline-block searchshow">Categories
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 addBtn">
+                            <button class="btn btn-primary btn-sm" type="button" (click)="openCategoryModel()"><i
+                                    class="fa fa-plus"></i>
+                                Add</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Category Id</th>
+                                    <th>Category Name</th>
+                                    <th>Score</th>
+                                    <th>Calculation Type</th>
+                                    <th>Category Type</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let cat of categories">
+                                    <td>{{cat.ctgryId}}</td>
+                                    <td>{{cat.ctgryNm}}</td>
+                                    <td>{{cat.ctgryScr}}</td>
+                                    <td>{{cat.calcTyp}}</td>
+                                    <td>{{cat.ctgryTyp}}</td>
+                                    <td>
+                                        <a data-toggle="tooltip" title="Edit" (click)="onEditCategories(cat)"
+                                            class="iconBtn"><i class="fa fa-pencil"></i></a>
+                                        <a data-toggle="tooltip" title="Action Sub-Categories"
+                                            [routerLink]="['/compliance/compliance-setup/action-sub-categories', cat.adtCtgrySeq]"
+                                            class="iconBtn"><i class="fa fa-plus"></i></a>
+                                        <a data-toggle="tooltip" title="Slabs" (click)="openProductChargeSlbModal(cat)"
+                                            class="iconBtn"><i class="fa fa-linode"></i></a>
+                                        <a data-toggle="tooltip" title="Delete" (click)="onDeleteCategories(cat)"
+                                            class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                                        <!-- <a data-toggle="tooltip" title="Slabing" (click)="onClickAdd(cat)"
+                                            class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-------------------------------   Category Modal         ------------------------------------------>
+
+            <div class="modal fade" id="addCategory" role="dialog">
+                <div class="modal-dialog big mymodal">
+
+                    <form (ngSubmit)="onSubmitCategory()" [formGroup]="categoryForm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Categories</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="cRow">
+
+                                    <!-- <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="text" (keypress)="onlyNumbers($event)" matInput
+                                                placeholder="Category ID:" formControlName="ctgryId">
+                                        </mat-form-field>
+                                    </div> -->
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="text" matInput placeholder="Category Name:"
+                                                formControlName="ctgryNm">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="text" (keypress)="onlyNumbers($event)" matInput
+                                                placeholder="Score:" maxlength="3" formControlName="ctgryScr">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <mat-select placeholder="Type:" formControlName="calcTyp">
+                                                <mat-option [value]="1">Flat</mat-option>
+                                                <mat-option [value]="2">Percent</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="text" (keypress)="onlyNumbers($event)" matInput
+                                                placeholder="Category Type:" formControlName="ctgryTyp">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <mat-label>Category Entity Flag</mat-label>
+                                            <mat-select formControlName="ctgryEntyFlg">
+                                                <mat-option *ngFor="let cat of categoryTypes" [value]="cat.value">
+                                                    {{cat.viewValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="cCol4">
+                                        <mat-form-field>
+                                            <input type="text" matInput placeholder="Coments:"
+                                                formControlName="ctgryCmnt">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                                <button type="submit" [disabled]=!categoryForm.valid
+                                    class="btn btn-primary btn-min">Ok</button>
+                                <button type="button" class="btn btn-primary btn-min"
+                                    data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+
+            <!------------------------------------  Slabs Modal               ------------------------------------>
+
+            <!-- <div class="modal fade" id="slabing" role="dialog">
+                <div class="modal-dialog big mymodal">
+
+                    <form (ngSubmit)="onSubmitSlabs()" [formGroup]="slabsForm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Value</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div *ngFor="let slb of t.controls; let i=index;let first=first;let
+                                    last=last;">
+                                    <div class="cRow" [formGroupName]="slb">
+
+                                        <div class="cCol2">
+                                            <mat-form-field>
+                                                <input type="number" matInput placeholder="Min Limit:" maxlength="5"
+                                                    formControlName="startLmt">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="cCol2">
+                                            <mat-form-field>
+                                                <input type="number" matInput placeholder="Max Limit:"
+                                                    formControlName="endLmt">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="cCol2">
+                                            <mat-form-field>
+                                                <input type="number" matInput placeholder="Value:" formControlName="val"
+                                                    maxlength="5">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a *ngIf="slabsForm.valid" class="btn btn-primary btn-min" (click)="onAddButton()"
+                                    role="button">Add
+                                    entry</a>
+                                <a *ngIf="slabsForm.controls.slbs.controls.length > 1" class="btn btn-danger btn-min"
+                                    (click)="onDeleteButton()" style="color:red !important;" role="button">Remove
+                                    entry</a>
+                            </div>
+
+                            <div class="modal-footer text-center">
+                                <button type="submit" [disabled]=!slabsForm.valid
+                                    class="btn btn-primary btn-min">Ok</button>
+                                <button type="button" class="btn btn-primary btn-min"
+                                    data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div> -->
+            <!------       00-------0-0-0-                END SLABSSS 090980- ---------------              ------->
+
+
+            <!--- Value Modal--->
+            <div class="modal fade" id="value" role="dialog">
+                <div class="modal-dialog big mymodal">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Value</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div *ngFor="let a of slbForCat.slbs;let first = first;let last = last;">
+                                <div class="cRow">
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="number" disabled matInput placeholder="Min Limit:"
+                                                [(ngModel)]="a.startLmt" name="startLmt" #startLmt="ngModel"
+                                                maxlength="5">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="number" matInput placeholder="Max Limit:"
+                                                [(ngModel)]="a.endLmt" name="endLmt" #endLmt="ngModel" maxlength="5">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="number" matInput placeholder="Value:" [(ngModel)]="a.val"
+                                                name="val" #val="ngModel" maxlength="5">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <a class="btn btn-danger btn-min" *ngIf="!first && last" (click)="deleteLine(a)"
+                                    style="color:red !important;" role="button">Remove entry</a>
+
+                                <a class="btn btn-primary btn-min"
+                                    *ngIf="last && a.endLmt!=undefined && a.endLmt!=0 && a.endLmt!=null && a.endLmt>=a.startLmt && a.val!=null && a.val!=undefined"
+                                    (click)="addLine()" role="button">Add entry</a>
+                            </div>
+                        </div>
+                        <div class="modal-footer text-center">
+                            <button type="button"
+                                [disabled]=" (slbForCat.slbs[slbForCat.slbs.length-1].endLmt!=undefined || slbForCat.slbs[slbForCat.slbs.length-1].endLmt!=null) && slbForCat.slbs[slbForCat.slbs.length-1].endLmt>= slbForCat.slbs[slbForCat.slbs.length-1].startLmt && (slbForCat.slbs[slbForCat.slbs.length-1].val == 0 || slbForCat.slbs[slbForCat.slbs.length-1].val == undefined || slbForCat.slbs[slbForCat.slbs.length-1].val == null)"
+                                class="btn btn-primary btn-min" (click)="onSlbSubmit()">Ok</button>
+                            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>

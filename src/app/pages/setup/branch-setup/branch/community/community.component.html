@@ -1,0 +1,134 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">Branch: {{brmodel.brnchSeq}} - {{brmodel.brnchNm.toUpperCase()}}</h6>
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="colorBlack">Communities</h6>
+        </div>
+        <div class="col-sm-6 addBtn">
+          <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+            (click)="addCommunities()">
+            <i class="fa fa-plus"></i> Add</button>
+          <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+            (click)="openFile(file)"><i class="fa fa-upload" aria-hidden="true"></i> Upload
+            <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+              (change)="handle($event)"></button>
+        </div>
+        <div class="modal fade" id="addCmntys" role="dialog">
+          <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onCmntyFormSubmit(cmntyForm.value)" #cmntyForm="ngForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Community</h5>
+                </div>
+                <div class="modal-body text-left">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <input type="text" placeholder="Name" id="cmntyNm" name="cmntyNm" matInput
+                          [disabled]="readonly && !hasPermission" required (keypress)="keyPress($event)" maxlength="30"
+                          [(ngModel)]="cmntyNm">
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly && !hasPermission" placeholder="Status"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="cmntyStsKey" id="cmntyStsKey"
+                          required [(ngModel)]="cmntyStsKey">
+                          <mat-option *ngFor="let sts of status" [value]="sts.codeKey">
+                            {{sts.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <mat-select [disabled]="isEdit || readonly && !hasPermission" placeholder="Portfolio"
+                          [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="portSeq" id="portSeq" required
+                          [(ngModel)]="portSeq">
+                          <mat-option *ngFor="let port of ports" [value]="port.portSeq">
+                            {{port.portNm}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-5">
+                      <mat-form-field>
+                        <input type="text" placeholder="Description" id="cmntyCmnt" name="cmntyCmnt" matInput
+                          [disabled]="readonly && !hasPermission" [(ngModel)]="cmntyCmnt" (keypress)="keyPress($event)"
+                          maxlength="50">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" [disabled]="!cmntyForm.form.valid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Portfolio</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cmnty of pagedItems">
+              <td>{{cmnty.cmntyCd}}</td>
+              <td>{{cmnty.cmntyNm}}</td>
+              <td>{{cmnty.cmntyCmnt}}</td>
+              <td>{{findPortNm(cmnty.portSeq)}}</td>
+              <td>{{findValueFromKey(cmnty.cmntyStsKey, status)}}</td>
+              <td>
+                <button [disabled]="readonly && !hasPermission" (click)="editCommunity(cmnty)"
+                  class="iconBtn simplebtn ">
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <button [disabled]="readonly && !hasPermission" (click)="deleteCommunity(cmnty)"
+                  class="iconBtn delBtn simplebtn ">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      
+      <nav aria-label="Page navigation ">
+        <ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+          <li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+            <a class="page-link" (click)="setPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+      
+    <button (click)="prevScreen()" type="button" class="btn btn-primary"><i
+      class="fa fa-chevron-left"></i> Back</button>
+      <button (click)="continueClicked()" type="button" class="btn btn-primary">Continue</button>
+    </div>
+  </div>
+</main>

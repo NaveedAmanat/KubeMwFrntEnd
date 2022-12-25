@@ -1,0 +1,153 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="content">
+      <h6 class="mt-3">Add Rule</h6>
+      <div class="cRow">
+        <div class="cCol1">
+          <label for="id">Rule ID:</label>
+          <input type="text" class="form-control"
+                 name="id" id="id"
+                 required minlength="6" readonly
+                 [(ngModel)]="rule.id"
+                 #id="ngModel">
+        </div>
+        <div class="cCol1">
+          <label for="name">Rule Name:</label>
+          <input type="text" class="form-control" name="name" id="name"
+                 required
+                 [(ngModel)]="rule.name"
+                 #name="ngModel">
+        </div>
+        <div class="cCol1">
+          <label for="category">Rule Ctegory:</label>
+          <select class="form-control" id="category" name="category" required
+                  [(ngModel)]="rule.category"
+                  #category="ngModel">
+            <option *ngFor="let category of categories" [value]="category">{{category}}</option>
+          </select>
+        </div>
+        <div class="cCol1">
+          <label for="status">Status:</label>
+          <select class="form-control" id="status" name="status" required
+                  [(ngModel)]="rule.status"
+                  #status="ngModel">
+            <option value="Active">Active</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cRow">
+        <div class="cCol6">
+          <label for="condition">Rule Criteria:</label>
+          <button class="btn pull-right btn-dots" data-toggle="modal" data-target="#cmmoncodes"></button>
+          <textarea class="form-control" id="condition"
+                    name="condition" [(ngModel)]="rule.condition"
+                    #condition="ngModel"></textarea>
+          <div class="modal fade" id="cmmoncodes" role="dialog">
+            <div class="modal-dialog mymodal big">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Rule Condition</h5>
+                </div>
+                <div class="modal-body">
+                  <div class="p10">
+                    <div class="row">
+                      <div class="col-md-3 mb-2">
+                        <div class="filter noborder">
+                          <h6 class="border-title">Data Items</h6>
+                          <a href="#." class="acc_trigger inactive-header active-header">Client</a>
+                          <div class="collapse acc_container" style="display: block;">
+                            <div class="listmenu">
+                              <ul>
+                                <li>Gender</li>
+                                <li>Merital Status</li>
+                              </ul>
+                            </div>
+                          </div>
+                          <a href="#." class="acc_trigger inactive-header">Credit Information</a>
+                          <div class="collapse acc_container">
+                            <div class="listmenu">
+                              <ul>
+                                <li>Approved Amount</li>
+                                <li>Requested Amount</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-9 mt-3">
+                        <div class="cRow">
+                          <textarea class="form-control large" placeholder="Days to complete < 8"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-1 mt-3">
+        <label>Select Approver:</label>
+      </div>
+      <div class="checkbox mb-1">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" id="checkbox1" name="coBorrower" class="custom-control-input">
+          <label class="custom-control-label" for="checkbox1"> Regional Manager</label>
+        </div>
+      </div>
+      <div class="checkbox mb-1">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" id="checkbox2" name="coBorrower" class="custom-control-input">
+          <label class="custom-control-label" for="checkbox2"> Area Manager</label>
+        </div>
+      </div>
+      <div class="checkbox mb-1">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" id="checkbox3" name="coBorrower" class="custom-control-input">
+          <label class="custom-control-label" for="checkbox3"> Branch Manager</label>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <button class="btn btn-primary btn-min">Continue</button>
+        <button class="btn btn-default btn-min">Save</button>
+      </div>
+
+    </div>
+  </div>
+</main>
+<script>
+  $('.date').datepicker({
+    //format: ‘dd/mm/yyyy’;
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('.acc_trigger').toggleClass('inactive-header');
+
+    $('.acc_trigger:first').addClass('active-header').next().show();
+    $('.acc_trigger').click(function () {
+      if ($(this).next().is(':hidden')) {
+        $('.active-header').toggleClass('active-header').toggleClass('inactive-header').next().slideToggle().toggleClass('open-content');
+        $(this).toggleClass('active-header').toggleClass('inactive-header');
+        $(this).next().slideToggle().toggleClass('open-content');
+      }
+
+      else {
+        $(this).toggleClass('active-header').toggleClass('inactive-header');
+        $(this).next().slideToggle().toggleClass('open-content');
+      }
+    });
+
+    return false;
+  });
+</script>

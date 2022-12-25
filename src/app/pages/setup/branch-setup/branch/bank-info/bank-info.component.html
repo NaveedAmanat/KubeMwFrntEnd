@@ -1,0 +1,123 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">Branch: {{brmodel.brnchSeq}} - {{brmodel.brnchNm.toUpperCase()}}</h6>
+      <form (ngSubmit)="onBankAcctSetFormSubmit(bankAcctSetForm.value)" #bankAcctSetForm="ngForm">
+        <h6 class="mt-3">Bank Account Set</h6>
+        <div class="cRow">
+          <div class="cCol2">
+            <mat-form-field>
+              <mat-select placeholder="Bank Name" [(ngModel)]="brmodel.bankNm" [errorStateMatcher]="matcher"
+                [disabled]="false" name="bankNm" required>
+                <mat-option *ngFor="let banks of banks" [value]="banks.refCdDscr">
+                  {{banks.refCdDscr}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="cCol2">
+            <mat-form-field>
+              <input type="text" placeholder="Bank Address" id="bankBrnch" name="bankBrnch" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.bankBrnch" required
+                (keypress)="keyPress($event)" maxlength="200">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <button (click)="goToBanks()" type="button" class="btn btn-primary">Add Bank</button>
+            <p id="bank"></p>
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol2">
+            <mat-form-field>
+              <input type="text" placeholder="Account Name" id="acctNm" name="acctNm" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.acctNm" required
+                (keypress)="keyPress($event)" maxlength="50">
+            </mat-form-field>
+          </div>
+          <div class="cCol2">
+            <mat-form-field>
+              <input type="text" placeholder="Account Number" id="acctNum" name="acctNum" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.acctNum" required
+                (keypress)="accNumber($event)" maxlength="30">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol2">
+            <mat-form-field>
+              <input type="text" placeholder="IBAN" id="iban" name="iban" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.iban" required
+                (keypress)="ibanNumber($event)" maxlength="25">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Bank Code" id="bankCode" name="bankCode" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.bankCode" required
+                (keypress)="onlyNumbers($event)" maxlength="5">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="IBFT Bank Code" id="ibftBankCode" name="ibftBankCode" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.ibftBankCode"
+                (keypress)="onlyNumbers($event)" maxlength="5">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <button class="btn btn-default" [disabled]="!hasPermission" type="submit">Save</button>
+
+      </form>
+      <form (ngSubmit)="onBankRemitFormSubmit(bankRemitForm.value)" #bankRemitForm="ngForm">
+
+        <h6 class="mt-3">Disbursement Mode</h6>
+        <div class="cRow">
+          <div class="cCol2">
+            <mat-form-field>
+              <input type="text" placeholder="Branch" id="remitBankBrnch" name="remitBankBrnch" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.remitBankBrnch" required
+                (keypress)="keyPress($event)" maxlength="150">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <mat-select placeholder="Payment Type" [(ngModel)]="brmodel.pymtTypSeq" [errorStateMatcher]="matcher"
+                [disabled]="false" name="pymtTypSeq" required>
+                <mat-option *ngFor="let pymt of pymtTyps" [value]="pymt.typSeq">
+                  {{pymt.typStr}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Bank Code" id="remitIban" name="remitIban" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.remitIban" required
+                (keypress)="onlyNumbers($event)" maxlength="5">
+            </mat-form-field>
+
+          </div>
+          <div class="cCol1">
+            <button (click)="goToPaymentTypes()" type="button" class="btn btn-primary">Add Payment Type</button>
+            <p id="pymtTyp"></p>
+          </div>
+        </div>
+        <button class="btn btn-default" [disabled]="!hasPermission" type="submit">Save</button>
+      </form>
+    </div>
+
+    <div class="cRow">
+      <div class="cCol2">
+        <button (click)="prevScreen()" type="button" class="btn btn-primary"><i class="fa fa-chevron-left"></i>
+          Back</button>
+        <button *ngIf="!editBranch" (click)="doneClicked()" type="button" class="btn btn-primary">Done</button>
+        <button *ngIf="editBranch" (click)="doneClicked()" type="button" class="btn btn-primary">Update
+          Relations</button>
+      </div>
+    </div>
+  </div>
+</main>

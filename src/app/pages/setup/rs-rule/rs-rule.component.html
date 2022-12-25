@@ -1,0 +1,356 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-4">
+              <!-- showField -->
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer">
+                  Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <!-- showFields & applyFilter -->
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float: left">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float: right">
+                    <button class="btn btn-primary btn-lg" type="submit">
+                      Search
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="col-sm-8 addBtn">
+              <button type="button" class="btn btn-primary btn-sm" (click)="addRsRule()" data-toggle="tooltip" title="Add New Rescheduling Rule">
+                <i class="fa fa-plus"></i> Add</button>
+            </div>
+
+            <!-- ==================== Add New Rescheduling Rule ==================== -->
+            <div class="modal fade" id="addRsRule" role="dialog">
+              <div class="modal-dialog mymodal">
+
+                <!-- Modal content-->
+                <form (ngSubmit)="onRsRuleFormSubmit(rsRuleForm.value)" [formGroup]="rsRuleForm">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 *ngIf="!onRsRuleEdit" class="modal-title">New Rescheduling Rule</h5>
+                      <h5 *ngIf="onRsRuleEdit" class="modal-title">Update Rescheduling Rule</h5>
+                    </div>
+                    <div class="modal-body text-left">
+                      <div class="cRow">
+                        <div class="cCol4">
+                          <mat-form-field>
+                            <input type="text" placeholder="Rule Description" id="ruleDesc" name="ruleDesc" matInput
+                              required maxlength="30" formControlName="ruleDesc" >
+                          </mat-form-field>
+                        </div>
+                        <div class="cCol2">
+                          <mat-form-field>
+                            <input type="text" placeholder="Jump Months" id="jumpMonths" name="jumpMonths" matInput required
+                              (keypress)="onlyNumbers($event)" maxlength="2" formControlName="jumpMonths"
+                              >
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="cRow">
+                        <h6 style="color:black">Principle Amount</h6>
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="principalAmount" name="principalAmount"
+                                class="custom-control-input" formControlName="principalAmount">
+                              <label class="custom-control-label" for="principalAmount">Relief</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="cRow">
+                        <h6 style="color:black">Service Charges</h6>
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="serviceCharges" name="serviceCharges"
+                               class="custom-control-input"
+                                formControlName="serviceCharges">
+                              <label class="custom-control-label" for="serviceCharges">Relief</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="scChargeMore" name="scChargeMore" 
+                                class="custom-control-input" formControlName="scChargeMore">
+                              <label class="custom-control-label" for="scChargeMore">Charge Extra</label>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="scPerInst" name="scPerInst" 
+                                class="custom-control-input" formControlName="scPerInst">
+                              <label class="custom-control-label" for="scPerInst">Per Installment</label>
+                            </div>
+                          </div>
+                        </div> -->
+                        <!-- <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="scNewIrrRate" name="scNewIrrRate" 
+                                class="custom-control-input" formControlName="scNewIrrRate">
+                              <label class="custom-control-label" for="scNewIrrRate">New IRR Rate</label>
+                            </div>
+                          </div>
+                        </div> -->
+                      </div>
+                      <div class="cRow">
+                        <h6 style="color:black">Insurance Charges </h6>
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="insuranceCharges" name="insuranceCharges"
+                                 class="custom-control-input"
+                                formControlName="insuranceCharges">
+                              <label class="custom-control-label" for="insuranceCharges">Relief</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="insChargeMore" name="insChargeMore" 
+                                class="custom-control-input" formControlName="insChargeMore">
+                              <label class="custom-control-label" for="insChargeMore">Charge Extra</label>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- <div class="cCol2">
+                          <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="insPerInst" name="insPerInst" 
+                                class="custom-control-input" formControlName="insPerInst">
+                              <label class="custom-control-label" for="insPerInst">Per Installment</label>
+                            </div>
+                          </div>
+                        </div> -->
+                        <div class="cCol2">
+                          <!-- <mat-form-field>
+                            <input type="text" placeholder="New Amount" id="insNewAmount" name="insNewAmount" matInput
+                              (keypress)="onlyNumbers($event)" maxlength="3" formControlName="insNewAmount" >
+                          </mat-form-field> -->
+                          <!-- <div class="checkbox mb-1 d-inline-block">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="insNewAmount" name="insNewAmount" class="custom-control-input" formControlName="insNewAmount">
+                              <label class="custom-control-label" for="insNewAmount">New Amount</label>
+                            </div>
+                          </div> -->
+                        </div>
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol3">
+                          <mat-form-field>
+                            <mat-select placeholder="Select Category" formControlName="loanReschdCategory"
+                              [errorStateMatcher]="matcher" name="loanReschdCategory" id="loanReschdCategory" required>
+                              <mat-option *ngFor="let ref of loanReschdCategory" [value]="ref.codeKey">
+                                {{ref.codeValue}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="cCol3">
+                          <mat-form-field>
+                            <mat-select placeholder="Select Type" formControlName="loanRechdType"
+                              [errorStateMatcher]="matcher" name="loanRechdType" id="loanRechdType" required>
+                              <mat-option *ngFor="let ref of loanRechdType" [value]="ref.codeKey">
+                                {{ref.codeValue}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button type="submit" class="btn btn-primary btn-min" [disabled]="!rsRuleForm.valid">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ================== DATA TABLE ================== -->
+
+          <div class="table-responsive mb-md-5">
+            <table class="table" id="myTable" mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows
+              matSort>
+
+              <!-- Category Column -->
+              <ng-container matColumnDef="ruleSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Rule Seq.</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.ruleSeq }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="ruleDesc">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Rule Description</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.ruleDesc }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="principalAmount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Principal Amount Relief</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.principalAmount == 0 ? "No" : "Yes" }}
+                </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="serviceCharges">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Service Charges Relief</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.serviceCharges == 0 ? "No" : "Yes" }}
+                </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="scChargeMore">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Service Charges Extra</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.scChargeMore == 0 ? "No" : "Yes" }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <!-- <ng-container matColumnDef="scPerInst">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Service Charges Per Installment</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.scPerInst == 0 ? "No" : "Yes" }}</td>
+              </ng-container> -->
+
+              <!-- Category Column -->
+              <!-- <ng-container matColumnDef="scNewIrrRate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Service Charges New IRR Rate</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.scNewIrrRate == 0 ? "No" : "Yes" }}</td>
+              </ng-container> -->
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="insuranceCharges">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Insurance Charges Relief</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.insuranceCharges == 0 ? "No" : "Yes" }}
+                </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="insChargeMore">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Insurance Charges Extra</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.insChargeMore == 0 ? "No" : "Yes" }}
+                </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <!-- <ng-container matColumnDef="insPerInst">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Insurance Per Installment</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.insPerInst == 0 ? "No" : "Yes" }}</td>
+              </ng-container> -->
+
+              <!-- Description Column -->
+              <!-- <ng-container matColumnDef="insNewAmount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Insurance New Amount</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.insNewAmount }}</td>
+              </ng-container> -->
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="loanReschdCategory">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ findCategoryValueByKey(rule.loanReschdCategory) }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="loanRechdType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ findTypeValueByKey(rule.loanRechdType) }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="jumpMonths">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Jump Months</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">{{ rule.jumpMonths }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="crntRecFlg">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Enabled</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">
+                  <i class="fa fa-check colorGreen" *ngIf="rule.crntRecFlg == 1"></i>
+                  <i class="fa fa-close colorRed" *ngIf="rule.crntRecFlg == 0"></i>
+                </td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                <td mat-cell *matCellDef="let rule" class="text-center">
+                  <div>
+                    <!-- Edit button -->
+                    <!-- <a (click)="editRsRule(rule)" href="javascript:void(0);" class="iconBtn" data-toggle="tooltip" title="Edit Rule"><i
+                        class="fa fa-pencil"></i></a> -->
+                    <a *ngIf="rule.crntRecFlg == 1" (click)="disableRsRule(rule)" class="iconBtn" data-toggle="tooltip" title="Disable Rule"><i class="fa fa-ban"></i></a>
+                    <a *ngIf="rule.crntRecFlg == 0" (click)="disableRsRule(rule)" class="iconBtn" data-toggle="tooltip" title="Enable Rule"><i class="fa fa-ban"></i></a>
+                    <!-- <a (click)="deleteRsRule(rule)" class="iconBtn delBtn" data-toggle="tooltip" title="Delete Rule"><i class="fa fa-trash-o"></i></a> -->
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-------------------->
+
+              <!-- Header row first group
+              <ng-container matColumnDef="header-row-first-group">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">
+                
+                </th>
+              </ng-container>
+              
+              <!- Header row second group ->
+              <ng-container matColumnDef="header-row-second-group">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="4"> Service Charges </th>
+              </ng-container>
+
+              <!- Header row third group ->
+              <ng-container matColumnDef="header-row-third-group">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="4"> Insurance Charges </th>
+              </ng-container>
+
+              <!- Header row fourth group ->
+              <ng-container matColumnDef="header-row-fourth-group">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">  </th>
+              </ng-container>
+              
+              <tr mat-header-row *matHeaderRowDef="['header-row-first-group', 'header-row-second-group', 'header-row-third-group', 'header-row-fourth-group']" class="thead-light thead-blue"></tr> -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

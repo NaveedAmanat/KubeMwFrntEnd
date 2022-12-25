@@ -1,0 +1,148 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Expirng Cnic
+                </h6>
+              </div>
+            </div>
+            <!-- <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" type="button" (click)="openExpiringModal()"><i
+                  class="fa fa-plus"></i>
+                Add</button>
+            </div> -->
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>Loan No.</th>
+                  <th>CNIC</th>
+                  <th>Client Name</th>                  
+                  <th>Client Expiry Date</th>
+                  <th>CNIC Front</th>
+                  <th>CNIC Back</th>                  
+                  <th>Relation</th>
+                  <th>Status</th>
+                  <th>Comments</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let client of allClientsCnicExpiry">
+                  <td>{{client.loanAppSeq}}</td>
+                  <td>{{client.cnicNum}}</td>
+                  <td>{{client.clntNm}}</td>
+                  <td>{{client.cnicExpryDt | date:'dd-MM-yyyy'}}</td>
+                  <td><img [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + client.cnicFrntPic)"
+                      (click)="loadModalForFrontPic(client)" width="25" height="20" />
+                  </td>
+                  <td><img [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,'+ client.cnicBckPic)"
+                      (click)="loadModalForBackPic(client)" width="25" height="20" />
+                  </td>
+                  <td>{{client.relTyp}}</td>
+                  <td>{{client.status}}</td>
+                  <td>{{client.cmnt}}</td>
+                  <td>
+                    <a data-toggle="tooltip" title="Details" class="iconBtn" (click)="openExpiringModal(client)"><i
+                        class="fa fa-calendar"></i></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!------  Set Cnic Expiring modal   -------------->
+
+      <div class="modal fade" id="expiringCninc" role="dialog">
+
+        <div class="modal-dialog big mymodal">
+
+          <form (ngSubmit)="onSubmitExpiringCnic()" [formGroup]="expiringCnicForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Expiring Cnic</h5>
+              </div>
+              <div class="modal-body">
+
+                <div class="cRow">
+                  <!-- <div class="cCol3">
+                    <mat-form-field>
+                      <input matInput required formControlName="cnicExpryDt" placeholder="CNIC Expiry:"
+                        [matDatepicker]="picker1" />
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                    </mat-form-field>
+                  </div> -->
+                  <!-- <div class="cCol2">
+                    <mat-form-field>
+                      <input matInput formControlName="attachCnicFront" placeholder="Attach CNIC Front">
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input matInput formControlName="attachCnicBack" placeholder="Attach CNIC Back">
+                    </mat-form-field>
+                  </div> -->
+
+                  <div class="col-full">
+                    <label>Comments:</label>
+                    <!-- <mat-form-field>
+                      <input matInput formControlName="cmnt" placeholder="Comments">
+                    </mat-form-field> -->
+                    <textarea class="form-control" cols="6" rows="5" formControlName="cmnt" placeholder="Enter Comments"
+                      [ngClass]="{ 'is-invalid':expiringCnicFormControls.cmnt.errors && expiringCnicFormControls.cmnt.touched,
+                        'is-valid':expiringCnicFormControls.cmnt.valid}"></textarea>
+
+                    <div *ngIf=" expiringCnicFormControls.cmnt.errors" class="invalid-feedback">
+                      <div
+                        *ngIf="expiringCnicFormControls.cmnt.errors.required && expiringCnicFormControls.cmnt.touched">
+                        Comments are <strong>required</strong></div>
+                    </div>
+                    <!-- <div *ngIf="expiringCnicFormControls.cmnt.valid" class="valid-feedback">
+                      <div *ngIf="expiringCnicFormControls.cmnt.valid && expiringCnicFormControls.cmnt.touched">
+                        <strong>Success!</strong> You've done it.
+                      </div>
+                    </div> -->
+                  </div>
+                </div>
+
+                <div class="modal-footer text-center">
+                  <button type="button" class="btn btn-primary btn-min"
+                    (click)="onApproveExpiringCnic()">Approve</button>
+
+                  <button type="button" class="btn btn-primary btn-min" (click)="onRejectExpiringCnic()">Reject</button>
+
+                  <button type="button" class="btn btn-primary btn-min" (click)="onSendBackExpiringCnic()">Send
+                    Back</button>
+
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div id="myModal" class="modal">
+    <span (click)="closeModal()" class="close">&times;</span>
+    <img class="modal-content" [src]="modelSrc">
+  </div>
+  <div id="myModalBack" class="modal">
+    <span (click)="closeModalBack()" class="close">&times;</span>
+    <img class="modal-content" [src]="modelSrcBack">
+  </div>
+
+</main>

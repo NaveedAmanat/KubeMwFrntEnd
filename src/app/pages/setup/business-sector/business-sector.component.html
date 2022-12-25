@@ -1,0 +1,106 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="mysearchbox">
+              <h6 class="d-inline-block searchshow">Business Sector
+                <!-- <i class="fa fa-search"></i> -->
+              </h6>
+              <div class="mysearch">
+                <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 addBtn">
+            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#businessector" (click)="onAddNewClick()"><i class="fa fa-plus"></i> Add</button>
+          </div>
+          <div class="modal fade" id="businessector" role="dialog">
+            <div class="modal-dialog big mymodal"> 										
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Business Sector</h5>
+                </div>
+                <form [formGroup]="businessSectorForm" (ngSubmit)="addBusinessSectorSubmit()">
+                <div class="modal-body">
+                <ul class="infolist">
+                </ul>
+                  <div class="cRow">
+                      <div class="cCol2">
+                          <label>Business Sector Name</label>
+                          <input type="text" formControlName="bizSectNm" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.bizSectNm.errors }" />
+                          <div *ngIf="submitted && form.bizSectNm.errors" class="invalid-feedback">
+                              <div *ngIf="form.bizSectNm.errors.required">Business Sector Name is required</div>
+                          </div>
+                        </div>
+
+                        <div class="cCol2">
+                            <label>Sort Order</label>
+                            <input type="text" formControlName="bizSectSortOrdr" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.bizSectSortOrdr.errors }" />
+                            <div *ngIf="submitted && form.bizSectSortOrdr.errors" class="invalid-feedback">
+                                <div *ngIf="form.bizSectSortOrdr.errors.required">Sort Order is required</div>
+                            </div>
+                          </div>
+  
+                        <div class="cCol2">
+                        <label>Status:</label>
+                        <select type="" formControlName="bizSectStsKey"class="form-control"  id="status" [ngClass]="{ 'is-invalid': submitted && form.bizSectStsKey.errors }">
+                            <option *ngFor="let status of statusArray" [value]="status.codeKey" >{{status.codeValue}}</option>
+                          </select>
+                        <div *ngIf="submitted && form.bizSectStsKey.errors" class="invalid-feedback">
+                            <div *ngIf="form.bizSectStsKey.errors.required">Status is required</div>
+                        </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-primary btn-min" (click)="addBusinessSectorSubmit()">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+          <div class="table-responsive">
+        <table class="table" id="myTable">
+          <thead class="thead-light">
+            <tr>
+              <th>Business Sector ID</th>
+              <th>Business Sector Name</th>
+              <th>Sort Order</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+</thead>
+<tbody>	
+  <tr *ngFor="let businessSector of businessSectors">
+    <td>{{businessSector.bizSectId}}</td> 
+    <td><a [routerLink]="['/setup/business-activity']" (click)="onClick(businessSector.bizSectSeq)" >{{businessSector.bizSectNm}}</a></td>
+    <td>{{businessSector.bizSectSortOrdr}}</td> 
+    <td>{{findValueByKey(businessSector.bizSectStsKey)}}</td>
+    <td>						
+      <a  class="iconBtn" (click)="onEdit(businessSector)"><i class="fa fa-pencil"></i></a>
+      <a  class="iconBtn delBtn" (click)="onDelete(businessSector.bizSectSeq)"><i class="fa fa-trash-o"></i></a>
+      <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+    </td>
+  </tr>
+</tbody>
+</table>
+      </div>	
+      <!-- <div class="back">
+        <a href="setup.html" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+      </div> -->
+          
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</main>

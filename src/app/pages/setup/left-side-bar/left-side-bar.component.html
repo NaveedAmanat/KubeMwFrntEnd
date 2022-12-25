@@ -1,0 +1,37 @@
+
+  <div class="leftSideBar">
+    <h6><i class="fa fa-sliders fa-lg"></i> Setup</h6>
+    <div class="leftmenu">
+      <ul>
+        <li  [routerLinkActive]="['active']"  *ngIf="hasSubMod('/common-codes')" ><a [routerLink]="['/setup/common-codes']" >{{getName("/common-codes")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/organization')" ><a [routerLink]="['/setup/organization']" >{{getName("/organization")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/geography')" ><a [routerLink]="['/setup/geography']" >{{getName("/geography")}}</a></li>
+        <!-- Added by Areeba -->
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/city')" ><a [routerLink]="['/setup/city']">{{getName("/city")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/branch-setup')" ><a [routerLink]="['/setup/branch-setup']">{{getName("/branch-setup")}}</a></li>
+        <!-- Ended by Areeba -->
+        <!-- <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/overdue')" ><a [routerLink]="['/setup/approval-workflow']" >Approval Workflow</a></li> -->
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/communication-workflow')" ><a [routerLink]="['/setup/communication-workflow']">{{getName("/communication-workflow")}}</a></li>
+        <li  [routerLinkActive]="['active']"  *ngIf="hasSubMod('/products')" ><a [routerLink]="['/setup/products']" >{{getName("/products")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/rules')" ><a [routerLink]="['/setup/rules']" >{{getName("/rules")}}</a></li>
+
+        <!-- Added by Areeba - Rescheduling Rules - Dated - 27-09-2022 -->
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/rs-rule')" ><a [routerLink]="['/setup/rs-rule']" >{{getName("/rs-rule")}}</a></li>
+
+        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/user-managment')"><a  [routerLink]="['/setup/user-managment']">{{getName("/user-managment")}}</a></li>
+        <!-- Added by Areeba - HR Travelling SCR - Dated - 07-06-2022 -->
+        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/travelling')"><a  [routerLink]="['/setup/travelling']">{{getName("/travelling")}}</a></li>
+
+        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/Questionnaire')"><a  [routerLink]="['/setup/Questionnaire']">{{getName("/Questionnaire")}}</a></li>
+        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/health-insurance-plan')"><a  [routerLink]="['/setup/health-insurance-plan']">{{getName("/health-insurance-plan")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/payment-types')" ><a [routerLink]="['/setup/payment-types']">{{getName("/payment-types")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/expense-types')" ><a [routerLink]="['/setup/expense-types']">{{getName("/expense-types")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/expense-types')" ><a [routerLink]="['/setup/charge-types']">{{getName("/charge-types")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/recovery-types')" ><a [routerLink]="['/setup/recovery-types']">{{getName("/recovery-types")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/business-sector')" ><a [routerLink]="['/setup/business-sector']">{{getName("/business-sector")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/tag')" ><a [routerLink]="['/setup/tag']">{{getName("/tag")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/file-upload')" ><a [routerLink]="['/setup/file-upload']">{{getName("/file-upload")}}</a></li>
+        <li [routerLinkActive]="['active']"  *ngIf="hasSubMod('/holidays-exemption')" ><a [routerLink]="['/setup/holidays-exemption']">{{getName("/holidays-exemption")}}</a></li>
+      </ul>
+    </div>
+  </div>

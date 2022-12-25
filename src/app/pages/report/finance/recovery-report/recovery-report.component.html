@@ -1,0 +1,60 @@
+<div class="col-md-9">
+  <div class="content mb-md-5">
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="mysearchbox">
+          <h6 class="d-inline-block searchshow">Recovery Report <i class="fa fa-print"> </i></h6>
+          <div class="mysearch">
+            <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..."
+              title="Type in a name">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <form class="md-float-material" [formGroup]="ngForm" (ngSubmit)="recoveryReport()">
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol6-col">
+
+              <!-- <mat-form-field>
+                <mat-select placeholder="Report Type" formControlName="branch">
+                  <mat-option *ngFor="let b of branchs" [value]="b.brnchSeq">
+                    {{b.brnchNm}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field> -->
+
+              <mat-form-field>
+                <input matInput required formControlName="frmDt" placeholder="From Date:" [matDatepicker]="picker1"
+                  disabled readonly />
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput required formControlName="toDt" [min]="ngForm.controls['frmDt'].value"
+                  placeholder="To Date:" [matDatepicker]="picker2" disabled readonly />
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+              </mat-form-field>
+
+              <mat-radio-group formControlName="isXls">
+                <mat-radio-button value="1">Excel </mat-radio-button>
+                <mat-radio-button class="ml-3" checked value="0">PDF </mat-radio-button>
+              </mat-radio-group>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print</button>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

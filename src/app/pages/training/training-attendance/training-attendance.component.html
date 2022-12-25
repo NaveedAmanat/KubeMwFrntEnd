@@ -1,0 +1,60 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Training Attendance
+                </h6>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <!-- <button class="btn btn-primary btn-sm" type="button" (click)="openTrianingModel()"><i
+                  class="fa fa-plus"></i>
+                Add</button> -->
+            </div>
+          </div>
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let participant of allParticipants; let index">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{participant.trngDt | date}}
+                </mat-panel-title>
+                <!-- <mat-panel-description>
+                  Attendance Date
+                </mat-panel-description> -->
+              </mat-expansion-panel-header>
+
+
+              <mat-selection-list #list="matSelectionList" [disabled]="_listDisabled">
+                <mat-list-option *ngFor="let part of participant.participants" [selected]="part.atndFlg"
+                  (click)="onSubmitAttendance(list,part)" [value]="part.atndFlg">
+                  <p matLine>{{part.prtcpntName}}</p>
+                  <p matLine>{{part.prtcpntCnicNum}} </p>
+                </mat-list-option>
+              </mat-selection-list>
+
+            </mat-expansion-panel>
+            <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Self aware panel
+                </mat-panel-title>
+                <mat-panel-description>
+                  Currently I am {{panelOpenState ? 'open' : 'closed'}}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <p>I'm visible because I am open</p>
+            </mat-expansion-panel> -->
+          </mat-accordion>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

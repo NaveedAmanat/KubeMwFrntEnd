@@ -1,0 +1,135 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Question
+                  <!-- <i class="fa fa-search"></i> -->
+                </h6>
+                <div class="mysearch">
+                  <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#businessector" (click)="onAddNewClick()"><i
+                  class="fa fa-plus"></i> Add</button>
+            </div>
+            <div class="modal fade" id="businessector" role="dialog">
+              <div class="modal-dialog big mymodal">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Question</h5>
+                  </div>
+                  <form [formGroup]="questionForm" (ngSubmit)="addQuestionSubmit()">
+                    <div class="modal-body">
+                      <ul class="infolist">
+                      </ul>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <label>Question Type:</label>
+                          <select type="" formControlName="qstTypKey" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.qstTypKey.errors }">
+                            <option *ngFor="let type of typeArray" [value]="type.codeKey">{{type.codeValue}}</option>
+                          </select>
+                          <div *ngIf="submitted && form.qstTypKey.errors" class="invalid-feedback">
+                            <div *ngIf="form.qstTypKey.errors.required">Question Type is required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>Question Categroy:</label>
+                          <select type="" formControlName="qstCtgryKey" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.qstCtgryKey.errors }">
+                            <option *ngFor="let category of categoryArray" [value]="category.codeKey">{{category.codeValue}}</option>
+                          </select>
+                          <div *ngIf="submitted && form.qstCtgryKey.errors" class="invalid-feedback">
+                            <div *ngIf="form.qstCtgryKey.errors.required">Question Categroy is required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>Question</label>
+                          <input type="text" formControlName="qstStr" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.qstStr.errors }" />
+                          <div *ngIf="submitted && form.qstStr.errors" class="invalid-feedback">
+                            <div *ngIf="form.qstStr.errors.required">Question String is required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                            <label>Sort Order</label>
+                            <input type="text" (keypress)="onlyNumbers($event)" formControlName="qstSortOrdr" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.qstSortOrdr.errors }" />
+                            <div *ngIf="submitted && form.qstSortOrdr.errors" class="invalid-feedback">
+                              <div *ngIf="form.qstSortOrdr.errors.required">Sort Order is required</div>
+                            </div>
+                          </div>
+                        <div class="cCol2">
+                          <label>Status:</label>
+                          <select type="" formControlName="qstStsKey" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.qstStsKey.errors }">
+                            <option *ngFor="let status of statusArray" [value]="status.codeKey">{{status.codeValue}}</option>
+                          </select>
+                          <div *ngIf="submitted && form.qstStsKey.errors" class="invalid-feedback">
+                            <div *ngIf="form.qstStsKey.errors.required">Status is required</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button type="button" class="btn btn-primary btn-min" (click)="addQuestionSubmit()">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>Question ID</th>
+                  <th>Question Category</th>
+                  <th>Sort Order</th>
+                  <th>Question Type</th>
+                  <th>Question</th>
+                  <th>Answers</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let question of questions">
+                  <td>{{question.qstId}}</td>
+                  <td>{{findCategoryById(question.qstCtgryKey)}}</td>
+                  <td>{{question.qstSortOrdr}}</td>
+                  <td>{{findTypeById(question.qstTypKey)}}</td>
+                  <td>{{question.qstStr}}</td>
+                  <td>
+                    <div *ngIf="question.qstTypKey===202"><a [routerLink]="['/setup/answer']" (click)="onClick(question.qstSeq)"><span
+                      class="ansbtn"></span></a></div>
+                    <div *ngIf="question.qstTypKey!==202"><span
+                          class="ansbtn grey"></span></div>
+
+                  </td>
+                  <td>{{findValueByKey(question.qstStsKey)}}</td>
+                  <td>
+                    <a class="iconBtn" (click)="onEdit(question)"><i class="fa fa-pencil"></i></a>
+                    <a class="iconBtn delBtn" (click)="onDelete(question.qstSeq)"><i class="fa fa-trash-o"></i></a>
+                    <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="back">
+          <a href="setup.html" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+        </div> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

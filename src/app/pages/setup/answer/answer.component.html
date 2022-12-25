@@ -1,0 +1,105 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="mysearchbox">
+              <h6 class="d-inline-block searchshow">Answer
+                <!-- <i class="fa fa-search"></i> -->
+              </h6>
+              <div class="mysearch">
+                <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 addBtn">
+            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#businessector" (click)="onAddNewClick()"><i class="fa fa-plus"></i> Add</button>
+          </div>
+          <div class="modal fade" id="businessector" role="dialog">
+            <div class="modal-dialog big mymodal"> 										
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Answer</h5>
+                </div>
+                <form [formGroup]="answerForm" (ngSubmit)="addAnswerSubmit()">
+                <div class="modal-body">
+                <ul class="infolist">
+                </ul>
+                  <div class="cRow">
+                      <div class="cCol2">
+                          <label>Answer</label>
+                          <input type="text" formControlName="answrStr" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.answrStr.errors }" />
+                          <div *ngIf="submitted && form.answrStr.errors" class="invalid-feedback">
+                              <div *ngIf="form.answrStr.errors.required">Answer String is required</div>
+                          </div>
+                        </div>
+ 
+                        <div class="cCol2">
+                            <label>Answer Score</label>
+                            <input type="text" formControlName="answrScore" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.answrScore.errors }" />
+                            <div *ngIf="submitted && form.answrScore.errors" class="invalid-feedback">
+                                <div *ngIf="form.answrScore.errors.required">Answer Score is required</div>
+                            </div>
+                          </div>      
+                    <div class="cCol2">
+                        <label>Status:</label>
+                        <select type="" formControlName="answrStsKey"class="form-control"  id="status" [ngClass]="{ 'is-invalid': submitted && form.answrStsKey.errors }">
+                            <option *ngFor="let status of statusArray" [value]="status.codeKey" >{{status.codeValue}}</option>
+                          </select>
+                        <div *ngIf="submitted && form.answrStsKey.errors" class="invalid-feedback">
+                            <div *ngIf="form.answrStsKey.errors.required">Status is required</div>
+                        </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-primary btn-min" (click)="addAnswerSubmit()">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+          <div class="table-responsive">
+        <table class="table" id="myTable">
+          <thead class="thead-light">
+            <tr>
+              <th>Answer ID</th>
+              <th>Answer Text</th>
+              <th>Score</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+</thead>
+<tbody>	
+  <tr *ngFor="let answer of answers">
+    <td>{{answer.answrId}}</td> 
+    <td>{{answer.answrStr}}</td>
+    <td>{{answer.answrScore}}</td>
+    <td>{{findValueByKey(answer.answrStsKey)}}</td>
+    <td>						
+      <a  class="iconBtn" (click)="onEdit(answer)"><i class="fa fa-pencil"></i></a>
+      <a  class="iconBtn delBtn" (click)="onDelete(answer.answrSeq)"><i class="fa fa-trash-o"></i></a>
+      <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+    </td>
+  </tr>
+</tbody>
+</table>
+      </div>	
+      <!-- <div class="back">
+        <a href="setup.html" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+      </div> -->
+          
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</main>

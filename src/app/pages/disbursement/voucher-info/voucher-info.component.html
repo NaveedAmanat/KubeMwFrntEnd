@@ -1,0 +1,73 @@
+<div class="container-fluid">
+  <div class="voucherinfo">
+    <div class="row" *ngIf="auth.role!='admin'">
+      <div class="col-md-12">
+        <div class="addBtn mb-2 pull-right">
+          <!-- <button>{{isMurabaha}}</button> -->
+          <button *ngIf="!isKSK" class="btn btn-primary btn-sm" (click)="printClientInfo()"> Print Client Info</button>
+          <button *ngIf="showLPDButton" class="btn btn-primary btn-sm" (click)="printLPD()"> Print LPD</button>
+          <button *ngIf="!isKTK" class="btn btn-primary btn-sm" (click)="printPaymentSchedule()">Print Repayment Schedule</button>
+          <button *ngIf="isKTK" class="btn btn-primary btn-sm" (click)="printCombinedPaymentSchedule()">Print Combined Repayment Schedule</button>
+          <button class="btn btn-primary btn-sm" (click)="printOneLinkSlip()">Print 1-Link Depository Slip</button>
+          <!-- <button *ngIf="!isKSK" class="btn btn-primary btn-sm" (click)="printUndertaking()"> Print Undertaking</button>  -->
+          <button *ngIf="isMurabaha" class="btn btn-primary btn-sm" (click)="printAgencyInfoReport()"> Print Agency Info
+          </button>
+          <!-- <button *ngIf="showHlthCard" class="btn btn-primary btn-sm"(click)="printHealthCard()"> Print Health Card</button> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <table class="loaninfo">
+          <tr>
+            <td>Client ID:</td>
+            <td> <span>{{model?.clientId | uppercase }} </span></td>
+            <td>Client Name:</td>
+            <td> <span>{{model?.firstName + ' ' + model?.lastName | uppercase }}</span></td>
+            <td>Branch ID:</td>
+            <td> <span>{{model?.brnchSeq}}</span></td>
+            <td>Branch Name:</td>
+            <td><span>{{model?.brnchNm | uppercase }}</span></td>
+          </tr>
+          <tr>
+            <td>Portfolio ID:</td>
+            <td> <span>{{model?.portSeq}}</span></td>
+            <td>Portfolio Name:</td>
+            <td> <span>{{model?.portNm | uppercase }}</span></td>
+            <td>BDO Name:</td>
+            <td><span>{{model?.bdoNm | uppercase }}</span></td>
+            <td>Application ID:</td>
+            <td><span>{{model?.loanAppId}}</span></td>
+          </tr>
+
+          <tr>
+            <td>Product ID:</td>
+            <td> <span>{{model?.prdSeq}}</span></td>
+            <td>Product Name:</td>
+            <td> <span>{{model?.prdNm | uppercase }}</span><span class="badge badge-secondary"
+                *ngIf="model?.prdSeq==='0010' || model?.prdSeq==='52' || model?.prdSeq==='53'">{{model?.loanAppStatus==='0004' || model?.loanAppStatus==='1305'?"Sale 1":"Sale 2"}}</span></td>
+            <td>Disbursement Amount:</td>
+            <td> <span> {{model?.aprvdLoanAmt  | currency:'PKR':''}}</span></td>
+            <td>Total Receivable Amount:</td>
+            <td> <span>{{model?.totRecv  | currency:'PKR':''}}</span></td>
+          </tr>
+          <tr>
+            <td>First Installment Date:</td>
+            <td> <span>{{frstInstDt | date :'dd-MM-yyyy'}}</span></td>
+            <td>Credit Cycle:</td>
+            <td> <span>{{model?.loanCyclNum}}</span></td>
+            <td>Business Activity/Business Detail:</td>
+            <td> <span>{{model?.bizActyNm | uppercase }}</span></td>
+            <td *ngIf="model?.preActivity!='/ ' ">Previous Business Activity/Business Detail:</td>
+            <td *ngIf="model?.preActivity!='/ '"> <span>{{model?.preActivity | uppercase }}</span></td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    $('.date').datepicker({
+    });
+  </script>

@@ -1,0 +1,180 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6" *ngIf="journelVouchersArray?.length>0 || auth.role == 'bm'">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">ATM Cards
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                <ng-select *ngIf="auth.role != 'bm'" [items]="branchs" required (change)="onSelectBranch($event)"
+                  bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+                  formControlName="branch">
+                </ng-select>
+              </form>
+            </div>
+          </div>
+
+          <div class="table-responsive mb-md-5">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort
+              matSortDirection="asc" matSortDisableClear>
+              <ng-container matColumnDef="bdoName">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> BDO Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.bdoName}} </td>
+              </ng-container>
+              <ng-container matColumnDef="clientId">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> Client ID</th>
+                <td mat-cell *matCellDef="let element"> {{element.clientId}} </td>
+              </ng-container>
+              <ng-container matColumnDef="clientName">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> Client Name</th>
+                <td mat-cell *matCellDef="let element"> {{element.clientName}} </td>
+              </ng-container>
+              <ng-container matColumnDef="clientCnic">
+                <th class="td-center" mat-header-cell *matHeaderCellDef mat-sort-header> CNIC </th>
+                <td mat-cell *matCellDef="let element"> {{element.clientCnic}} </td>
+              </ng-container>
+              <ng-container matColumnDef="walletNum">
+                <th class="td-center" mat-header-cell *matHeaderCellDef> Mobile Wallet # </th>
+                <td mat-cell *matCellDef="let element"> {{element.walletNum}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="atmCardNum">
+                <th class="td-center" mat-header-cell *matHeaderCellDef> ATM Cards # </th>
+                <td mat-cell *matCellDef="let element"> {{element.atmCardNum}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="atmCardDeliveredDate">
+                <th class="td-center" mat-header-cell *matHeaderCellDef>Delivered Date</th>
+                <td mat-cell *matCellDef="let element"> {{element.atmCardDeliveredDate | date :'dd-MM-yyyy'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="atmCardReceivingDate">
+                <th class="td-center" mat-header-cell *matHeaderCellDef>Receiving Date</th>
+                <td mat-cell *matCellDef="let element"> {{element.atmCardReceivingDate | date :'dd-MM-yyyy'}}</td>
+              </ng-container>
+            
+                 <!-- Action Column -->
+                 <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                  <td mat-cell *matCellDef="let element">
+                    <ng-container >
+                      <span><a href="#" data-toggle="modal" (click)="onEdit(element)"
+                        class="iconBtn"><i class="fa fa-pencil"></i></a></span>
+                    </ng-container>
+                  </td>
+                </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplay" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let element; columns: columnsToDisplay;">
+              </tr>
+            </table>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10]" [pageSize]="limit" (page)="changePage($event)">
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal fade" id="atmCardsModel" role="dialog">
+  <div class="modal-dialog big mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ATM Cards Management</h5>
+      </div>
+
+       <form [formGroup]="atmCardsManagementForm" (ngSubmit)="addAtmCard()">
+        <div class="modal-body">
+          <ul class="infolist">
+          </ul>
+          <div class="cRow">
+            <div class="cCol2">
+              <mat-form-field>
+                <input matInput disabled readonly
+                  type="text" required formControlName="bdoName" id="bdoName" name="bdoName" placeholder="BDO Name">
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input matInput disabled readonly
+                  type="text" required formControlName="clientId" id="clientId" name="clientId" placeholder="Client ID">
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input matInput disabled readonly
+                  type="text" required formControlName="clientName" id="clientName" name="clientName" placeholder="Client Name">
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input matInput disabled readonly
+                  type="text" required formControlName="clientCnic" id="clientCnic" name="clientCnic" placeholder="Client CNIC">
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="cRow">
+            <div class="cCol2">
+              <mat-form-field>
+                <input matInput disabled readonly 
+                  type="text" required formControlName="walletNum" id="walletNum" name="walletNum" placeholder="Wallet Number">
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field> 
+                <input matInput [attr.disabled]="isReadOnlyAtmCardNum ? '': null " (keypress)="numeric($event)" [attr.minlength]="16" [attr.maxlength]="16"
+                  type="text" formControlName="atmCardNum" id="atmCardNum" name="atmCardNum" placeholder="ATM Card Number">
+              </mat-form-field>
+            </div>    
+            <div class="cCol2">
+              <mat-form-field>
+                <input [max]="maxDate" readonly 
+                  matInput name="atmCardReceivingDate" [matDatepicker]="picker3" placeholder="Receiving Date" formControlName="atmCardReceivingDate">
+                <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                <mat-datepicker  #picker3 [disabled]="isReadOnlyRcvDt"></mat-datepicker>
+              </mat-form-field>
+            </div> 
+            <div class="cCol2">
+              <mat-form-field>
+                <input [max]="maxDate" readonly [max]="maxDate" [min]="atmCardsManagementForm.controls['atmCardReceivingDate'].value"
+                  matInput name="atmCardDeliveredDate" [matDatepicker]="picker2" placeholder="Delivered Date" formControlName="atmCardDeliveredDate">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2 [disabled]="isReadOnlyDelvDt"></mat-datepicker>
+              </mat-form-field>
+            </div>    
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" class="btn btn-primary btn-min"
+            (click)="addAtmCard()" [disabled]="!atmCardsManagementForm.valid">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form> 
+    </div>
+
+  </div>
+</div>

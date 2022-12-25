@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+@import "assets/style.css";
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+.cdk-overlay-container {
+    z-index: 1100 !important;
+}
+button:disabled{
+    cursor: not-allowed;
+}
+.btn{
+    margin-right: 10px;
+}
+.modal-body{
+    max-height: 25em; 
+    overflow-y: auto; 
+}
+.is-disable {
+  text-decoration: none;
+  opacity: .5;
+}

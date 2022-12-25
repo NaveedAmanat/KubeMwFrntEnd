@@ -1,0 +1,100 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">Branch: {{brmodel.brnchSeq}} - {{brmodel.brnchNm.toUpperCase()}}</h6>
+      <form (ngSubmit)="onPortLocInfoFormSubmit(portLocInfoForm.value)" #portLocInfoForm="ngForm">
+        <h6 class="mt-3">Address Details</h6>
+        <div class="cRow">
+
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="House No." id="hseNum" name="hseNum" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.hseNum" required
+                (keypress)="onlyNumbers($event)" maxlength="5">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Street" id="strt" name="strt" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.strt" required
+                (keypress)="keyPress($event)" maxlength="20">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Village" id="vlg" name="vlg" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.vlg" required (keypress)="keyPress($event)"
+                maxlength="20">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <mat-select placeholder="Address Type" [(ngModel)]="brmodel.addrTypKey" [errorStateMatcher]="matcher"
+                pattern="^[1-9]\d*$" [disabled]="false" name="addrTypKey" required>
+                <mat-option *ngFor="let addrtyp of addrtyps" [value]="addrtyp.codeKey">
+                  {{addrtyp.codeValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="cCol3">
+            <mat-form-field>
+              <input type="text" placeholder="Other Details" id="othdtl" name="othdtl" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.othdtl" required
+                (keypress)="keyPress($event)" maxlength="150">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="cRow">
+          <div class="cCol2">
+            <mat-form-field>
+              <mat-select placeholder="UC" [(ngModel)]="brmodel.ucSeq" [errorStateMatcher]="matcher"
+                pattern="^[1-9]\d*$" [disabled]="false" name="ucSeq" required>
+                <mat-option *ngFor="let uc of brmodel.ucs" [value]="uc.ucSeq">
+                  {{uc.ucNm + " - " + uc.ucCmnt + " , Tehsil: " + findThslNm(uc.thslSeq)}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="cCol2">
+            <mat-form-field>
+              <mat-select placeholder="Community" [(ngModel)]="brmodel.cmntySeq" [errorStateMatcher]="matcher"
+                pattern="^[1-9]\d*$" [disabled]="false" name="cmntySeq" required>
+                <mat-option *ngFor="let cmnty of brmodel.communities" [value]="cmnty.cmntySeq">
+                  {{findPortNm(cmnty.portSeq) + " - " + cmnty.cmntyNm}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Latitude" id="lati" name="lati" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.lati" required
+                (keypress)="onlyDecimals($event)" maxlength="10" (change)="setLatitude($event)">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Longitude" id="longi" name="longi" matInput
+                [disabled]="readonly && !hasPermission" [(ngModel)]="brmodel.longi" required
+                (keypress)="onlyDecimals($event)" maxlength="10" (change)="setLongitude($event)">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <button (click)="getLocation()" type="button" class="btn btn-primary">Fetch Location</button>
+            <p id="location"></p>
+          </div>
+        </div>
+
+        <button (click)="prevScreen()" type="button" class="btn btn-primary"><i
+          class="fa fa-chevron-left"></i> Back</button>
+        <button (click)="continueClicked()" [disabled]="!formSaved" type="button"
+          class="btn btn-primary">Continue</button>
+        <button class="btn btn-default" [disabled]="!hasPermission" type="submit">Save</button>
+
+      </form>
+    </div>
+  </div>
+</main>

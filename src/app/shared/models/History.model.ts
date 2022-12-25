@@ -1,0 +1,97 @@
+export class History {
+
+    public cnicNum;
+    public nomCnic;
+    public cobCnic;
+    public title;
+    public type;
+
+    public loanAppSeq;
+    public status;
+    public clientName;
+    public clientSeq;
+    public clientCnic;
+    public fatherName;
+    public gender;
+    public maritalStatus;
+    public houseNum;
+    public city;
+    public uc;
+    public thsl;
+    public dist;
+    public state;
+    public country;
+    public portfolio;
+    public branch;
+    public area;
+    public reg;
+    public prdSeq;
+    public prdName;
+    public multi;
+
+    public nomSeq;
+    public nomFName;
+    public nomLName;
+    public nomPhone;
+    public nomRel;
+
+    public clientId;
+    public expiryDate;
+    public firstName;
+    public lastName;
+    public nickName;
+    public motherMaidenName;
+    public phone;
+    public dob;
+    public clntAge;
+    public genderKey;
+    public maritalStatusKey;
+    public eduLvlKey;
+    public disableFlag;
+    public natureDisabilityKey;
+    public occupationKey;
+    public residence;
+    public houseHoldMember;
+    public numOfDependts;
+    public numOfChidren;
+    public earningMembers;
+    public fathrFirstName;
+    public fathrLastName;
+    public spzFirstName;
+    public spzLastName;
+    public clientStatus;
+    public selfPDC;
+    public addresSeq;
+    public residenceTypeKey;
+    public sreet_area;
+    public community;
+    public village;
+    public otherDetails;
+    public tehsil;
+    public district;
+    public lat;
+    public lon;
+    public yearsOfResidence;
+    public mnthsOfResidence;
+    public isPermAddress;
+    public permAddress;
+    public countryName;
+    public province;
+    public provinceName;
+    public districtName;
+    public tehsilName;
+    public ucName;
+    public cityName;
+    public branchName;
+    public region;
+    public multiLoan;
+    public portKey;
+    public reqAmount;
+    public recAmount;
+    public startDate;
+    public comment;
+    public approvedAmount;
+    constructor() {
+
+    }
+}

@@ -1,0 +1,112 @@
+<main class="main">
+	<div class="container-fluid">
+		<div class="row">
+	    <div class="col-md-3">
+				<app-left-side-bar></app-left-side-bar>
+			</div>
+			<div class="col-md-9">
+				<div class="content mb-md-5">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="mysearchbox">
+              <h6 class="d-inline-block searchshow">Tags
+                <!-- <i class="fa fa-search"></i> -->
+              </h6>
+							<div class="mysearch">
+								<a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+								 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 addBtn">
+						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#businessector" (click)="onAddNewClick()"><i class="fa fa-plus"></i> Add</button>
+					</div>
+					<div class="modal fade" id="businessector" role="dialog">
+						<div class="modal-dialog mymodal"> 										
+							<!-- Modal content-->
+							<div class="modal-content">
+								<div class="modal-header">
+	                <h5 class="modal-title">Tag</h5>
+                </div>
+                
+                <form [formGroup]="tagForm" (ngSubmit)="addTagsSubmit()">
+                <div class="modal-body">
+                <ul class="infolist">
+                </ul>
+                  <div class="cRow">
+                      <div class="cCol2" >
+                          <label>Tag Name:</label>
+                          <input type="text" formControlName="tagNm" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.tagNm.errors }" />
+                          <div *ngIf="submitted && form.tagNm.errors" class="invalid-feedback">
+                              <div *ngIf="form.tagNm.errors.required">Tag Name is required                                
+                              </div>
+                          </div>
+                      </div>
+                      <div class="cCol30">
+                      <label>Tag Description:</label>
+                      <input type="text" formControlName="tagDscr" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.tagDscr.errors }" />
+                      <div *ngIf="submitted && form.tagDscr.errors" class="invalid-feedback">
+                          <div *ngIf="form.tagDscr.errors.required">Tag Description is required</div>
+                      </div>
+                      
+                      </div>
+                      <div class="cCol2">
+                    <label>Severity Flag</label>
+                    <div>
+                    <label class="form-check-inline">
+                        <div>
+                          <input type="radio" formControlName="svrtyFlgKey" class="form-check-input" type="radio" name="svrtyFlgKey" [value]="1" [ngClass]="{ 'is-invalid': submitted && form.svrtyFlgKey.errors }" />Yes
+                          <input type="radio" formControlName="svrtyFlgKey" class="form-check-input" type="radio" name="svrtyFlgKey" [value]="0" [ngClass]="{ 'is-invalid': submitted && form.svrtyFlgKey.errors }" />No
+                          <div *ngIf="submitted && form.svrtyFlgKey.errors" class="invalid-feedback">
+                              <div *ngIf="form.svrtyFlgKey.errors.required">Severity Flag is required</div>
+                          </div>
+                        </div>
+                    </label>
+                  </div>
+                      </div>
+                  </div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-primary btn-min" (click)="addTagsSubmit()">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+              </form>
+						</div>
+					</div>
+				</div>
+					<div class="table-responsive">
+				<table class="table" id="myTable">
+					<thead class="thead-light">
+            <tr>
+              <th>Tag ID</th>
+              <th>Tag Name</th>
+              <th>Tag Description</th>
+              <th>Severity Flag</th>
+              <th>Action</th>
+            </tr>
+</thead>
+<tbody>	
+  <tr *ngFor="let tag of tags">
+    <td>{{tag.tagId}}</td> 
+    <td>{{tag.tagNm}}</td>
+    <td>{{tag.tagDscr}}</td>
+    <td>{{getFlag(tag.svrtyFlgKey)}}</td>
+    <td>						
+      <a  class="iconBtn" (click)="onEdit(tag)"><i class="fa fa-pencil"></i></a>
+      <a  class="iconBtn delBtn" (click)="onDelete(tag.tagsSeq)"><i class="fa fa-trash-o"></i></a>
+      <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+    </td>
+  </tr>
+</tbody>
+</table>
+			</div>	
+			<!-- <div class="back">
+				<a href="setup.html" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+			</div> -->
+					
+				</div>
+			</div>
+		  </div>
+    </div>
+  </div>
+</main>

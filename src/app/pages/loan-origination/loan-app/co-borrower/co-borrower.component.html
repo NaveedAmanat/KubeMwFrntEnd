@@ -1,0 +1,344 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div *ngIf="model.selfPDC">
+      <h1 *ngIf="model.selfPDC"> Self PDC </h1>
+      <button (click)="continueClicked()" *ngIf="model.selfPDC" class="btn btn-primary">Continue</button>
+    </div>
+    <div *ngIf="model.isSAN && !model.selfPDC">
+      <h1> Co-Borrower Same as Nominee </h1>
+      <button (click)="continueClicked()" class="btn btn-primary">Continue</button>
+    </div>
+    <div class="content" *ngIf="!model.selfPDC && !model.isSAN">
+      <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+
+
+      <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="nominee-tab" data-toggle="tab" href="#nominee" role="tab" aria-controls="home"
+            aria-selected="true">Co-borrower
+            Info
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="!model.relAddrAsClntFlg">
+          <a class="nav-link" id="address-tab" data-toggle="tab" href="#addressTab" role="tab"
+            aria-controls="addressTab" aria-selected="false">Address</a>
+        </li>
+      </ul>
+      <form (ngSubmit)="onCoBorrowerFormSubmit()" #coBorrowerForm="ngForm">
+
+        <div class="tab-content borrowerTabsContent mb-md-5" id="borrowerTabsContent">
+          <div class="tab-pane fade show active" id="nominee" role="tabpanel" aria-labelledby="nominee-tab">
+            <!-- <div class="pt-1 pb-1">
+              <label>Co-borrower Same as Nominee</label>
+              <br>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="sameAsBorrowerYes" name="sameAsBorrowerYes" class="custom-control-input"
+                       [(ngModel)]="model.coBorrower.isSame" value="true">
+                <label class="custom-control-label" for="sameAsBorrowerYes">Yes</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="sameAsBorrowerNo" name="sameAsBorrowerNo" class="custom-control-input"
+                       [(ngModel)]="model.coBorrower.isSame" value="false">
+                <label class="custom-control-label" for="sameAsBorrowerNo">No</label>
+              </div>
+            </div> -->
+            <h6 class="colorBlack mt-2 mb-2">Co-borrower Detail</h6>
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keyup)="cnicPattern($event, 'co-borrower')" maxlength="15" required
+                    pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$" id="cobCNIC" name="cobCNIC"
+                    [disabled]="validated && !readonly || true" matInput placeholder="CNIC" minlength="15" #cobCNIC="ngModel"
+                    [errorStateMatcher]="matcher" [(ngModel)]="cnicPatternObj.cobCNIC">
+                  <mat-error *ngIf="cobCNIC.invalid">
+                    cnic number is
+                    <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input matInput required [matDatepicker]="picker2" placeholder="CNIC Issue Date"
+                    (dateChange)="onExpChange(model.coBorrower.cnicIssueDate)" name="cnicIssueDate" [(ngModel)]="model.coBorrower.cnicIssueDate"
+                    [disabled]="!hasPermission">
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker startView="year" [disabled]="!hasPermission" #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input matInput [disabled]="readonly && !hasPermission" [min]="now" name="Expiry"
+                    id="cnicExpryDate" [(ngModel)]="model.coBorrower.cnicExpryDate"
+                    placeholder="CNIC Expiry Date" (dateChange)="onExpChange(model.coBorrower.cnicExpryDate)"
+                    [matDatepicker]="picker1" #cnicExpryDate="ngModel">
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker startView="year" #picker1 [disabled]="!hasPermission"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <button class="velBtn" type="button" *ngIf="!validated"
+                  [disabled]="cobCNIC.invalid || cnicExpryDate.invalid" (click)="validate()">Validate
+                  with KASHF</button>
+              </div>
+            </div>
+            <div *ngIf="validated">
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyLetters($event)" required
+                      [disabled]="readonly && !hasPermission" matInput id="firstName" #firstName="ngModel" min="3"
+                      pattern="([a-zA-Z ]{3,30}\s*)+" [errorStateMatcher]="matcher" name="firstName"
+                      [(ngModel)]="model.coBorrower.firstName" placeholder="First Name">
+                    <mat-error *ngIf="firstName.invalid">
+                      first name is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keypress)="onlyLetters($event)" id="lastName" name="lastName" min="3"
+                      #lastName="ngModel" pattern="([a-zA-Z ]{3,30}\s*)+" [errorStateMatcher]="matcher"
+                      [(ngModel)]="model.coBorrower.lastName" placeholder="Last Name" matInput
+                      [disabled]="readonly && !hasPermission">
+                    <mat-error *ngIf="lastName.invalid">
+                      last name is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" id="fatherFirstName" name="fatherFirstName" required min="3"
+                      [(ngModel)]="model.coBorrower.fatherFirstName" placeholder="Father First Name" matInput
+                      [disabled]="readonly">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" id="fatherLastName" name="fatherLastName" required min="3"
+                      [(ngModel)]="model.coBorrower.fatherLastName" placeholder="Father Last Name" matInput
+                      [disabled]="readonly">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput [disabled]="readonly && !hasPermission" (keypress)="onlyNumbers($event)" type="text" required
+                      maxlength="11" [(ngModel)]="model.coBorrower.phone" id="phone" name="phone"
+                      placeholder="Phone No." pattern="^[0-9]{11}$" [errorStateMatcher]="matcher" #phone="ngModel">
+                    <mat-error *ngIf="phone.invalid">
+                      phone is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput [disabled]="readonly && !hasPermission" required name="dob"
+                      [matDatepicker]="picker3" [max]="eightenYearsBefore" [min]="minDobYear"
+                      (dateChange)="onDOBChange(model.coBorrower.dob)" placeholder="Date of birth" [value]="date.value"
+                      [(ngModel)]="model.coBorrower.dob">
+                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker startView="multi-year" #picker3 [disabled]="readonly && !hasPermission"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput [disabled]="readonly" type="text" readonly disabled [(ngModel)]="age" id="age"
+                      name="age" placeholder="Age">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Gender" [errorStateMatcher]="matcher"
+                      pattern="^[1-9]\d*$" [(ngModel)]="model.coBorrower.genderKey" name="genderKey" required>
+                      <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="gender" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Gender"
+                  [(ngModel)]="model.coBorrower.genderKey">
+                </ng-select> -->
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Occupation" [errorStateMatcher]="matcher"
+                      pattern="^[1-9]\d*$" [(ngModel)]="model.coBorrower.occupationKey" name="occupationKey" required>
+                      <mat-option *ngFor="let edu of occupation" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="occupation" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Occupation"
+                  [(ngModel)]="model.coBorrower.occupationKey"></ng-select> -->
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Relation"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" [(ngModel)]="model.coBorrower.relationKey"
+                      name="relationKey" required>
+                      <mat-option *ngFor="let edu of relationType" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="relationType" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Relationship with Client"
+                  [(ngModel)]="model.coBorrower.relationKey"></ng-select> -->
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Marital Status"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" [(ngModel)]="model.coBorrower.maritalStatusKey"
+                      name="maritalStatusKey" required>
+                      <mat-option *ngFor="let edu of maritalStatus" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="maritalStatus" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Marital Status"
+                  [(ngModel)]="model.coBorrower.maritalStatusKey"></ng-select> -->
+                </div>
+              </div>
+              <div class="cRow">
+                <div class="pt-1 pb-1">
+                  <mat-label>Is Co-Borrower Address Same As Client's Address ?</mat-label>
+                  <br>
+                  <mat-radio-group [disabled]="readonly && !hasPermission" [(ngModel)]="model.relAddrAsClntFlg"
+                    (change)="sameAsClientAddressChange()" name="isbizAddrSAC" required>
+                    <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" [value]="disFlag.value">
+                      {{disFlag.name}}</mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!model.relAddrAsClntFlg" class="tab-pane fade" id="addressTab" role="tabpanel"
+            aria-labelledby="address-tab">
+
+            <div *ngIf="!model.relAddrAsClntFlg">
+              <div class="cRow">
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="province" name="province"
+                      [(ngModel)]="model.coBorrower.provinceName" readonly placeholder="Province">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input required matInput readonly id="district" name="district"
+                      [(ngModel)]="model.coBorrower.districtName" readonly placeholder="District">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="tehsil" name="tehsil"
+                      [(ngModel)]="model.coBorrower.tehsilName" readonly placeholder="Tehsil">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="uc" name="uc" [(ngModel)]="model.coBorrower.ucName" readonly
+                      placeholder="UC">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="city" name="city" [(ngModel)]="model.coBorrower.cityName"
+                      readonly placeholder="City">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 mt-3">
+                  <button [disabled]="readonly && !hasPermission" type="button" class="btn btn-dots"
+                    data-toggle="modal" data-target="#Location"></button>
+                </div>
+              </div>
+
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="houseNum" required name="houseHum"
+                      [(ngModel)]="model.coBorrower.houseNum" [disabled]="readonly && !hasPermission" matInput
+                      placeholder="House Number">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="street" required name="street"
+                      [(ngModel)]="model.coBorrower.sreet_area" matInput [disabled]="readonly && !hasPermission"
+                      placeholder="Street/Area">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <ng-select [disabled]="readonly && !hasPermission" [items]="communityArray" required
+                    bindLabel="cmntyNm" bindValue="cmntySeq" name="cmntyNm" placeholder="Select Community"
+                    [(ngModel)]="model.coBorrower.community">
+                  </ng-select>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="village" required name="village"
+                      [(ngModel)]="model.coBorrower.village" matInput [disabled]="readonly && !hasPermission"
+                      placeholder="Village">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" id="other" name="other" required [(ngModel)]="model.coBorrower.otherDetails"
+                      matInput [disabled]="readonly && !hasPermission" placeholder="Other Details">
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button (click)="continueClicked()" [disabled]="!formSaved" type="button"
+          class="btn btn-primary">Continue</button>
+        <button class="btn btn-default" [disabled]="readonly && !hasPermission" type="submit">Save</button>
+      </form>
+      <div class="modal fade" id="Location" role="dialog">
+        <div class="modal-dialog bigger mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Location </h5>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table last-left">
+                  <thead class="thead-light last-left">
+                    <tr>
+                      <th>Province</th>
+                      <th>District</th>
+                      <th>Tehsil</th>
+                      <th width="20%">UC</th>
+                      <th>City</th>
+                      <th>Select</th>
+                    </tr>
+                  </thead>
+                  <tbody class="evenodd">
+                    <tr *ngFor="let address of addresses">
+                      <td>{{address.provinceName}} </td>
+                      <td>{{address.districtName}}</td>
+                      <td>{{address.tehsilName}}</td>
+                      <td>{{address.ucName}}</td>
+                      <td>{{address.cityName}}</td>
+                      <td>
+                        <button data-dismiss="modal" type="button" class="btn btn-primary btn-min"
+                          (click)="selectAddress(address)">Select</button>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

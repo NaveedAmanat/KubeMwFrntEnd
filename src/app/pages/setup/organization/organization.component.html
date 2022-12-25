@@ -1,0 +1,351 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Organization <i class="fa fa-search"> </i></h6>
+                <div class="mysearch">
+                  <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" data-toggle="modal" (click)="addItem()"><i class="fa fa-plus"></i> Add</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>Region Code</th>
+                  <th>Region Name</th>
+                  <!--<th>Region  Type</th>-->
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let organization of pagedItems">
+                  <td>{{organization.regCd}}</td>
+                  <td><a (click)="organizationFun(organization.regSeq)">{{organization.regNm}}</a></td>
+                  <!--<td>{{organization.regTyp}}</td>-->
+                  <td>{{organization.regDscr}}</td>
+                  <td *ngIf="organization.regStsKey === null || organization.regStsKey === 200; else other_content" (click)="StatusUpdate(organization.regSeq)">Active</td>
+                  <ng-template #other_content>
+                    <td (click)="StatusUpdate(organization.regSeq)">In Active</td>
+                  </ng-template>
+
+                  <td>
+
+                    <a href="#" data-toggle="modal" (click)="UserAssignment(organization.regSeq)" class="iconBtn"><i class="fa fa-user"></i></a>
+                    <!--<a href="#" class="iconBtn marker"><i class="fa fa-map-marker"></i></a>-->
+                    <a (click)="editItem(organization.regSeq)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                    <a (click)="deleteItem(organization.regSeq)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                    <!-- <a href="#" class="iconBtn"><i class="fa fa-history"></i></a> -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <nav aria-label="Page navigation ">
+            <ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+              <li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+                <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+              </li>
+              <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                <a class="page-link" (click)="setPage(page)">{{page}}</a>
+              </li>
+              <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal fade" id="UserAssignment" role="dialog">
+  <div class="modal-dialog mymodal bigger">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Employee Assignment</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="employeeAssignmentForm" (ngSubmit)="onemployeeAssignmentSubmit()">
+        <div class="modal-body pt-0">
+          <div class="pt-1 pb-2">
+            <h6 class="colorBlack small mb-0 pt-1"><b>Position</b></h6>
+          </div>
+          <div class="borderbox p-2 pb-3">
+            <div class="userfields">
+              <div class="cRow vrbp0">
+                <div class="cCol5 inlincbox">
+                  <label>Region Manager</label>
+                  <select formControlName="regionManager" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <!--<div style="width: 50%;"> 	
+                             <input formControlName="regionManager" (keydown)="search($event, 'regionManager')" type="text"  class="form-control" placeholder="Asad Khan">
+                             <ul *ngIf="regionManager" style="position: absolute;z-index: 999;background-color:#fff; width:16%;border:1px solid #999999;padding: 5px;">
+                             <li *ngFor="let search of regionManager" (click)="serchSelected(search.empSeq, 'regionManager')" style="width: 100%;">{{search.empNm}}</li>
+                             </ul>
+                             </div>-->
+                  <!-- <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+                </div>
+                <!-- <div class="cCol5 inlincbox">
+                  <label>Covering Employee</label>
+                  <select formControlName="coveringRegManager" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div> -->
+                <!-- <div class="cCol1 date2">
+                  <div class="input-group date mr-1">
+                    <input formControlName="coveringRegManagerDateFrom" type="date" class="form-control" placeholder="To Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                  <div class="input-group date">
+                    <input type="date" formControlName="coveringRegManagerDateTo" class="form-control" placeholder="From Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+              <!-- <div class="cRow vrbp0">
+                <div class="cCol5 inlincbox">
+                  <label>Clerk</label>
+                  <select formControlName="clerk" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol5 inlincbox">
+                  <label>Covering Employee</label>
+                  <select formControlName="coveringClerk" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol1 date2">
+                  <div class="input-group date mr-1">
+                    <input type="date" formControlName="coveringClerkDateFrom" class="form-control" placeholder="To Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                  <div class="input-group date">
+                    <input formControlName="coveringClerkDateTo" type="date" class="form-control" placeholder="From Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cRow vrbp0">
+                <div class="cCol5 inlincbox">
+                  <label>Accountant</label>
+                  <select formControlName="manager" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol5 inlincbox">
+                  <label>Covering Employee</label>
+                  <select formControlName="coveringManager" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol1 date2">
+                  <div class="input-group date mr-1">
+                    <input formControlName="coveringManagerDateFrom" type="date" class="form-control" placeholder="To Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                  <div class="input-group date">
+                    <input formControlName="coveringManagerDateTo" type="date" class="form-control" placeholder="From Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+          <div class="modal-footer text-center pb-3">
+            <button class="btn btn-primary" type="submit">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="Countrycodes" role="dialog">
+  <div class="modal-dialog big mymodal">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Organization</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="organizationForm" (ngSubmit)="onOrganizationSubmit()">
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol2">
+              <label>Region Name:</label>
+              <input (keypress)="keyPress($event)" type="text" class="form-control" formControlName="regionName" [ngClass]="{ 'is-invalid': submitted && f.regionName.errors }"
+              />
+            </div>
+            <!-- <div class="cCol2">
+                    <label>Region Type:</label>
+                    <select class="form-control" formControlName="regionType" [ngClass]="{ 'is-invalid': submitted && f.regionType.errors }">
+                    	<option *ngFor="let regionType of regionTypeting" value="{{regionType.codeKey}}">{{regionType.codeValue}}</option>
+                    </select>
+                  </div> -->
+            <div class="cCol2">
+              <label>Status:</label>
+              <select class="form-control" formControlName="regionStatus" [ngClass]="{ 'is-invalid': submitted && f.regionStatus.errors }">
+                <option *ngFor="let status of statusListing" value="{{status.codeKey}}">{{status.codeValue}}</option>
+              </select>
+            </div>
+            <div class="col-full">
+              <label>Description:</label>
+              <input type="text" class="form-control" formControlName="regionDescription" [ngClass]="{ 'is-invalid': submitted && f.regionDescription.errors }"
+              />
+            </div>
+            <!-- <div class="cCol1">
+                    <label>province:</label>
+                    <input type="text" readonly class="form-control" formControlName="provinceName" [ngClass]="{ 'is-invalid': submitted && f.provinceName.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>district:</label>
+                    <input type="text" readonly class="form-control" formControlName="districtName" [ngClass]="{ 'is-invalid': submitted && f.districtName.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>tehsil:</label>
+                    <input type="text" readonly class="form-control" formControlName="tehsilName" [ngClass]="{ 'is-invalid': submitted && f.tehsilName.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>uc:</label>
+                    <input type="text" readonly class="form-control" formControlName="ucName" [ngClass]="{ 'is-invalid': submitted && f.ucName.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>city:</label>
+                    <input type="text" readonly class="form-control" formControlName="cityName" [ngClass]="{ 'is-invalid': submitted && f.cityName.errors }" />
+                  </div>
+				  <div class="cCol1 mt-3">
+					<button type="button" class="btn btn-dots" data-toggle="modal" (click)="getLocations()"></button>
+                  </div>
+				  <div class="cCol1">
+                    <label>houseNum:</label>
+                    <input type="text" class="form-control" formControlName="houseNum" [ngClass]="{ 'is-invalid': submitted && f.houseNum.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>street:</label>
+                    <input type="text" class="form-control" formControlName="street" [ngClass]="{ 'is-invalid': submitted && f.street.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>village:</label>
+                    <input type="text" class="form-control" formControlName="village" [ngClass]="{ 'is-invalid': submitted && f.village.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>other:</label>
+                    <input type="text" class="form-control" formControlName="other" [ngClass]="{ 'is-invalid': submitted && f.other.errors }" />
+                  </div> -->
+
+
+
+            <!--<div class="col-full">
+                    <label>Address:</label>
+                    <input type="text" class="form-control" formControlName="regionAddress" [ngClass]="{ 'is-invalid': submitted && f.regionAddress.errors }" />
+                  </div>-->
+          </div>
+        </div>
+        <div *ngIf="submitted && f.regionCode.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.regionCode.errors.required">Please Enter Region Code</strong>
+        </div>
+        <div *ngIf="submitted && f.regionName.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.regionName.errors">Please Enter Region Name</strong>
+        </div>
+        <div *ngIf="submitted && f.regionDescription.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.regionDescription.errors">Please Enter Region Description</strong>
+        </div>
+        <!--<div *ngIf="submitted && f.regionAddress.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.regionAddress.errors">Please Enter Region Address</strong>
+                </div>-->
+        <div class="modal-footer text-center">
+          <button class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="Location" role="dialog">
+  <div class="modal-dialog bigger mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Location </h5>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table last-left">
+            <thead class="thead-light last-left">
+              <tr>
+                <th>Province</th>
+                <th>District</th>
+                <th>Tehseel</th>
+                <th width="20%">UC</th>
+                <th>City</th>
+                <th>Select</th>
+              </tr>
+            </thead>
+            <tbody class="evenodd">
+              <tr *ngFor="let address of addresses">
+                <td>{{address.provinceName}} </td>
+                <td>{{address.districtName}}</td>
+                <td>{{address.tehsilName}}</td>
+                <td>{{address.ucName}}</td>
+                <td>{{address.cityName}}</td>
+                <td>
+                  <button data-dismiss="modal" type="button" class="btn btn-primary btn-min" (click)="selectAddress(address)">Select</button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

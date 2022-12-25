@@ -1,0 +1,995 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="leftSideBar">
+          <h6><i class="fa fa-sliders fa-lg"></i> Filter</h6>
+          <div class="selectedFilter">
+            <ul>
+              <li *ngFor="let filter of filters">{{filter.key}} : {{filter.value}}
+                <a (click)="deleteFilter(filter)">
+                  <i class="fa fa-times"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="filtersWrap">
+            <div class="filter">
+              <a class="acc_trigger">Organization</a>
+              <div class="collapse acc_container" id="region">
+                <div class="listmenu">
+                  <ul class="sub-menu border-bottom pb-2">
+                    <li *ngFor="let reg of organization">
+                      <span class="nav-click" style="width: 10%;margin-left: 90%;"
+                        (click)="navClick($event.srcElement)"></span>
+                      <span (click)="regionClick(reg)">{{reg.regionName}}</span>
+                      <ul class="sub-menu">
+                        <li *ngFor="let area of reg.areas">
+                          <span class="nav-click" style="width: 10%;margin-left: 90%;"
+                            (click)="navClick($event.srcElement)"></span>{{area.areaName}}
+                          <ul class="sub-menu">
+                            <li *ngFor="let branch of area.branches">
+                              <span class="nav-click" style="width: 10%;margin-left: 90%;"
+                                (click)="navClick($event.srcElement)">
+                              </span>{{branch.branchName}}
+                              <ul class="sub-menu">
+                                <li *ngFor="let port of branch.portfolio" (click)="portfolioClick(port)">
+                                  {{port.portfolioName}}</li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="filter"> <a class="acc_trigger">Institution </a>
+              <div class="collapse acc_container" id="country">
+                <div class="pl-3 border-bottom pb-2">
+                  <div class="checkbox mb-1">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="filterEasyPaisa" name="instEasyPaisa" [ngModel]="filterEasyPaisa"
+                        (ngModelChange)="onFilterCheckChange('Easy Paisa')" class="custom-control-input">
+                      <label class="custom-control-label" for="filterEasyPaisa"> Easy Paisa</label>
+                    </div>
+                  </div>
+                  <div class="checkbox mb-1">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="filterMobiCash" name="filterMobiCash" [ngModel]="filterMobiCash"
+                        (ngModelChange)="onFilterCheckChange('MobiCash')" class="custom-control-input">
+                      <label class="custom-control-label" for="filterMobiCash"> Mobi Cash</label>
+                    </div>
+                  </div>
+                  <div class="checkbox mb-1">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="filterNadra" name="filterNadra" [ngModel]="filterNadra"
+                        (ngModelChange)="onFilterCheckChange('Nadra')" class="custom-control-input">
+                      <label class="custom-control-label" for="filterNadra"> Nadra</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filter"> <a class="acc_trigger">Date Range (Due)</a>
+              <div class="collapse acc_container">
+                <div class="pl-3 clearfix border-bottom pb-2">
+                  <div class="cRow">
+                    <div class="cCol1 clearfix  pt-0">
+                      <label>From Date:</label>
+                      <div class="input-group date">
+                        <input type="date" class="form-control" [ngModel]="dueDateFrom" name="dueDateForm" #dueDateFrom
+                          (ngModelChange)="onDateFilterChange(dueDateFrom.value,'dueFrom')"
+                          placeholder="DD / MM / YYYY">
+                        <div class="input-group-append input-group-addon	">
+                          <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cCol1 clearfix pt-0">
+                      <label>To Date:</label>
+                      <div class="input-group date">
+                        <input type="date" class="form-control" [ngModel]="dueDateTo" name="dueDateTo" #dueDateTo
+                          (ngModelChange)="onDateFilterChange(dueDateTo.value,'dueTo')" placeholder="DD / MM / YYYY">
+                        <div class="input-group-append input-group-addon	">
+                          <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filter"> <a class="acc_trigger">Date Range (Payment)</a>
+              <div class="collapse acc_container">
+                <div class="pl-3 clearfix border-bottom pb-2">
+                  <div class="cRow">
+                    <div class="cCol1 clearfix  pt-0">
+                      <label>From Date:</label>
+                      <div class="input-group date">
+                        <input type="date" class="form-control" [ngModel]="paymentDateFrom" #paymentDateFrom
+                          (ngModelChange)="onDateFilterChange(paymentDateFrom.value,'paymentFrom')"
+                          placeholder="DD / MM / YYYY">
+                        <div class="input-group-append input-group-addon	">
+                          <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cCol1 clearfix pt-0">
+                      <label>To Date:</label>
+                      <div class="input-group date">
+                        <input type="date" class="form-control" [ngModel]="paymentDateTo" name="paymentDateTo"
+                          #paymentDateTo (ngModelChange)="onDateFilterChange(paymentDateTo.value,'paymentTo')"
+                          placeholder="DD / MM / YYYY">
+                        <div class="input-group-append input-group-addon	">
+                          <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filter"> <a class="acc_trigger">Old Client ID</a>
+              <div class="collapse acc_container">
+                <div class="pl-3 clearfix border-bottom pb-2">
+                  <div class="cRow">
+                    <div class="cCo11 clearfix pt-0">
+                      <form class="form-inline searchForm">
+                        <input class="form-control mr-2 form-control-sm" type="text" [ngModel]="oldClientId"
+                          #oldClientId name="oldClientId" placeholder="Search ID" aria-label="Search">
+                        <button class="btn btn-sm searchBtn" (click)="onSearchOldClient(oldClientId.value)"
+                          type="submit">Search</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sidechecks mt-2">
+              <div class="checkbox mb-1 mr-3 d-inline-block">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" id="checkbox9" name="coBorrower" [ngModel]="filterPosted"
+                    (ngModelChange)="onFilterCheckChange('Posted')" class="custom-control-input">
+                  <label class="custom-control-label" for="checkbox9"> Posted</label>
+                </div>
+              </div>
+              <div class="checkbox mb-1 d-inline-block">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" id="checkbox10" name="coBorrower" [ngModel]="filterOverdue"
+                    (ngModelChange)="onFilterCheckChange('Overdue')" class="custom-control-input">
+                  <label class="custom-control-label" for="checkbox10"> Overdue</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6" *ngIf="allItems.length>0  || (this.auth.role == 'bm')">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-9" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <!-- <a  *ngIf="showFields">
+                            <i class="fa fa-window-close" (click)="cloaseField()"> </i> (keyup)="applyFilter($event.target.value)"
+                          </a> -->
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button mat-raised-button color="primary" type="submit"
+                      style=" background-color: #76b1e7; height: 31px; margin: 6px; ">Search</button>
+                  </div>
+                </form>
+                <!-- <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
+              </div>
+            </div>
+
+            <div class="col-sm-6" *ngIf="auth.role != 'bm' && auth.role != 'bdo'">
+              <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                <ng-select *ngIf="auth.role != 'bm' && auth.role != 'bdo'" [items]="brnchs" required
+                  (change)="onSelectBranch($event)" bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm"
+                  placeholder="Select Branch:" formControlName="branch">
+                </ng-select>
+              </form>
+            </div>
+            <div class="col-sm-6 addBtn" *ngIf="auth.role == 'bm'">
+              <button type="button" (click)="refreshButton()" class="btn btn-sm" 
+              data-toggle="tooltip" title="Get Data">
+                <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>Get Data</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+              <!--(matSortChange)="sortData($event)">-->
+
+              <ng-container matColumnDef="frstNm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Client Name</th>
+                <td class="tableRow" mat-cell *matCellDef="let element"> {{element.frstNm+" "+element.lastNm}} </td>
+              </ng-container>
+              <ng-container matColumnDef="clntSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Client ID </th>
+                <td mat-cell *matCellDef="let element"> {{element.clntSeq}} </td>
+              </ng-container>
+              <ng-container matColumnDef="prd">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Product(s)</th>
+                <td mat-cell *matCellDef="let element"> {{element.prd}} </td>
+              </ng-container>
+              <ng-container matColumnDef="bdo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> BDO</th>
+                <td mat-cell *matCellDef="let element"> {{element.bdo}} </td>
+              </ng-container>
+              <ng-container matColumnDef="totalDue">
+                <th class="td-center" mat-header-cell *matHeaderCellDef>Total Due </th>
+                <td class="td-center" mat-cell *matCellDef="let element"> {{element.totalDue | currency:'PKR':''}} </td>
+              </ng-container>
+              <ng-container matColumnDef="totalRecv">
+                <th class="td-center" mat-header-cell *matHeaderCellDef> Total Paid </th>
+                <td class="td-center" mat-cell *matCellDef="let element"> {{element.totalRecv | currency:'PKR':''}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="totalremain">
+                <th class="td-center" mat-header-cell *matHeaderCellDef> Total Remaining </th>
+                <td class="td-center" mat-cell *matCellDef="let element">
+                  {{element.totalDue-element.totalRecv | currency:'PKR':''}} </td>
+              </ng-container>
+              <ng-container matColumnDef="nextDue">
+                <th class="td-right" mat-header-cell *matHeaderCellDef> Due Date </th>
+                <td class="td-right" mat-cell *matCellDef="let element"> {{element.nextDue | date :'dd-MM-yyyy' }} </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th class="td-right" mat-header-cell *matHeaderCellDef> Status </th>
+                <td class="td-right" mat-cell *matCellDef="let element"> {{element.status }} </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let element"> <a *ngIf="element.totaldue-element.totalpaid!=0" href="#"
+                    data-toggle="modal" (click)="openApplyPayment(element)" class="iconBtn"><img
+                      src="assets/images/rscheck.png" alt=""></a>
+                  <a *ngIf="element.totalpaid==0 && role=='admin'" href="#" data-toggle="modal"
+                    (click)="disgardApp(element)" class="iconBtn"><img src="assets/images/crose-icon.png" alt=""></a>
+                </td>
+
+              </ng-container>
+              <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+                  <div class="example-element-detail"
+                    [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+
+                    <table>
+
+                      <tr>
+                        <th>Inst. No</th>
+                        <th>Product</th>
+                        <th>Principal Due </th>
+                        <th>Charges Due </th>
+                        <th>Total Due </th>
+                        <th>Due Date</th>
+                        <th>Paid Amt.</th>
+                        <th>Paid Date</th>
+                        <th>Institution</th>
+                        <th>Instrument / Trans. Seq</th>
+                        <th>Status</th>
+                        <th style="min-width: 100px; display: inline-flex;"> <span data-toggle="tooltip"
+                            title="Pay Recovery">
+                            <button class="customButtonForAnchors" appNoDblClick
+                              *ngIf="element.totaldue-element.totalpaid!=0" href="#" data-toggle="modal"
+                              (click)="openApplyPayment(element)"><img src="assets/images/rscheck.png" alt="">
+                            </button></span>
+                          <button data-toggle="tooltip" title="JV History"
+                            (click)="revoceryVoucherHistry(element.clntSeq)" class="customButtonForAnchors"><i
+                              class="fa fa-history"></i></button>
+                          <button *ngIf="auth.role=='admin' || auth.role == 'bm' || auth.role == 'ra'" 
+                          href="#" data-toggle="modal" title="Excess Recovery"
+                            (click)="onExcessRecoverClick(element)" class="customButtonForAnchors"><i
+                              class="fa fa-money" aria-hidden="true"></i></button>
+                        </th>
+
+                      </tr>
+
+                      <tr *ngFor="let re of element.recoverySub;">
+                        <td>{{re.instNum}}</td>
+                        <td>{{re.prd}}</td>
+                        <td>{{re.ppalAmtDue | currency:'PKR':''}}</td>
+                        <td><a href="#" data-toggle="modal" (click)="onCharges(re.paySchedDtlSeq)">
+                            <span>{{re.totChrgDue | currency:'PKR':''}}</span></a></td>
+                        <td>{{re.ppalAmtDue+re.totChrgDue | currency:'PKR':''}}</td>
+                        <td>{{re.dueDt | date :'dd-MM-yyyy'}}</td>
+                        <td>
+                          <table class="thead-light thead-blue">
+                            <tr *ngFor="let p of re.pymtAmt | split:','">
+                              <td style="border:none">{{p | currency:'PKR':''}}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td>
+                          <table class="thead-light thead-blue">
+                            <tr *ngFor="let p of re.pymtDt| split:','">
+                              <td style="border:none">{{p | date :'dd-MM-yyyy'}}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td>
+                          <table class="thead-light thead-blue ">
+                            <tr *ngFor="let p of re.rcvryTyp| split:','">
+                              <td style="border:none">{{p}}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td>
+                          <table class="thead-light thead-blue trx-table">
+                            <div>
+                              <tr *ngFor="let p of re.instr| merge:re.trxSeq:re.post:re.trxPymt:re.pymtType:re.pymtDt">
+                                  <!-- Added By Naveed - Date - 24-02-2022
+                                    SCR - Portfolio phase - 2, show tooltip text
+                                  -->
+                                  <!-- Modified by Areeba - Given adc recovery reversal rights to finance-->
+                                <td style="border:none"
+                                  *ngIf="(last==p.trx) &&  ((p.post==0) || (p.post==1 && ((role==='admin') || role ==='ho' || role ==='ra' || (role ==='finance' && re.brnchSeq != 0)))); else notpost">
+                                  {{p.inst}} <b *ngIf="p.trx!=''">/</b>
+                                  <a *ngIf="re.trf_clnt_seq != 'T'" data-toggle="modal" (click)="openAdjustPayment(element,p.trx,p.amt,p.inst,p.typ,p.dt)"> {{p.trx}}</a>
+                                  <a *ngIf="re.trf_clnt_seq == 'T'" title="You are not allowed To reverse transferred clients Recovery"> {{p.trx}}</a>
+                                </td> 
+                                <!-- Ended By Naveed -->
+                                <ng-template #notpost>
+                                  {{p.inst}} <b>/</b> {{p.trx}}
+                                  <a *ngIf="p.typ === '161'" (click)="postedReport(p.trx)" class="iconBtn"
+                                    data-toggle="tooltip" title="Print"><img src="assets/images/print-icon.png"
+                                      alt=""></a>
+                                </ng-template>
+                              </tr>
+                            </div>
+
+                          </table>
+                        </td>
+                        <td>{{re.sts}}</td>
+                        <td></td>
+
+                      </tr>
+
+
+                    </table>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplay" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+                [class.example-expanded-row]="expandedElement === element" (click)="expandFunction(element)">
+              </tr>
+              <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+
+            </table>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[15]"></mat-paginator>
+          </div>
+          <!-- 
+              
+            <div class="table-responsive">
+              <table class="table record" id="myTable" style="font-size:11px">
+                <thead class="thead-light thead-blue">
+                  <tr>
+                    <th width="15%" style="text-align:center">Client</th>
+                    <th>Loan Id</th>
+                    <th>Total Due </th>
+                    <th>Total Paid</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let recovery of pagedItems">
+                  <tr class="tableRow" >
+                    <td>
+                      <div class="filter"> <a class="acc_trigger" style="border:none; padding:0px; padding-right:10px; float:left"></a></div>
+                      <a class="userImg"><img src="assets/images/client2.png" alt=""><span>{{recovery.frstNm}}
+                          {{recovery.lastNm}}<br><sup>{{recovery.oldClntId}}</sup></span></a>
+                    </td>
+                    <td>{{recovery.loanId}}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{recovery.recoverySub[0].refCd}}</td>
+                    <td><a href="#" data-toggle="modal" (click)="openApplyPayment(recovery,0)" class="iconBtn"><img src="assets/images/rscheck.png" alt=""></a></td>  
+                  </tr>
+                 
+                  <tr class=" collapse acc_container collapseLogic">
+                    <table >
+                    
+                        <tr>
+                          <th>inst.#</th>
+                          <th>Total Due </th>
+                          <th>Total Due </th>
+                          <th>Total Due </th>
+                          <th>Due Date</th>
+                          <th>Paid Amt.</th>
+                          <th>Paid Date</th>
+                          <th>Institution</th>
+                          <th>Instr.#</th>
+                          <th>Status</th>
+                          
+                        </tr>
+               
+                        <tr *ngFor="let re of recovery.recoverySub | slice:1; let i = index">
+                          <td>{{re.instNum}}</td>
+                          <td>{{re.ppalAmtDue}}</td>
+                          <td>{{re.totChrgDue}}</td>
+                          <td>{{re.totalDueAmount}}</td>
+                          <td>{{re.dueDt | date :'dd-MM-yyyy'}}</td>
+                          <td>{{re.pymtAmt}}</td>
+                          <td>{{re.pymtDt | date :'dd-MM-yyyy'}}</td>
+                          <td>{{re.rcvryTyp}}</td>
+                          <td>{{re.instr}}</td>
+                          <td>{{re.refCd}}</td>
+                          
+                        </tr>
+                  
+                    
+                        </table>
+                  </tr>
+  
+                </tbody>
+              </table>
+            </div>
+            -->
+          <!-- <nav aria-label="Page navigation ">
+              <ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+                <li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+                  <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+                </li>
+                <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                  <a class="page-link" (click)="setPage(page)">{{page}}</a>
+                </li>
+                <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                  <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+                </li>
+              </ul>
+            </nav> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="modal fade" id="ApplyPayment" role="dialog">
+  <div class="modal-dialog mymodal big">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Apply Payment</h5>
+      </div>
+      <form [formGroup]="applyPayment" (ngSubmit)="onApplyPaymentSubmit()">
+        <div class="modal-body">
+          <div class="cRow">
+            <input type="hidden" formControlName="clientId" />
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Client ID:" formControlName="clntId"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fApplyPayment.clntId.errors?.required">
+                  Client Id <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Client Name:" formControlName="clientNm"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fApplyPayment.clientNm.errors?.required">
+                  Client Name <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Product:" formControlName="prd" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fApplyPayment.prd.errors?.required">
+                  branch name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Remaining Amount:" formControlName="totaldue"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fApplyPayment.totaldue.errors?.required">
+                  branch name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2 ">
+              <mat-form-field>
+                <mat-select placeholder="Payment Mode:" (selectionChange)="onRecoveryChange()"
+                  formControlName="rcvryTypsSeq" name="rcvryTypsSeq" [errorStateMatcher]="matcher">
+                  <mat-option *ngFor="let edu of tempInstituteArray" [value]="edu">
+                    {{edu.typStr}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="fApplyPayment.rcvryTypsSeq.errors?.required">
+                  Payment Mode is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2" *ngIf="!isCash">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Instrument Number:" formControlName="instr"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fApplyPayment.instr.errors?.required">
+                  instrument number is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="fApplyPayment.instr.errors?.maxlength">
+                  instrument number length should be <strong>20 characters</strong>
+                </mat-error>
+                <mat-error *ngIf="fApplyPayment.instr.errors?.minlength">
+                  instrument number length should be <strong>20 characters</strong>
+                </mat-error>
+                <mat-error *ngIf="fApplyPayment.instr.errors?.pattern">
+                  only number are <strong>allowed</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2" *ngIf="!isCash">
+              <mat-form-field>
+                <input matInput required name="pymtDt" [min]="minDate" [max]="maxDate" id="pymtDt"
+                  formControlName="pymtDt" disabled readonly placeholder="Slip Date:" [matDatepicker]="picker1">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                <mat-error *ngIf="fApplyPayment.pymtDt.errors?.required">
+                  Slip Date is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Payment Amount:" pattern="^-?[\d]+(?:e-?\d+)?$"
+                  formControlName="pymtAmt" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fApplyPayment.pymtAmt.errors?.required">
+                  Payment Amount is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="fApplyPayment.pymtAmt.errors?.paymtamterror">
+                  Payment Amount is <strong>Greater then Due Amount</strong>
+                </mat-error>
+                <mat-error *ngIf="fApplyPayment.pymtAmt.errors?.pattern">
+                  Payment Amount is <strong>Invalid</strong>
+                </mat-error>
+
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2">
+
+              <mat-checkbox class="example-margin" formControlName="post">Post</mat-checkbox>
+
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" (click)="onApplyPaymentSubmit()" class="btn btn-primary btn-min"
+            [disabled]="!applyPayment.valid || disbFlg">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="AdjustPayment" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog mymodal bigger">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Adjust Payment</h5>
+      </div>
+      <form [formGroup]="adjustPayment" (ngSubmit)="onAdjustPaymentSubmit()">
+        <div class="modal-body">
+          <div class="cRow">
+            <input type="hidden" formControlName="trxId" />
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Client Id:" formControlName="clntId"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fadjustPayment.clntId.errors?.required">
+                  Client Id <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Client Name:" formControlName="clientNm"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fadjustPayment.clientNm.errors?.required">
+                  Client Name <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Product:" formControlName="prd" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fApplyPayment.totaldue.errors?.required">
+                  branch name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Remaining Amount:" formControlName="totaldue"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fadjustPayment.totaldue.errors?.required">
+                  branch name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="cRow">
+            <div class="cCol3">
+              <mat-form-field>
+                <mat-select placeholder="Reversal Reason:" formControlName="chngRsnKey" name="chngRsnKey"
+                  [errorStateMatcher]="matcher" (selectionChange)="onSelectionChanged($event)">
+                  <mat-option *ngFor="let edu of revaslReasnsList" [value]="edu.codeKey">
+                    {{edu.codeValue}}
+                  </mat-option>
+                  <!-- <mat-error *ngIf="fadjustPayment.chngRsnKey.errors?.required && fadjustPayment.chngRsnKey.touched">
+                    Remarks are <strong>required</strong>
+                  </mat-error> -->
+                </mat-select>
+                <mat-hint class="text-danger font-14"
+                  *ngIf="fadjustPayment.chngRsnKey.errors?.required && fadjustPayment.chngRsnKey.touched">
+                  Reversal Reason is <strong>required</strong>
+                </mat-hint>
+
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Remarks:" formControlName="chngRsnCmnt"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fadjustPayment.chngRsnCmnt.errors?.required && fadjustPayment.chngRsnCmnt.touched">
+                  Remarks are <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Payment Amount:" pattern="^-?[\d.]+(?:e-?\d+)?$"
+                  formControlName="pymtAmt" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="fadjustPayment.pymtAmt.errors?.required">
+                  Payment Amount is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="fadjustPayment.pymtAmt.errors?.paymtamterror">
+                  Payment Amount is <strong>Greater then Due Amount</strong>
+                </mat-error>
+                <mat-error *ngIf="fadjustPayment.pymtAmt.errors?.pattern">
+                  Payment Amount is <strong>Invalid</strong>
+                </mat-error>
+
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer text-center">
+          <button appNoDblClick type="button" (click)="onAdjustPaymentSubmit()"
+            [disabled]="!adjustPayment.valid || disbFlg" class="btn btn-primary btn-min">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="chargesdetails" role="dialog">
+  <div class="modal-dialog mymodal">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Charges Detail</h5>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th><b>Charge Type</b></th>
+                <th><b>Amount</b></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let code of chargesDetails">
+                <td>{{code.chrgTyp}}/-</td>
+                <td>{{code.amt}}/-</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer smmodal-footer text-center">
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="disgardApp" role="dialog">
+  <div class="modal-dialog mymodal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Defered Application</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="disgardForm" (ngSubmit)="onSubmitDisgardApp()">
+        <input type="hidden" formControlName="loanAppSeq" />
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol6">
+              <mat-form-field>
+                <input matInput required formControlName="cmnt" placeholder="Remarks:" />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="submit" class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="jvHistory" role="dialog">
+  <div class="modal-dialog mymodal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Revocery jv History</h5>
+      </div>
+      <table>
+        <thead class="thead-light">
+          <tr>
+            <th>JV ID</th>
+            <th>JV Date</th>
+            <th>JV Type</th>
+            <th>JV Description</th>
+            <th>Credit</th>
+            <th>Debit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let jv of history">
+            <td>{{jv.hdrId}}</td>
+            <td>{{jv.jvDt}}</td>
+            <td>{{jv.Desc}}</td>
+            <td>{{jv.accDesc}}</td>
+            <td>{{jv.debit}}</td>
+            <td>{{jv.credit}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exxcess_recovery" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog mymodal big">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Excess Revocery</h5>
+      </div>
+      <form [formGroup]="excessPayment" (ngSubmit)="onExcessRecoverSubmitt()">
+        <div class="modal-body">
+          <div class="cRow">
+            <input type="hidden" formControlName="clientId" />
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Client ID:" formControlName="clntId"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="ef.clntId.errors?.required">
+                  Client Id <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Client Name:" formControlName="clientNm"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="ef.clientNm.errors?.required">
+                  Client Name <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Product:" formControlName="prd" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="ef.prd.errors?.required">
+                  branch name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Remaining Amount:" formControlName="totaldue"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="ef.totaldue.errors?.required">
+                  branch name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2 ">
+              <mat-form-field>
+                <mat-select placeholder="Payment Mode:" (selectionChange)="onPaymentModeChange()"
+                  formControlName="rcvryTypsSeq" name="rcvryTypsSeq" [errorStateMatcher]="matcher">
+                  <mat-option *ngFor="let edu of tempInstituteArray" [value]="edu">
+                    {{edu.typStr}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="ef.rcvryTypsSeq.errors?.required">
+                  Payment Mode is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2" *ngIf="!isCash">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Instrument Number:" formControlName="instr"
+                  [errorStateMatcher]="matcher">
+                <mat-error *ngIf="ef.instr.errors?.required">
+                  instrument number is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="ef.instr.errors?.maxlength">
+                  instrument number length should be <strong>20 characters</strong>
+                </mat-error>
+                <mat-error *ngIf="ef.instr.errors?.minlength">
+                  instrument number length should be <strong>20 characters</strong>
+                </mat-error>
+                <mat-error *ngIf="ef.instr.errors?.pattern">
+                  only number are <strong>allowed</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2" *ngIf="!isCash">
+              <mat-form-field>
+                <input matInput required name="pymtDt" [min]="minDate" [max]="maxDate" id="pymtDt"
+                  formControlName="pymtDt" disabled readonly placeholder="Slip Date:" [matDatepicker]="picker1">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                <mat-error *ngIf="ef.pymtDt.errors?.required">
+                  Slip Date is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Payment Amount:" pattern="^-?[\d]+(?:e-?\d+)?$"
+                  formControlName="pymtAmt" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="ef.pymtAmt.errors?.required">
+                  Payment Amount is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="ef.pymtAmt.errors?.paymtamterror">
+                  Payment Amount is <strong>Greater then Due Amount</strong>
+                </mat-error>
+                <mat-error *ngIf="ef.pymtAmt.errors?.pattern">
+                  Payment Amount is <strong>Invalid</strong>
+                </mat-error>
+
+              </mat-form-field>
+            </div>
+
+            <!-- <div class="cCol2">
+
+              <mat-checkbox class="example-margin" formControlName="post">Post</mat-checkbox>
+
+
+            </div> -->
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" (click)="onExcessRecoverSubmitt()" class="btn btn-primary btn-min"
+            [disabled]="!excessPayment.valid || excessDisable">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- <ngx-spinner
+    bdColor = "rgba(51, 51, 51, 0.8)"
+    size = "medium"
+    color = "#ffffff"
+    type = "ball-newton-cradle"></ngx-spinner> -->
+<!-- <script>
+    $(document).ready(function () {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('.acc_trigger').toggleClass('inactive-header');
+  
+      $('.acc_trigger:first').addClass('active-header').next().show();
+      $('.acc_trigger').click(function () {
+        if ($(this).next().is(':hidden')) {
+          $('.active-header').toggleClass('active-header').toggleClass('inactive-header').next().slideToggle().toggleClass('open-content');
+          $(this).toggleClass('active-header').toggleClass('inactive-header');
+          $(this).next().slideToggle().toggleClass('open-content');
+        }
+  
+        else {
+          $(this).toggleClass('active-header').toggleClass('inactive-header');
+          $(this).next().slideToggle().toggleClass('open-content');
+        }
+      });
+  
+  
+      $('.tableRow').click(function () {
+        if ($(this).next().is(':hidden')) {
+          $('.active-header1').toggleClass('active-header1').toggleClass('inactive-header1').parents("tr:first").next().slideToggle().toggleClass('open-content');
+          $(this).children(":first").children(":first").children(":first").toggleClass('active-header1').toggleClass('inactive-header1');
+          $(this).next().slideToggle().toggleClass('open-content');
+        }
+  
+        else {
+          $(this).children(":first").children(":first").children(":first").toggleClass('active-header1').toggleClass('inactive-header1');
+          $(this).next().slideToggle().toggleClass('open-content');
+        }
+      });
+      return false;
+    });
+  </script>
+  <script>
+    $(".searchshow").click(function () {
+      $(".mysearchbox").addClass("intro");
+    });
+    $(".remove-search").click(function () {
+      $(".mysearchbox").removeClass("intro");
+    });
+  
+  
+    function myFunction() {
+      var input, filter, table, tr, td, i;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+  </script>
+  <script>
+  
+    $('.listmenu ul li:has(ul.sub-menu)').prepend('<span class="nav-click" />');
+    $(function ($) {
+      $('.listmenu .nav-click').click(function () {
+        var parent = $(this).parent();
+        if (parent.hasClass('toparrow')) {
+          $(".sub-menu:first", parent).hide(300);
+          parent.removeClass('toparrow');
+        } else {
+          $(".sub-menu:first", parent).show(300);
+          parent.addClass('toparrow');
+        }
+      });
+    });
+  </script> -->

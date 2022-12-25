@@ -1,0 +1,170 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+      <div class="cRow">
+        <div class="cCol1">
+          <mat-form-field>
+            <input type="text" placeholder="Recommended {{titleValue}} Amount" matInput readonly value="{{model.recAmount}}" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-sm-6 ">
+          <h6 class="colorBlack">{{titleValue}} Utilization Plan</h6>
+        </div>
+        <div class="col-sm-6 addBtn mb-2">
+          <button class="btn btn-primary btn-sm" [disabled]="readonly" (click)="addLoan()">
+            <i class="fa fa-plus"></i> Add</button>
+        </div>
+        <div class="modal fade" id="addmember" role="dialog">
+          <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onLoanUtilizationForm()" #addLoanUtilizationForm="ngForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add {{titleValue}} Utilization Plan</h5>
+                </div>
+                <div class="modal-body">
+                  <div class="cRow">
+                    <div class="cCol3-col">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly" placeholder="Expense Type"
+                                    [(ngModel)]="loanUtilization.loanUtilType"
+                                    [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                                    id="loanUtilType" name="loanUtilType" required>
+                          <mat-option *ngFor="let edu of expenseTypeArray" [value]="edu.codeKey">
+                            {{edu.codeValue}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol3-col">
+                      <mat-form-field>
+                      <input type="text" required [(ngModel)]="loanUtilization.loanUtilDesc"
+                             id="loanUtilDesc" name="loanUtilDesc" matInput [readonly]="readonly"
+                             [errorStateMatcher]="matcher" maxlength="100"
+                             placeholder="Description" #loanUtilDesc="ngModel">
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol3-col">
+                      <mat-form-field>
+                      <input type="number" pattern="\d*" max="{{model.recAmount}}" min="0"  matInput [readonly]="readonly"
+                             required [(ngModel)]="loanUtilization.loanUtilAmount"
+                             id="loanUtilAmount" name="loanUtilAmount"
+                             [errorStateMatcher]="matcher"
+                             placeholder="Amount" #loanUtilAmount="ngModel">
+                        <mat-error *ngIf="loanUtilAmount.invalid">
+                          {{titleValue}} utilization amount is <strong>invalid</strong>
+                        </mat-error>
+                        <mat-error *ngIf="loanUtilAmount.errors?.maxlength">
+                          {{titleValue}} utilization amount max is <strong>{{model.recAmount}}</strong>
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" [disabled]="!addLoanUtilizationForm.form.valid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mb-md-5">
+        <table class="table">
+          <thead class="thead-light">
+          <tr>
+            <th>Expense Type</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let expense of model.loanUtilization">
+            <td>{{findValueFromKey(expense.loanUtilType, expenseTypeArrayOrig)}}</td>
+            <td>{{expense.loanUtilDesc}}</td>
+            <td>{{expense.loanUtilAmount  | currency:'PKR':''}}</td>
+            <td>
+              <button [disabled]="readonly" (click)="editLoan(expense)" class="iconBtn simplebtn">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button [disabled]="readonly" (click)=deleteLoan(expense) class="iconBtn delBtn simplebtn">
+                <i class="fa fa-trash-o"></i>
+              </button>
+            </td>
+          </tr>
+          <tr class="total-info">
+            <td></td>
+            <td class="text-right">
+              <b>Total Expenses:</b>
+            </td>
+            <td>
+              <input style="text-align: right" type="text" readonly  class="form-control small" value="{{totalExpense  | currency:'PKR':''}}">
+            </td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="continueClicked()" [disabled]="!formSaved">Continue</button>
+      <button class="btn btn-default" type="button" [disabled]="readonly" (click)="saveClicked()">Save</button>
+    </div>
+
+    <div class="modal fade" id="deleteLConfirmation" role="dialog">
+      <div class="modal-dialog mymodal">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete Expected {{titleValue}}</h5>
+          </div>
+          <div class="modal-body">
+
+            <div class="table-responsive">
+              <h6>Do you want to delete?</h6>
+            </div>
+
+
+            <div class="modal-footer smmodal-footer text-center">
+              <button type="button" (click)="confirmLDelete()" class="btn btn-primary btn-min">Yes</button>
+              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    
+    <div class="modal fade" id="setUtilAmount" role="dialog">
+      <div class="modal-dialog mymodal">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Warning</h5>
+          </div>
+          <div class="modal-body">
+
+            <div class="table-responsive">
+              <h6>Total utilization amount exeeding recommended credit amount. Do you want to set maximum allowed amount?</h6>
+            </div>
+
+
+            <div class="modal-footer smmodal-footer text-center">
+              <button type="button" (click)="confirmUpdateAmount()" class="btn btn-primary btn-min">Yes</button>
+              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>

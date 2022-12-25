@@ -1,0 +1,23 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+      <h6 class="mt-3">Products</h6>
+      <div class="pt-1">
+        <label>Select Product:</label>
+      </div>
+
+      <div class="checkbox mb-1" *ngFor="let form of allAssocProducts">
+        <mat-checkbox class="example-margin"
+                      name="selfPDC"
+                      (change)="updateFromAssignment(form)"
+                      [(ngModel)]="form.isChecked">{{form.prdNm}}</mat-checkbox>
+      </div>
+
+      <div class="mt-5">
+        <button routerLink="/setup/products" class="btn btn-primary btn-min">Continue</button>
+        <!-- <button class="btn btn-default" (click)="onSave()">Save</button> -->
+      </div>
+    </div>
+  </div>
+</main>

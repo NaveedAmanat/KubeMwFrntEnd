@@ -1,0 +1,93 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-3">
+          <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+        </div>
+      </div>
+      <form (ngSubmit)="saveClicked()" #documentsForm="ngForm">
+        <!-- <h6 class="colorBlack mb-0 mt-2">Client:</h6> -->
+        <div class="cRow">
+          <div class="cCol1" *ngFor="let doc of docs">
+            <label>{{doc.crtdBy}}:</label>
+            <img [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,'+doc.docImg)" (click)="loadModal(doc)" width="160"
+              height="160" />
+          </div>
+          <!-- <div class="cCol1">
+          <label>Attach CNIC Back:</label>
+          <input type="file" class="form-control">
+        </div>
+        <div class="cCol1">
+          <label>Attach Client Picture:</label>
+          <input type="file" class="form-control"> 
+        </div>-->
+        </div>
+        <!-- <h6 class="colorBlack mb-0 mt-2">Nominee:</h6>-->
+        <div class="cRow" *ngIf="isHomeLoan">
+        <div class="cCol1">
+        <label>Attach Halaf Nama:</label>
+        </div>
+        </div>
+        <div class="cRow" *ngIf="isHomeLoan">
+        <div class="cCol2">
+          <input type="file" (change)="onImageUpload($event)" class="form-control">
+          <div *ngIf="msg" style="color: red;">{{msg}}</div>
+        </div>
+        <div class="cCol1">
+          <input type="button" [disabled]="!uploadable" (click)="imageUploadAction()" value="Upload" class="btn1">
+          &nbsp;
+          <i *ngIf="uploaded" class="fa fa-check-square"></i>
+        </div>
+        
+        <!-- <div class="cCol1" *ngIf="url">
+          <img [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,'+url)" (click)="loadModal(doc)" width="160"
+          height="160">
+        </div> -->
+        <!--<div class="cCol1">
+          <label>Attach CNIC Back:</label>
+          <input type="file" class="form-control">
+        </div>
+        <div class="cCol1">
+          <label>Attach Nominee Picture</label>
+          <input type="file" class="form-control">
+        </div>-->
+      </div>
+      <!--<h6 class="colorBlack mb-0 mt-2">Co-Borrower:</h6>
+      <div class="cRow">
+        <div class="cCol1">
+          <label>Attach CNIC Front:</label>
+          <input type="file" value="Attach CNIC Front" class="form-control">
+        </div>
+        <div class="cCol1">
+          <label>Attach CNIC Back:</label>
+          <input type="file" class="form-control">
+        </div>
+        <div class="cCol1">
+          <label>Attach Co-Borrower Picture</label>
+          <input type="file" class="form-control">
+        </div>
+      </div> --> 
+
+        <div class="mt-5 mb-5">
+          <button type="button" class="btn btn-primary" (click)="continueClicked()">Continue</button>
+          <button class="btn btn-default" type="submit" [disabled]="documentsForm.invalid || readonly">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+
+    <!-- The Close Button -->
+    <span (click)="closeModal()" class="close">&times;</span>
+
+    <!-- Modal Content (The Image) -->
+    <img class="modal-content" [src]="modelSrc">
+
+    <!-- Modal Caption (Image Text) -->
+    <div id="caption">{{modalCaption}}</div>
+  </div>
+</main>

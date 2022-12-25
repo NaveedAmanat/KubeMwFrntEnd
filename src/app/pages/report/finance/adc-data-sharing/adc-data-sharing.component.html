@@ -1,0 +1,49 @@
+<div class="row" class="wi">
+  <div class="col-md-12">
+    <div class="row">
+      <div>
+        <h6 class="d-inline-block">
+          ADCs Data Sharing Reports <i class="fa fa-print"> </i>
+        </h6>
+      </div>
+    </div>
+    <div class="row">
+      <form [formGroup]="ngForm" (ngSubmit)="adcDataSharingReport()">
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field>
+              <mat-select placeholder="Select Report" formControlName="rpt" [errorStateMatcher]="matcher" name="rpt"
+                id="rpt" required (selectionChange)="onReportChange($event)">
+                <mat-option *ngFor="let rpt of reportArr" [value]="rpt">
+                  {{rpt.refCdValDscr}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field *ngIf="isdate">
+              <input matInput formControlName="toDt"
+                placeholder="To Date:" [matDatepicker]="picker2" disabled readonly />
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2 disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <mat-radio-group formControlName="isXls">
+              <mat-radio-button value="1" checked>Excel </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">
+            Print
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

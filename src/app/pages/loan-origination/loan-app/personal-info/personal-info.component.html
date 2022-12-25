@@ -1,0 +1,642 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+
+      <form (ngSubmit)="onPersonalInfoSubmit()" #addPersonalInfoForm="ngForm">
+        <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basincinfo" role="tab"
+              aria-controls="home" aria-selected="true">Basic
+              Info</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="address-tab" data-toggle="tab" href="#addressTab" role="tab"
+              aria-controls="addressTab" aria-selected="false">Address</a>
+          </li>
+        </ul>
+        <div class="tab-content borrowerTabsContent mb-md-3" id="borrowerTabsContent">
+          <div class="tab-pane fade show active" id="basincinfo" role="tabpanel" aria-labelledby="basic-tab">
+
+            <div class="pt-1 pb-1">
+              <label>Client ID:
+                <span class="colorBlue">{{model.clientSeq}} </span>
+              </label>
+              <br>
+            </div>
+            <div class="pt-1">
+              <label>Client Information</label>
+            </div>
+            <div class="borderbox">
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" matInput [value]="cnicPattern.clientCNIC" readonly disabled
+                      placeholder="CNIC: xxxxx-xxxxxxx-x">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput required [matDatepicker]="picker2" placeholder="CNIC Issue Date"
+                      (dateChange)="onExpChange(model.cnicIssueDate)" name="cnicIssueDate" [(ngModel)]="model.cnicIssueDate"
+                      [disabled]="!hasPermission">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker startView="year" #picker2></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput required [matDatepicker]="picker1" placeholder="CNIC Expiry Date"
+                      (dateChange)="onExpChange(model.expiryDate)" name="expiryDate" [(ngModel)]="model.expiryDate"
+                      [disabled]="!hasPermission">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker startView="year" #picker1></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <!-- Added by Areeba - Dated - 13-05-2022 -->
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput required [matDatepicker]="picker4" placeholder="Membership Date"
+                       name="membrshpDt" [(ngModel)]="model.membrshpDt"
+                      [disabled]="!hasPermission">
+                      <!-- (dateChange)="onMemChange(model.expiryDate)" -->
+                    <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                    <mat-datepicker startView="year" #picker4></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <!-- Ended by Areeba  -->
+                <div class="cCol1 text-center">
+                  <mat-checkbox class="example-margin" (change)="selfPdcChange()" name="selfPDC"
+                  [disabled]="isDisabled()" [(ngModel)]="model.selfPDC">Self
+                    PDC</mat-checkbox>
+                </div>
+                <div *ngIf="hasExpired">
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" matInput [(ngModel)]="model.tokenNum" placeholder="Token No" name="tokenNum"
+                        (keypress)="onlyNumbers($event)" max="13" min="6" #tokenNum="ngModel">
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input matInput required [matDatepicker]="picker2" [min]="now" placeholder="Token Expiry Date"
+                        name="tokenDate" [(ngModel)]="model.tokenDate">
+                      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                      <mat-datepicker startView="year" #picker2></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <!-- <div class="cCol1">
+                  <label>Attach CNIC picture</label>
+                  <input type="file" class="form-control" value="Attach CNIC picture">
+                </div> -->
+                <!-- <div class="cCol1">
+                  <label class="blankLabel">&nbsp;</label>
+                  <button class="velBtn gray">Validate with KASHF</button>
+                </div> -->
+              </div>
+              <div class="cRow">
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" (keypress)="onlyLetters($event)" matInput
+                      type="text" required [(ngModel)]="model.firstName" id="firstName" name="firstName"
+                      #firstName="ngModel" pattern="([a-zA-Z ]{3,30}\s*)+" [errorStateMatcher]="matcher" min="3"
+                      placeholder="First Name">
+                    <mat-error *ngIf="firstName.invalid">
+                      first name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" min="3" (keypress)="onlyLetters($event)" matInput
+                      type="text" [(ngModel)]="model.lastName" #lastName="ngModel" pattern="([a-zA-Z ]{3,30}\s*)+"
+                      [errorStateMatcher]="matcher" id="lastName" name="lastName" placeholder="Last Name">
+                    <mat-error *ngIf="lastName.invalid">
+                      last name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly" (keypress)="onlyLetters($event)" matInput type="text"
+                      [(ngModel)]="model.nickName" #nickName="ngModel" pattern="([a-zA-Z ]{2,30}\s*)+"
+                      [errorStateMatcher]="matcher" id="nickName" name="nickName" placeholder="Nick Name">
+                    <mat-error *ngIf="nickName.invalid">
+                      nick name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput type="text" (keypress)="onlyNumbers($event)" required
+                      pattern="^[0-9]{11}$" [errorStateMatcher]="matcher" [(ngModel)]="model.phone" min="11" max="11"
+                      id="phone" name="phone" placeholder="Phone No." #phone="ngModel">
+                    <mat-error *ngIf="phone.invalid">
+                      phone number is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput required name="dob" (dateChange)="onDOBChange(model.dob)" [max]="eightenYearsBefore"
+                      [min]="minDobYear" [matDatepicker]="picker3" placeholder="Date of birth" [(ngModel)]="model.dob"
+                      ng-model-option="{Asia/Karachi}" [disabled]="!hasPermission">
+                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker startView="multi-year" required #picker3 [disabled]="!hasPermission"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly" matInput type="text" readonly disabled [(ngModel)]="model.clntAge"
+                      id="clntAge" name="clntAge" placeholder="Age" #clntAge="ngModel">
+                  </mat-form-field>
+                </div>
+
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly" placeholder="Gender" [(ngModel)]="model.genderKey"
+                      name="genderKey" required [errorStateMatcher]="matcher" pattern="^[1-9]\d*$">
+                      <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="cRow">
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" (selectionChange)="maritalStatusChange()"
+                      placeholder="Marital Status" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                      [(ngModel)]="model.maritalStatusKey" name="maritalStatus" required>
+                      <mat-option *ngFor="let edu of maritalStatus" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="maritalStatus"
+                             required
+                             bindLabel="codeValue"
+                             bindValue="codeKey"
+                             name="codeValue"
+                             placeholder="Select Marital Status"
+                             [(ngModel)]="model.maritalStatus">
+                  </ng-select> -->
+                </div>
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <mat-select placeholder="Education" [disabled]="readonly" [(ngModel)]="model.eduLvlKey"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="eduLvlKey" required>
+                      <mat-option *ngFor="let edu of education" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="education"
+                  [formControl]="eduLvlKey"
+                             required
+                             bindLabel="codeValue"
+                             bindValue="codeKey"
+                             name="codeValue"
+                             placeholder="Select Education"
+                             [(ngModel)]="model.eduLvlKey">
+                  </ng-select>-->
+                </div>
+                <div class="cCol1 ">
+                  <mat-label>
+                    Disability Flag
+                  </mat-label>
+                  <br>
+                  <mat-radio-group [disabled]="readonly" [(ngModel)]="model.disableFlag" (change)="disabilityChange()"
+                    name="disableFlag" required>
+                    <mat-radio-button class="w-50" *ngFor="let disFlag of disFlags" [value]="disFlag.value">
+                      {{disFlag.name}}</mat-radio-button>
+                  </mat-radio-group>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <mat-select [disabled]="!model.disableFlag" placeholder="Disablility" [required]="model.disableFlag"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" [disabled]="!model.disableFlag"
+                      [(ngModel)]="model.natureDisabilityKey" name="natureDisabilityKey">
+                      <mat-option *ngFor="let edu of disability" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="disability"
+                               bindLabel="codeValue"
+                               bindValue="codeKey"
+                               name="codeValue"
+                               [(ngModel)]="model.natureDisabilityKey"
+                               placeholder="Select Nature">
+                    </ng-select> -->
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Occupation" [(ngModel)]="model.occupationKey"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="occupationKey" required>
+                      <mat-option *ngFor="let edu of occupation" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="occupation"
+                             required
+                             bindLabel="codeValue"
+                             bindValue="codeKey"
+                             name="codeValue"
+                             placeholder="Select Occupation"
+                             [(ngModel)]="model.occupationKey">
+                  </ng-select> -->
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <mat-select [disabled]="readonly && !hasPermission" placeholder="Residence" [(ngModel)]="model.residenceTypeKey"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="residence" required>
+                      <mat-option *ngFor="let edu of residenceArray" [value]="edu.codeKey">
+                        {{edu.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!-- <ng-select [items]="residenceArray"
+                             required
+                             bindLabel="codeValue"
+                             bindValue="codeKey"
+                             name="codeValue"
+                             placeholder="Select Residence"
+                             [(ngModel)]="model.residence">
+                  </ng-select> -->
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" (keypress)="onlyLetters($event)" matInput type="text"
+                      [(ngModel)]="model.motherMaidenName" #motherMaidenName="ngModel" pattern="([a-zA-Z ]{3,30}\s*)+"
+                      [errorStateMatcher]="matcher" id="motherMaidenName" name="motherMaidenName"
+                      placeholder="Mother Maiden Name">
+                    <mat-error *ngIf="motherMaidenName.invalid">
+                      mother maiden name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyNumbers($event)" type="text" maxlength="2"
+                      pattern="^(0?[1-9]|[1-9][0-9])$" min="1" required [(ngModel)]="model.houseHoldMember"
+                      id="houseHoldMember" name="houseHoldMember" placeholder="House Hold Members" #hhMembers="ngModel">
+                    <mat-error *ngIf="hhMembers.invalid">
+                      house hold members are <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyNumbers($event)" type="text" maxlength="2"
+                      pattern="^(0?[1-9]|[1-9][0-9])$" max="99" min="0" #numOfDependents="ngModel"
+                      [errorStateMatcher]="matcher" required [(ngModel)]="model.numOfDependts" id="numOfDependts"
+                      name="numOfDependts" placeholder="No. of Dependents">
+                    <mat-hint *ngIf="+numOfDependents.value>+hhMembers.value" style="color: red;">Dependents must be
+                      less
+                      than
+                      <strong>Household Members</strong>
+                    </mat-hint>
+                    <mat-error *ngIf="numOfDependents.invalid">
+                      No. of Dependents is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyNumbers($event)" type="text" maxlength="2"
+                      pattern="^(0?[1-9]|[1-9][0-9])$" [required]="!isSingle" [(ngModel)]="model.numOfChidren"
+                      #numOfChildren="ngModel" [disabled]="isSingle" id="numOfChidren" name="numOfChidren"
+                      placeholder="No. of Childrens">
+                    <mat-error *ngIf="numOfChildren.invalid">
+                      No. of Children is <strong>invalid</strong>
+                    </mat-error>
+                    <!-- <mat-hint *ngIf="+numOfChildren.value>+numOfDependents.value" style="color: red;">Children must be less
+                      than
+                      <strong>Dependants</strong>
+                    </mat-hint> -->
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyNumbers($event)" type="text" maxlength="2"
+                      pattern="^(0?[1-9]|[1-9][0-9])$" required [(ngModel)]="model.earningMembers"
+                      #earningMembers="ngModel" id="earningMembers" name="earningMembers" placeholder="Earning Members">
+                    <mat-error *ngIf="earningMembers.invalid">
+                      earning members are <strong>invalid</strong>
+                    </mat-error>
+                    <mat-hint *ngIf="(+model.earningMembers>+model.houseHoldMember)" style="color: red;">Earning Members
+                      must be less than
+                      <strong>Household Members</strong>
+                    </mat-hint>
+                  </mat-form-field>
+                </div>
+
+                <!-- Added by Areeba - Dated - 13-05-2022 -->
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <mat-select [disabled]="!hasPermission" placeholder="Lead Type" [(ngModel)]="model.refCdLeadTypSeq"
+                      [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="refCdLeadTypSeq" required>
+                      <mat-option *ngFor="let lead of lead" [value]="lead.codeKey">
+                        {{lead.codeValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <!-- Ended by Areeba -->
+              </div>
+            </div>
+            <div class="pt-1" *ngIf="!isMarried">
+              <label>Father’s Information</label>
+            </div>
+            <div class="borderbox" *ngIf="!isMarried">
+              <div class="cRow">
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyLetters($event)"
+                      pattern="([a-zA-Z ]{3,30}\s*)+" type="text" [required]="!isMarried"
+                      [(ngModel)]="model.fathrFirstName" id="fathrFirstName" name="fathrFirstName" min="3"
+                      placeholder="Father First Name" #fathrFirstName="ngModel">
+                    <mat-error *ngIf="fathrFirstName.invalid">
+                      father first name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyLetters($event)"
+                      pattern="([a-zA-Z ]{3,30}\s*)+" type="text" [required]="!isMarried"
+                      [(ngModel)]="model.fathrLastName" id="fathrLastName" name="fathrLastName" min="3"
+                      placeholder="Father Last Name" #fathrLastName="ngModel">
+                    <mat-error *ngIf="fathrLastName.invalid">
+                      father first name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div class="pt-1" *ngIf="isMarried">
+              <label>Spouse’s Information</label>
+            </div>
+            <div class="borderbox" *ngIf="isMarried">
+              <div class="cRow">
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyLetters($event)"
+                      pattern="([a-zA-Z ]{3,30}\s*)+" type="text" [(ngModel)]="model.spzFirstName"
+                      [required]="isMarried" [disabled]="!isMarried" id="spzFirstName" name="spzFirstName" min="3"
+                      placeholder="Spouse First Name" #spzFirstName="ngModel">
+                    <mat-error *ngIf="spzFirstName.invalid">
+                      spouse first name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input [disabled]="readonly && !hasPermission" matInput (keypress)="onlyLetters($event)"
+                      pattern="([a-zA-Z ]{3,30}\s*)+" type="text" [(ngModel)]="model.spzLastName" [required]="isMarried"
+                      [disabled]="!isMarried" id="spzLastName" name="spzLastName" placeholder="Spouse Last Name" min="3"
+                      #spzLastName="ngModel">
+                    <mat-error *ngIf="spzLastName.invalid">
+                      spouse last name is <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="addressTab" role="tabpanel" aria-labelledby="address-tab">
+
+            <div class="cRow">
+              <div class="cCol1 ">
+                <mat-label>
+                  Is client in same household?
+                </mat-label>
+                <br>
+                <mat-radio-group [disabled]="readonly" [(ngModel)]="model.smHsldFlg" (change)="hsldChange()"
+                  name="smHsldFlg" required>
+                  <mat-radio-button class="w-50" *ngFor="let disFlag of disFlags" [value]="disFlag.value">
+                    {{disFlag.name}}</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div *ngIf="model.smHsldFlg" class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keyup)="cnicPattern1($event, 'client')" id="smHsldCNIC" name="smHsldCNIC" matInput
+                    placeholder="CNIC" pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$" maxlength="15" minlength="15"
+                    [(ngModel)]="cnicPatternObj.clientCNIC" #clientCNIC="ngModel">
+                  <mat-error *ngIf="clientCNIC.invalid">
+                    client cnic number is <strong>invalid</strong>
+                  </mat-error>
+
+                </mat-form-field>
+              </div>
+              <div *ngIf="model.smHsldFlg && !isVerified" class="cCol1 ">
+                <button *ngIf="!isVerified" [disabled]="readonly && !hasPermission" (click)="verifyCnic()"
+                  class="btn btn-default" type="button">Verify</button>
+              </div>
+            </div>
+            <div class="cRow">
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input readonly matInput required id="province" name="province" [(ngModel)]="model.provinceName"
+                    readonly placeholder="Province">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input readonly required matInput id="district" name="district" [(ngModel)]="model.districtName"
+                    readonly placeholder="District">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input readonly matInput required id="tehsil" name="tehsil" [(ngModel)]="model.tehsilName" readonly
+                    placeholder="Tehsil">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input readonly matInput required id="uc" name="uc" [(ngModel)]="model.ucName" readonly
+                    placeholder="UC">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input readonly matInput required id="city" name="city" [(ngModel)]="model.cityName" readonly
+                    placeholder="City">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 mt-3">
+                <button [disabled]="readonly && !hasPermission" type="button" class="btn btn-dots"
+                  data-toggle="modal" data-target="#Location"></button>
+              </div>
+            </div>
+
+            <div class="cRow">
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input [disabled]="readonly && !hasPermission" matInput type="text" value="" maxlength="15"
+                    required id="houseNum" name="houseHum" [(ngModel)]="model.houseNum" #houseNum="ngModel"
+                    (keypress)="alphaNumeric($event)" placeholder="House Number">
+                  <mat-error *ngIf="houseNum.invalid">
+                    house number is <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input matInput [disabled]="readonly && !hasPermission" (keypress)="alphaNumeric($event)"
+                    type="text" value="" required id="street" name="street" [(ngModel)]="model.sreet_area"
+                    placeholder="Street/Area">
+                </mat-form-field> 
+              </div>
+              <div class="cCol1" *ngIf="readonly && !hasPermission">
+                <ng-select [items]="communityArray" required disabled
+                  bindLabel= "cmntyNm + '-'" bindValue="cmntySeq" name="cmntyNm" placeholder="Select Community"
+                  #community="ngModel" [(ngModel)]="model.community">
+                  <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                    <span class="ng-value-label">{{item.cmntyNm + ' - ' + portfolio.portNm}}</span>
+                    <span class="ng-value-icon right" (click)="clear(item)">×</span>
+                </ng-template>
+                </ng-select>
+              </div>
+              <div class="cCol2" *ngIf="!(readonly && !hasPermission)">
+                <ng-select [items]="communityArray" required
+                  bindLabel="cmntyNm" bindValue="cmntySeq" name="cmntyNm" placeholder="Select Community"
+                  #community="ngModel" [(ngModel)]="model.community">
+                  <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                    <span class="ng-value-label">{{item.cmntyNm + ' - ' + portfolio.portNm}}</span>
+                    <span class="ng-value-icon right" (click)="clear(item)">×</span>
+                </ng-template>
+                </ng-select>
+                <mat-error *ngIf="!community.valid">
+                  Community is <strong>invalid</strong>
+                </mat-error>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input type="text" matInput required [disabled]="readonly && !hasPermission"
+                    [(ngModel)]="model.village" id="village" name="village" placeholder="Village">
+                </mat-form-field>
+              </div>
+              <div class="cCol3 ">
+                <mat-form-field>
+                  <input type="text" matInput required id="other" name="other"
+                    [disabled]="readonly && !hasPermission" [(ngModel)]="model.otherDetails"
+                    placeholder="Other Details">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="cRow">
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input matInput [disabled]="readonly && !hasPermission" type="text" (keypress)="onlyNumbers($event)" maxlength="2"
+                    pattern="\d*" max="99" min="0" #yearResidence="ngModel" [(ngModel)]="model.yearsOfResidence"
+                    id="yearsOfResidence" name="yearsOfResidence" (change)="calculateTotalMonth()"
+                    placeholder="No. of Years of Residence" [errorStateMatcher]="matcher" />
+                  <mat-error *ngIf="yearResidence.invalid">
+                    residence years are <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input type="text" [disabled]="readonly && !hasPermission" (keypress)="onlyNumbers($event)" min="0" max="12" matInput
+                    required maxlength="2" #mnthsResidence="ngModel" [errorStateMatcher]="matcher"
+                    pattern="^(0?[0-9]|1[012])$" [(ngModel)]="model.mnthsOfResidence" id="mnthsResidence"
+                    name="mnthsResidence" placeholder="No. of Months of Residence" (change)="calculateTotalMonth()" />
+                  <mat-error *ngIf="mnthsResidence.invalid">
+                    residence months are <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input type="text" [readonly]="true" [disabled]="true" matInput readonly
+                    [(ngModel)]="totalmnthsOfResidence" id="totalmnthsOfResidence" name="totalmnthsOfResidence"
+                    placeholder="Residence tenure in months">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="pt-1 pb-1">
+              <mat-label>Is Permanent Address Same as Current Address:</mat-label>
+              <br>
+              <mat-radio-group [disabled]="readonly" [(ngModel)]="model.isPermAddress" name="isPermAddress" required
+                (change)="PermAddressChange()">
+                <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" [value]="disFlag.value">
+                  {{disFlag.name}}</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="pt-1 pb-1" [hidden]="model.isPermAddress">
+              <mat-form-field>
+                <input type="text" [disabled]="readonly" matInput [required]="!model.isPermAddress"
+                  id="permanentAddress" name="permanentAddress" [(ngModel)]="model.permAddress"
+                  placeholder="Permanent Address" [errorStateMatcher]="matcher">
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" [disabled]="!formSaved"
+          (click)="continueClicked()">Continue</button>
+        <button [disabled]="readonly && !hasPermission" class="btn btn-default" type="submit">Save</button>
+      </form>
+      <!-- [disabled]="!formSaved" -->
+      <!-- [disabled]="!addPersonalInfoForm.form.valid" -->
+
+      <div class="modal fade" id="Location" role="dialog">
+        <div class="modal-dialog bigger mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Location </h5>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table last-left">
+                  <thead class="thead-light last-left">
+                    <tr>
+                      <th>Province</th>
+                      <th>District</th>
+                      <th>Tehsil</th>
+                      <th width="20%">UC</th>
+                      <th>City</th>
+                      <th>Select</th>
+                    </tr>
+                  </thead>
+                  <tbody class="evenodd">
+                    <tr *ngFor="let address of addresses">
+                      <td>{{address.provinceName}} </td>
+                      <td>{{address.districtName}}</td>
+                      <td>{{address.tehsilName}}</td>
+                      <td>{{address.ucName}}</td>
+                      <td>{{address.cityName}}</td>
+                      <td>
+                        <button data-dismiss="modal" type="button" class="btn btn-primary btn-min"
+                          (click)="selectAddress(address)">Select</button>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,1062 @@
+<mat-accordion>
+
+        <!------------------------- Starting of Simple Reports------------------------------->
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Branch MWX Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/overdue')"><a
+                                                [routerLink]="['/reports/overdue']">{{getName("/overdue")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/portfolio')"><a
+                                                [routerLink]="['/reports/portfolio']">{{getName("/portfolio")}}</a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/new-portfoliomonitoring')"><a
+                                                [routerLink]="['/reports/new-portfoliomonitoring']">{{getName("/new-portfoliomonitoring")}}
+                                        </a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/fund-stmnt')"><a
+                                                [routerLink]="['/reports/fund-stmnt']">{{getName("/fund-stmnt")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/validation')"><a
+                                                [routerLink]="['/reports/validation']">{{getName("/validation")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/accounts-ledger')"><a
+                                                [routerLink]="['/reports/accounts-ledger']">{{getName("/accounts-ledger")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/book-details')"><a
+                                                [routerLink]="['/reports/book-details']">{{getName("/book-details")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/due-recovery')"><a
+                                                [routerLink]="['/reports/due-recovery']">{{getName("/due-recovery")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/client-health-beneficiary')"><a
+                                                [routerLink]="['/reports/client-health-beneficiary']">{{getName("/client-health-beneficiary")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/brnch-turnover-anlysis')"><a
+                                                [routerLink]="['/reports/brnch-turnover-anlysis']">{{getName("/brnch-turnover-anlysis")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/insurance-claim')"><a
+                                                [routerLink]="['/reports/insurance-claim']">{{getName("/insurance-claim")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/par-branch-wise')"><a
+                                                [routerLink]="['/reports/par-branch-wise']">{{getName("/par-branch-wise")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/five-days-advance-recovery')"><a
+                                                [routerLink]="['/reports/five-days-advance-recovery']">{{getName("/five-days-advance-recovery")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/top-sheet')"><a
+                                                [routerLink]="['/reports/top-sheet']">{{getName("/top-sheet")}}</a></li>
+                                <li [routerLinkActive]="['active']"
+                                        *ngIf="hasSubMod('/projected-clients-loan-completeion')"><a
+                                                [routerLink]="['/reports/projected-clients-loan-completeion']">{{getName("/projected-clients-loan-completeion")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/adc-wise-branch-recovery')"><a
+                                                [routerLink]="['/reports/adc-wise-branch-recovery']">{{getName("/adc-wise-branch-recovery")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/pending-clients')"><a
+                                                [routerLink]="['/reports/pending-clients']">{{getName("/pending-clients")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/tagged-client-claim')"><a
+                                                [routerLink]="['/reports/tagged-client-claim']">{{getName("/tagged-client-claim")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/transferred-clients')"><a
+                                                [routerLink]="['/reports/transferred-clients']">{{getName("/transferred-clients")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reversed-enteries')"><a
+                                                [routerLink]="['/reports/reversed-enteries']">{{getName("/reversed-enteries")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/trail-balance')"><a
+                                                [routerLink]="['/reports/trail-balance']">{{getName("/trail-balance")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/md-par')"><a
+                                                [routerLink]="['/reports/md-par']">Par MD</a>
+                                </li>
+								  <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/verisys-report')"><a
+                                        [routerLink]="['/reports/verisys-report']">{{getName("/verisys-report")}}</a>
+                                </li>
+								 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/km-portfolio')"><a
+                                        [routerLink]="['/reports/km-portfolio']">{{getName("/km-portfolio")}}</a>
+                                </li>
+								 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/pdc-detail')"><a
+                                        [routerLink]="['/reports/pdc-detail']">{{getName("/pdc-detail")}}</a>
+                                </li>
+				
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/recover-trend-analysis')"><a
+                                        *ngIf="auth.role != 'am'" [routerLink]="['/reports/recover-trend-analysis']">{{getName("/recover-trend-analysis")}}</a>
+                                </li>
+								
+								 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/bm-mobile-wallet-dis')"><a
+                                        [routerLink]="['/reports/bm-mobile-wallet-dis']">{{getName("/bm-mobile-wallet-dis")}}</a></li>
+
+                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/bm-mobileWallet-dues')"><a
+                                        [routerLink]="['/reports/bm-mobileWallet-dues']">{{getName("/bm-mobileWallet-dues")}}</a></li>
+
+                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/bm-maturity-loanClients')"><a
+                                        [routerLink]="['/reports/bm-maturity-loanClients']">{{getName("/bm-maturity-loanClients")}}</a></li>   
+                                 
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/telenor-collection-report')"><a
+                                        *ngIf="auth.role != 'admin'" [routerLink]="['/reports/finance/telenor-collection-report']">{{getName("/telenor-collection-report")}}</a></li>      
+                                
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/finance/Inquiriestelenor-collection-report')"><a
+                                        *ngIf="auth.role != 'admin'" [routerLink]="['/reports/finance/Inquiriestelenor-collection-report']">{{getName("/finance/Inquiriestelenor-collection-report")}}</a></li>
+                                
+                                <!-- Added By Areeba- Date 23-01-2022-->
+                                <!-- SCR portfolio transfer -->
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/transfer-clients-details')">
+                                        <a [routerLink]="['/reports/transfer-clients-details']">{{getName("/transfer-clients-details")}}</a>
+                                </li>
+                                <!-- Ended by Areeba -->
+
+                                 <!-- Added By Areeba - Date - 25-1-2022 - Top Sheet Transfer Clients Report-->
+                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/topsheet-transfer-clients')">
+                                        <a [routerLink]="['/reports/topsheet-transfer-clients']">{{getName("/topsheet-transfer-clients")}}</a>
+                                </li>
+                                <!-- Ended by Areeba -->
+
+                                <!-- Added By Naveed - Date - 24-02-2022 -->
+                                <!-- SCR - Upaisa and HBL Konnect Payment Mode -->
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/mobile-wallet-trend')"><a
+                                        *ngIf="auth.role == 'bm'" [routerLink]="['/reports/finance/mobile-wallet-trend']">{{getName("/reports/finance/mobile-wallet-trend")}}</a></li>   
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/atm-cards-management')"><a
+                                        *ngIf="auth.role == 'bm'" [routerLink]="['/reports/finance/atm-cards-management']">{{getName("/reports/finance/atm-cards-management")}}</a></li>   
+                                <!-- Ended By Naveed -->	
+                                
+                                <!-- Added By Naveed - Date - 10-05-2022 -->
+                                <!-- SCR - MCB Disbursement -->
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/mcbDisburseFundsStatus')"><a
+                                     *ngIf="auth.role == 'bm'" [routerLink]="['/reports/finance/mcbDisburseFundsStatus']">{{getName("/reports/finance/mcbDisburseFundsStatus")}}</a></li> 
+                               
+                                <!-- Added By Naveed - Date - 08-06-2022 -->
+                                <!-- NADRA Verisys Staus -->
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/nadraVerisysStatus')"><a
+                                     [routerLink]="['/reports/nadraVerisysStatus']">{{getName("/nadraVerisysStatus")}}</a></li> 
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+        <!------------------------- Ending of Simple Reports------------------------------->
+
+
+
+        <!------------------------- Starting of operationl Reports------------------------------->
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                AM / RM Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/advance-recovery-overall')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/advance-recovery-overall']">{{getName("/advance-recovery-overall")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/pending-loan-utilization')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/pending-loan-utilization']">{{getName("/pending-loan-utilization")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/late-closing')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/late-closing']">{{getName("/late-closing")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/advance-client-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/advance-client-report']">{{getName("/advance-client-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/advance-maturity-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/advance-maturity-report']">{{getName("/advance-maturity-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/weekly-target-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/weekly-target-report']">{{getName("/weekly-target-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/area-disbursement-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/area-disbursement-report']">{{getName("/area-disbursement-report")}}</a>
+                                </li>
+								
+								 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/pdc-detail')"><a
+                                        [routerLink]="['/reports/pdc-detail']">{{getName("/pdc-detail")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/missing-animial-tag')"><a
+                                        [routerLink]="['/reports/missing-animial-tag']">{{getName("/missing-animial-tag")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/km-portfolio')"><a
+                                        [routerLink]="['/reports/km-portfolio']">{{getName("/km-portfolio")}}</a>
+                                </li>
+
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-segmentation')">
+                                        <a *ngIf="auth.role == 'am'" [routerLink]="['/reports/operations/op-portfolio-segmentation']">{{getName("/op-portfolio-segmentation")}}</a></li>
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-at-risk')">
+                                        <a *ngIf="auth.role == 'am'" [routerLink]="['/reports/operations/op-portfolio-at-risk']">{{getName("/op-portfolio-at-risk")}}</a></li>
+
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/female-participation')">
+                                        <a *ngIf="auth.role == 'am'" [routerLink]="['/reports/female-participation']">{{getName("/female-participation")}}</a></li>
+                                
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-status')">
+                                        <a *ngIf="auth.role == 'am'" [routerLink]="['/reports/operations/op-portfolio-status']">{{getName("/op-portfolio-status")}}</a></li>
+
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/recover-trend-analysis')">
+                                        <a *ngIf="auth.role == 'am'" [routerLink]="['/reports/recover-trend-analysis']">{{getName("/recover-trend-analysis")}}</a></li>     
+                               <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/regional-risk-flaggingReport')">
+                                        <a [routerLink]="['/reports/regional-risk-flaggingReport']">{{getName("/regional-risk-flaggingReport")}}</a></li>   
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/riskand-social-kpi')">
+                                        <a [routerLink]="['/reports/riskand-social-kpi']">{{getName("/riskand-social-kpi")}}</a></li>   
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/region-disbursements')">
+                                        <a [routerLink]="['/reports/region-disbursements']">{{getName("/region-disbursements")}}</a></li>   
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/regionalRcvryTrend')">
+                                         <a [routerLink]="['/reports/regionalRcvryTrend']">{{getName("/regionalRcvryTrend")}}</a></li>
+
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+        <!------------------------- Ending of operational Reports------------------------------->
+
+        <!------------------------- Starting of operations Reports------------------------------->
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                BDO / BM Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/dues-report')"><a
+                                                [routerLink]="['/reports/operations/dues-report']">{{getName("/dues-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/consolidated-loans')"><a
+                                                [routerLink]="['/reports/operations/consolidated-loans']">{{getName("/consolidated-loans")}}</a>
+                                </li>
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-segmentation')">
+                                        <a *ngIf="auth.role != 'am'"
+                                                [routerLink]="['/reports/operations/op-portfolio-segmentation']">{{getName("/op-portfolio-segmentation")}}</a>
+                                </li>
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-at-risk')"><a
+                                        *ngIf="auth.role != 'am'"    [routerLink]="['/reports/operations/op-portfolio-at-risk']">{{getName("/op-portfolio-at-risk")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/app-risk-flagging')"><a
+                                                [routerLink]="['/reports/operations/app-risk-flagging']">{{getName("/app-risk-flagging")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/turn-around-time')"><a
+                                                [routerLink]="['/reports/turn-around-time']">{{getName("/turn-around-time")}}</a>
+                                </li>
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/female-participation')"><a
+                                        *ngIf="auth.role != 'am'"   [routerLink]="['/reports/female-participation']">{{getName("/female-participation")}}</a>
+                                </li>
+                                <li  [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-status')"><a
+                                        *ngIf="auth.role != 'am'"   [routerLink]="['/reports/operations/op-portfolio-status']">{{getName("/op-portfolio-status")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/rate-of-renewal')"><a
+                                                [routerLink]="['/reports/operations/rate-of-renewal']">{{getName("/rate-of-renewal")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/monthly-status')"><a
+                                                [routerLink]="['/reports/operations/monthly-status']">{{getName("/monthly-status")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/loan-utlization')"><a
+                                                [routerLink]="['/reports/operations/loan-utlization']">{{getName("/loan-utlization")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']"
+                                        *ngIf="hasSubMod('/opp-portfolio-at-risk-time-series')">
+                                        <a
+                                                [routerLink]="['/reports/operations/opp-portfolio-at-risk-time-series']">{{getName("/opp-portfolio-at-risk-time-series")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-female-participation-ratio')">
+                                        <a
+                                                [routerLink]="['/reports/operations/op-female-participation-ratio']">{{getName("/op-female-participation-ratio")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/branch-target-managment')"><a
+                                                [routerLink]="['/reports/operations/branch-target-managment']">{{getName("/branch-target-managment")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/oop-portfolio-status-duration')">
+                                        <a
+                                                [routerLink]="['/reports/operations/oop-portfolio-status-duration']">{{getName("/oop-portfolio-status-duration")}}</a>
+                                </li>
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/attendance-monitoring')"><a
+                                                [routerLink]="['/reports/operations/attendance-monitoring']">{{getName("/attendance-monitoring")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/agencies-target-tracking')"><a
+                                                [routerLink]="['/reports/operations/agencies-target-tracking']">{{getName("/agencies-target-tracking")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/sales-2-pending')"><a
+                                                [routerLink]="['/reports/operations/sales-2-pending']">{{getName("/sales-2-pending")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/active-clients')"><a
+                                                [routerLink]="['/reports/active-clients']">{{getName("/active-clients")}}</a>
+                                </li>
+
+                                <!-- Added By Naveed, Dated: 13/11/2020 -->
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/bm-bdo-recovery')"><a
+                                                [routerLink]="['/reports/bm-bdo-recovery']">BM BDO Recovery Report</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/missing-animial-tag')"><a
+                                        [routerLink]="['/reports/missing-animial-tag']">{{getName("/missing-animial-tag")}}</a>
+                                </li>
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+        <!------------------------- Ending of operations Reports------------------------------->
+
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                           Accounts Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/exportBankBookCsv')">
+                                 <a [routerLink]="['/reports/exportBankBookCsv']">{{getName("/exportBankBookCsv")}}</a></li>
+
+                            <!-- Added By Areeba- Date 15-02-2022 - Accounts Reports --> 
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/prem-data')">
+                                <a [routerLink]="['/reports/prem-data']">{{getName("/prem-data")}}</a></li>
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/premium-data-km')">
+                                <a [routerLink]="['/reports/premium-data-km']">{{getName("/premium-data-km")}}</a></li>
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/acc-recovery')">
+                                <a [routerLink]="['/reports/acc-recovery']">{{getName("/acc-recovery")}}</a></li>
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/acc-recvry-detail')">
+                                <a [routerLink]="['/reports/acc-recvry-detail']">{{getName("/acc-recvry-detail")}}</a></li>
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/wo-recovery')">
+                                <a [routerLink]="['/reports/wo-recovery']">{{getName("/wo-recovery")}}</a></li>
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/clnt-data')">
+                               <a [routerLink]="['/reports/clnt-data']">{{getName("/clnt-data")}}</a></li>
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/kszb-clnt-data')">
+                               <a [routerLink]="['/reports/kszb-clnt-data']">{{getName("/kszb-clnt-data")}}</a></li>
+                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/wo-client-data')">
+                                <a [routerLink]="['/reports/wo-client-data']">{{getName("/wo-client-data")}}</a></li>
+                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/acc-topsheet')">
+                                <a [routerLink]="['/reports/acc-topsheet']">{{getName("/acc-topsheet")}}</a></li>
+
+                                
+                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/monthly-accounts')">
+                                <a [routerLink]="['/reports/monthly-accounts']">{{getName("/monthly-accounts")}}</a></li>
+                           <!-- <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/ins-reports')">
+                                <a [routerLink]="['/reports/insurance-reports']">{{getName("/ins-reports")}}</a></li> -->
+                            <!-- Ended by Areeba -->
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Finance Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/funds-report')"><a
+                                                [routerLink]="['/reports/finance/funds-report']">{{getName("/funds-report")}}</a>
+                                </li>
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/recovery-report')"><a
+                                                [routerLink]="['/reports/finance/recovery-report']">{{getName("/recovery-report")}}</a>
+                                </li>
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/disbursment-report')"><a
+                                                [routerLink]="['/reports/finance/disbursment-report']">{{getName("/disbursment-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/fund-managment-tool')"><a
+                                                [routerLink]="['/reports/finance/fund-managment-tool']">{{getName("/fund-managment-tool")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/organization-tagging-report')">
+                                        <a
+                                                [routerLink]="['/reports/finance/organization-tagging-report']">{{getName("/organization-tagging-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/product-wise-disbursement')">
+                                        <a
+                                                [routerLink]="['/reports/finance/product-wise-disbursement']">{{getName("/product-wise-disbursement")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/organization-time')">
+                                        <a
+                                                [routerLink]="['/reports/finance/organization-time']">{{getName("/organization-time")}}</a>
+                                </li>
+											
+							 <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> ADCs Data Sharing </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                                <ul class="leftmenu">
+                                                        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/adcDataSharing')">
+                                                                <a [routerLink]="['/reports/finance/adcDataSharing']">{{getName("/adcDataSharing")}}</a>
+                                                            </li>
+                                                        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/clnt-info-jazz-dues')">
+                                                                <a [routerLink]="['/reports/finance/clnt-info-jazz-dues']">{{getName("/clnt-info-jazz-dues")}}</a>
+                                                            </li>
+                            
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/clnt-upload-jazz-dues')">
+                                                                <a [routerLink]="['/reports/finance/clnt-upload-jazz-dues']">{{getName("/clnt-upload-jazz-dues")}}</a>
+                                                            </li>
+                            
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/easy-paisa-dues')">
+                                                                <a [routerLink]="['/reports/finance/easy-paisa-dues']">{{getName("/easy-paisa-dues")}}</a>
+                                                            </li>
+                            
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/ubl-omni-dues')">
+                                                                <a [routerLink]="['/reports/finance/ubl-omni-dues']">{{getName("/ubl-omni-dues")}}</a>
+                                                            </li>
+                            
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/hbl-connect-dues')">
+                                                                <a [routerLink]="['/reports/finance/hbl-connect-dues']">{{getName("/hbl-connect-dues")}}</a>
+                                                            </li>
+                            
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/abl-loan-recovery-dues')">
+                                                                <a [routerLink]="['/reports/finance/abl-loan-recovery-dues']">{{getName("/abl-loan-recovery-dues")}}</a>
+                                                            </li>
+                            
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mcb-collect-dues')">
+                                                                <a [routerLink]="['/reports/finance/mcb-collect-dues']">{{getName("/mcb-collect-dues")}}</a>
+                                                            </li>
+                            
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/nadra-dues')">
+                                                                <a [routerLink]="['/reports/finance/nadra-dues']">{{getName("/nadra-dues")}}</a>
+                                                            </li>
+                                                            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/upaisa-dues-sharing')"><a
+                                                                [routerLink]="['/reports/finance/upaisa-dues-sharing']">{{getName("/reports/finance/upaisa-dues-sharing")}}</a></li>   
+                            
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+
+                                <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> Mobile Wallet Reports </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                                <ul class="leftmenu">
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mobile-wallet-dis')"><a
+                                                        [routerLink]="['/reports/mobile-wallet-dis']">{{getName("/mobile-wallet-dis")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mobileWallet-dues')"><a
+                                                        [routerLink]="['/reports/mobileWallet-dues']">{{getName("/mobileWallet-dues")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/maturity-loanClients')"><a
+                                                        [routerLink]="['/reports/maturity-loanClients']">{{getName("/maturity-loanClients")}}</a></li>  
+
+                                                <!-- Added By Naveed - Date - 24-02-2022 -->
+                                                <!-- SCR - Upaisa and HBL Konnect Payment Mode -->
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/mobile-wallet-trend')"><a
+                                                        *ngIf="auth.role == 'admin' || auth.role == 'finance'" [routerLink]="['/reports/finance/mobile-wallet-trend']">{{getName("/reports/finance/mobile-wallet-trend")}}</a></li> 
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/atm-cards-management')"><a
+                                                        *ngIf="auth.role == 'admin' || auth.role == 'finance'" [routerLink]="['/reports/finance/atm-cards-management']">{{getName("/reports/finance/atm-cards-management")}}</a></li>   
+                                                <!-- Ended By Naveed - Date - 25-02-2022 -->
+                                                
+                                                <!-- Added By Areeba- Date 23-01-2022-->
+                                                <!-- SCR Mobile wallet control -->
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mobile-wallet-opened')"><a
+                                                        [routerLink]="['/reports/mobile-wallet-opened']">{{getName("/mobile-wallet-opened")}}</a></li>
+                                                 <!-- Ended By Areeba- Date 23-01-2022-->
+                            
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+
+                                <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> Funds request Reports </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                            <ul class="leftmenu">
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mcb-remmi-disbursement-funds')">
+                                                        <a
+                                                                [routerLink]="['/reports/finance/mcb-remmi-disbursement-funds']">{{getName("/mcb-remmi-disbursement-funds")}}</a>
+                                                        </li>
+                                                        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mcb-remmi-disbursement-loader')">
+                                                                <a
+                                                                [routerLink]="['/reports/finance/mcb-remmi-disbursement-loader']">{{getName("/mcb-remmi-disbursement-loader")}}</a>
+                                                        </li>
+                                                
+                                                        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mcb-remmi-disbursement-letter')">
+                                                                <a
+                                                                [routerLink]="['/reports/finance/mcb-remmi-disbursement-letter']">{{getName("/mcb-remmi-disbursement-letter")}}</a>
+                                                        </li>
+                                                        <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/easy-paisa-funds')">
+                                                                <a [routerLink]="['/reports/finance/easy-paisa-funds']">{{getName("/easy-paisa-funds")}}</a>
+                                                             </li>
+                                                             
+                                                             <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/easy-paisa-loader')">
+                                                                 <a [routerLink]="['/reports/finance/easy-paisa-loader']">{{getName("/easy-paisa-loader")}}</a>
+                                                             </li>
+                             
+                                                             <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/easy-paisa-letter')">
+                                                                 <a [routerLink]="['/reports/finance/easy-paisa-letter']">{{getName("/easy-paisa-letter")}}</a>
+                                                             </li>
+                                                             
+                                                           <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/cheque-disbursement-funds')">
+                                                                <a [routerLink]="['/reports/finance/cheque-disbursement-funds']">{{getName("/cheque-disbursement-funds")}}</a>
+                                                          </li>
+                            
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+								
+								    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> Disbursement Reports </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                                <ul class="leftmenu">
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/date-wise-disb')"><a
+                                                        [routerLink]="['/reports/finance/date-wise-disb']">{{getName("/date-wise-disb")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/channel-wise-disb')"><a
+                                                        [routerLink]="['/reports/finance/channel-wise-disb']">{{getName("/channel-wise-disb")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/branch-wise-disb')"><a
+                                                        [routerLink]="['/reports/finance/branch-wise-disb']">{{getName("/branch-wise-disb")}}</a></li>   
+                                                 
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/product-wise-disb')"><a
+                                                        [routerLink]="['/reports/finance/product-wise-disb']">{{getName("/product-wise-disb")}}</a></li>  
+                                                        
+                                                 <!-- Added By Naveed - Date - 10-05-2022 -->
+                                                <!-- SCR - MCB Disbursement -->
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/mcbDisburseFundsStatus')"><a
+                                                        *ngIf="auth.role == 'admin' || auth.role == 'finance'" [routerLink]="['/reports/finance/mcbDisburseFundsStatus']">{{getName("/reports/finance/mcbDisburseFundsStatus")}}</a></li> 
+
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reports/finance/disburseReversalRequest')"><a
+                                                       [routerLink]="['/reports/finance/disburseReversalRequest']">{{getName("/reports/finance/disburseReversalRequest")}}</a></li> 
+                                                
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/branch-wise-reversal')"><a
+                                                       [routerLink]="['/reports/finance/branch-wise-reversal']">{{getName("/branch-wise-reversal")}}</a></li>   
+                            
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+
+                                <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> Recovery Reports </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                                <ul class="leftmenu">
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/date-wise-recovery')"><a
+                                                        [routerLink]="['/reports/finance/date-wise-recovery']">{{getName("/date-wise-recovery")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/channel-wise-recovery')"><a
+                                                        [routerLink]="['/reports/finance/channel-wise-recovery']">{{getName("/channel-wise-recovery")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/branch-wise-recovery')"><a
+                                                        [routerLink]="['/reports/finance/branch-wise-recovery']">{{getName("/branch-wise-recovery")}}</a></li>   
+                                                 
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/daily-adc-recovery-posted')"><a
+                                                        [routerLink]="['/reports/finance/daily-adc-recovery-posted']">{{getName("/daily-adc-recovery-posted")}}</a></li>   
+                                                
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/telenor-collection-report')"><a
+                                                        *ngIf="auth.role == 'admin' || auth.role == 'finance'" [routerLink]="['/reports/finance/telenor-collection-report']">{{getName("/telenor-collection-report")}}</a></li>   
+                                                
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/finance/Inquiriestelenor-collection-report')"><a
+                                                        *ngIf="auth.role == 'admin' || auth.role == 'finance'" [routerLink]="['/reports/finance/Inquiriestelenor-collection-report']">{{getName("/finance/Inquiriestelenor-collection-report")}}</a></li>
+                                                
+                                                <!-- Added by Areeba - 9-9-2022 - Adc Failed Transaction Report -->
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/finance/adcFailedTransaction')"><a
+                                                        *ngIf="auth.role == 'admin' || auth.role == 'finance'" [routerLink]="['/reports/finance/adc-failed-transaction']">{{getName("/finance/adcFailedTransaction")}}</a></li>
+
+                            
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+
+                                <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> Channel Mapped Reports </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                                <ul class="leftmenu">
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mcb-remi-mapped-brnch-list')"><a
+                                                        [routerLink]="['/reports/finance/mcb-remi-mapped-brnch-list']">{{getName("/mcb-remi-mapped-brnch-list")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/bank-brnchs-maped-list')"><a
+                                                        [routerLink]="['/reports/finance/bank-brnchs-maped-list']">{{getName("/bank-brnchs-maped-list")}}</a></li>
+                                                
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/ubl-omni-branch-mapped-list')"><a
+                                                       [routerLink]="['/reports/finance/ubl-omni-branch-mapped-list']">{{getName("/ubl-omni-branch-mapped-list")}}</a></li>
+                                               
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/mapped-list-mobile-wallet')"><a
+                                                        [routerLink]="['/reports/finance/mapped-list-mobile-wallet']">{{getName("/mapped-list-mobile-wallet")}}</a></li>
+                            
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+
+                                <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> Funds Request Report </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                                <ul class="leftmenu">
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/ibftAndIftFunds')"><a
+                                                        [routerLink]="['/reports/finance/ibftAndIftFunds']">{{getName("/ibftAndIftFunds")}}</a></li>   
+
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/consolidatedBankFunds')"><a
+                                                        [routerLink]="['/reports/finance/consolidatedBankFunds']">{{getName("/consolidatedBankFunds")}}</a></li> 
+
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/bankFundsRequestDataLoader')"><a
+                                                        [routerLink]="['/reports/finance/bankFundsRequestDataLoader']">{{getName("/bankFundsRequestDataLoader")}}</a></li>   
+
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/khushaliFundsLetter')"><a
+                                                        [routerLink]="['/reports/finance/khushaliFundsLetter']">{{getName("/khushaliFundsLetter")}}</a></li>                            
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+
+                                <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title> Portfolio Reports </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="leftmenu">
+                                                <ul class="leftmenu">
+                                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/sectorWisePortfolio')">
+                                                                <a [routerLink]="['/reports/finance/sectorWisePortfolio']">{{getName("/sectorWisePortfolio")}}</a></li>		
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/genderWisePortfolio')">
+                                                                <a [routerLink]="['/reports/finance/genderWisePortfolio']">{{getName("/genderWisePortfolio")}}</a></li>	
+                                                 
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/branchWisePortfolio')"><a
+                                                                   [routerLink]="['/reports/finance/branchWisePortfolio']">{{getName("/branchWisePortfolio")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/branchWisePar')"><a
+                                                                   [routerLink]="['/reports/finance/branchWisePar']">{{getName("/branchWisePar")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/productWisePortfolio')"><a
+                                                                   [routerLink]="['/reports/finance/productWisePortfolio']">{{getName("/productWisePortfolio")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/productWisePar')"><a
+                                                                   [routerLink]="['/reports/finance/productWisePar']">{{getName("/productWisePar")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/provinceWiseOstPortfolio')"><a
+                                                                   [routerLink]="['/reports/finance/provinceWiseOstPortfolio']">{{getName("/provinceWiseOstPortfolio")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/loanCycleWisePortfolio')"><a
+                                                                   [routerLink]="['/reports/finance/loanCycleWisePortfolio']">{{getName("/loanCycleWisePortfolio")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/kmwkClientIncome')"><a
+                                                                   [routerLink]="['/reports/finance/kmwkClientIncome']">{{getName("/kmwkClientIncome")}}</a></li>
+                                                                   
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/monthlyDue')"><a
+                                                                   [routerLink]="['/reports/finance/monthlyDue']">{{getName("/monthlyDue")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/monthlyRecovery')"><a
+                                                                   [routerLink]="['/reports/finance/monthlyRecovery']">{{getName("/monthlyRecovery")}}</a></li>
+                                                                        
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/portfolioMaturity')"><a
+                                                                   [routerLink]="['/reports/finance/portfolioMaturity']">{{getName("/portfolioMaturity")}}</a></li>
+
+                                                 <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/portfolioSizeBreakup')"><a
+                                                                   [routerLink]="['/reports/finance/portfolioSizeBreakup']">{{getName("/portfolioSizeBreakup")}}</a></li>
+                                                </ul>
+                                        </div>
+                                </mat-expansion-panel>
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+        <!------------------------- Ending of finance Reports------------------------------->
+
+
+
+        <!------------------------- Starting of RESCHEDULING Reports------------------------------->
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Rescheduling Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/client-recovery-status')">
+                                        <a
+                                                [routerLink]="['/reports/rescheduling-reports/client-recovery-status']">{{getName("/client-recovery-status")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/due-vs-recovery')">
+                                        <a
+                                                [routerLink]="['/reports/rescheduling-reports/due-vs-recovery']">{{getName("/due-vs-recovery")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/managment-dashboard')">
+                                        <a
+                                                [routerLink]="['/reports/rescheduling-reports/managment-dashboard']">{{getName("/managment-dashboard")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/rescheduling-portfolio')">
+                                        <a
+                                                [routerLink]="['/reports/rescheduling-reports/rescheduling-portfolio']">{{getName("/rescheduling-portfolio")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']"
+                                        *ngIf="hasSubMod('/portfolio-quality-old-portfolio')">
+                                        <a
+                                                [routerLink]="['/reports/rescheduling-reports/portfolio-quality-old-portfolio']">{{getName("/portfolio-quality-old-portfolio")}}</a>
+                                </li>
+
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+          <!------------------------- Starting of AUDIT Reports------------------------------->
+
+          <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Audit Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/analysis-audit')">
+                                     <a [routerLink]="['/reports/audit-report/analysis-audit']">{{getName("/analysis-audit")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/sampling-audit')">
+                                        <a [routerLink]="['/reports/audit-report/sampling-audit']">{{getName("/sampling-audit")}}</a>
+                                </li>
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+        <!------------------------- Ending of AUDIT Reports------------------------------->
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Compliance Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/aml-matches')">
+                                        <a
+                                                [routerLink]="['/reports/compliance-repot/aml-matches']">{{getName("/aml-matches")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/cnic-match')">
+                                        <a
+                                                [routerLink]="['/reports/compliance-repot/cnic-match']">{{getName("/cnic-match")}}</a>
+                                </li>
+
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+        <!------------------------- Ending of RESCHEDULING Reports------------------------------->
+
+
+
+
+
+
+
+
+
+
+
+        <!------------------ BRANCH MWX REPORTS  ---------------->
+
+
+        <!-- <mat-expansion-panel *ngIf="auth.role == 'admin'">
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Branch MWX Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/overdue')"><a
+                                                [routerLink]="['/reports/overdue']">{{getName("/overdue")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/attendance-monitoring')"><a
+                                                [routerLink]="['/reports/operations/attendance-monitoring']">{{getName("/attendance-monitoring")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/portfolio')"><a
+                                                [routerLink]="['/reports/portfolio']">{{getName("/portfolio")}}</a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/fund-stmnt')"><a
+                                                [routerLink]="['/reports/fund-stmnt']">{{getName("/fund-stmnt")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/validation')"><a
+                                                [routerLink]="['/reports/validation']">{{getName("/validation")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/accounts-ledger')"><a
+                                                [routerLink]="['/reports/accounts-ledger']">{{getName("/accounts-ledger")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/book-details')"><a
+                                                [routerLink]="['/reports/book-details']">{{getName("/book-details")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/due-recovery')"><a
+                                                [routerLink]="['/reports/due-recovery']">{{getName("/due-recovery")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/client-health-beneficiary')"><a
+                                                [routerLink]="['/reports/client-health-beneficiary']">{{getName("/client-health-beneficiary")}}
+                                        </a></li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/brnch-turnover-anlysis')"><a
+                                                [routerLink]="['/reports/brnch-turnover-anlysis']">{{getName("/brnch-turnover-anlysis")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/insurance-claim')"><a
+                                                [routerLink]="['/reports/insurance-claim']">{{getName("/insurance-claim")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/par-branch-wise')"><a
+                                                [routerLink]="['/reports/par-branch-wise']">{{getName("/par-branch-wise")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/five-days-advance-recovery')"><a
+                                                [routerLink]="['/reports/five-days-advance-recovery']">{{getName("/five-days-advance-recovery")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/top-sheet')"><a
+                                                [routerLink]="['/reports/top-sheet']">{{getName("/top-sheet")}}</a></li>
+                               <li [routerLinkActive]="['active']"
+                                        *ngIf="hasSubMod('/projected-clients-loan-completeion')"><a
+                                                [routerLink]="['/reports/projected-clients-loan-completeion']">{{getName("/projected-clients-loan-completeion")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/adc-wise-branch-recovery')"><a
+                                                [routerLink]="['/reports/adc-wise-branch-recovery']">{{getName("/adc-wise-branch-recovery")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/pending-clients')"><a
+                                                [routerLink]="['/reports/pending-clients']">{{getName("/pending-clients")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/tagged-client-claim')"><a
+                                                [routerLink]="['/reports/tagged-client-claim']">{{getName("/tagged-client-claim")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/transferred-clients')"><a
+                                                [routerLink]="['/reports/transferred-clients']">{{getName("/transferred-clients")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/reversed-enteries')"><a
+                                                [routerLink]="['/reports/reversed-enteries']">{{getName("/reversed-enteries")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/trail-balance')"><a
+                                                [routerLink]="['/reports/trail-balance']">{{getName("/trail-balance")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/md-par')"><a
+                                                [routerLink]="['/reports/md-par']">Par MD</a>
+                                </li>
+
+                        </ul>
+                </div>
+        </mat-expansion-panel> -->
+
+
+        <!------------------ AM / RM REPORTS  ---------------->
+
+
+        <!-- <mat-expansion-panel *ngIf="auth.role != 'bdo' && auth.role != 'bm'">
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                AM / RM Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/advance-recovery-overall')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/advance-recovery-overall']">{{getName("/advance-recovery-overall")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/pending-loan-utilization')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/pending-loan-utilization']">{{getName("/pending-loan-utilization")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/late-closing')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/late-closing']">{{getName("/late-closing")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/advance-client-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/advance-client-report']">{{getName("/advance-client-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/advance-maturity-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/advance-maturity-report']">{{getName("/advance-maturity-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/weekly-target-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/weekly-target-report']">{{getName("/weekly-target-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/area-disbursement-report')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/area-disbursement-report']">{{getName("/area-disbursement-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-segmentation')">
+                                        <a
+                                                [routerLink]="['/reports/operations/op-portfolio-segmentation']">{{getName("/op-portfolio-segmentation")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-at-risk')"><a
+                                                [routerLink]="['/reports/operations/op-portfolio-at-risk']">{{getName("/op-portfolio-at-risk")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-status')"><a
+                                                [routerLink]="['/reports/operations/op-portfolio-status']">{{getName("/op-portfolio-status")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/rate-of-renewal')"><a
+                                                [routerLink]="['/reports/operations/rate-of-renewal']">{{getName("/rate-of-renewal")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/pending-loan-utilization')">
+                                        <a
+                                                [routerLink]="['/reports/operational-reports/pending-loan-utilization']">{{getName("/pending-loan-utilization")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']"
+                                        *ngIf="hasSubMod('/opp-portfolio-at-risk-time-series')">
+                                        <a
+                                                [routerLink]="['/reports/operations/opp-portfolio-at-risk-time-series']">{{getName("/opp-portfolio-at-risk-time-series")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-female-participation-ratio')">
+                                        <a
+                                                [routerLink]="['/reports/operations/op-female-participation-ratio']">{{getName("/op-female-participation-ratio")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/oop-portfolio-status-duration')">
+                                        <a
+                                                [routerLink]="['/reports/operations/oop-portfolio-status-duration']">{{getName("/oop-portfolio-status-duration")}}</a>
+                                </li>
+
+                        </ul>
+                </div>
+        </mat-expansion-panel> -->
+
+
+        <!------------------ BRANCH MANAGER REPORTS  ---------------->
+
+        <!-- <mat-expansion-panel *ngIf="auth.role == 'bm' || auth.role == 'admin'">
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Branch Manager Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/dues-report')"><a
+                                                [routerLink]="['/reports/operations/dues-report']">{{getName("/dues-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/consolidated-loans')"><a
+                                                [routerLink]="['/reports/operations/consolidated-loans']">{{getName("/consolidated-loans")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-segmentation')">
+                                        <a
+                                                [routerLink]="['/reports/operations/op-portfolio-segmentation']">{{getName("/op-portfolio-segmentation")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-at-risk')"><a
+                                                [routerLink]="['/reports/operations/op-portfolio-at-risk']">{{getName("/op-portfolio-at-risk")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/app-risk-flagging')"><a
+                                                [routerLink]="['/reports/operations/app-risk-flagging']">{{getName("/app-risk-flagging")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/turn-around-time')"><a
+                                                [routerLink]="['/reports/turn-around-time']">{{getName("/turn-around-time")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/female-participation')"><a
+                                                [routerLink]="['/reports/female-participation']">{{getName("/female-participation")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-portfolio-status')"><a
+                                                [routerLink]="['/reports/operations/op-portfolio-status']">{{getName("/op-portfolio-status")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/rate-of-renewal')"><a
+                                                [routerLink]="['/reports/operations/rate-of-renewal']">{{getName("/rate-of-renewal")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/monthly-status')"><a
+                                                [routerLink]="['/reports/operations/monthly-status']">{{getName("/monthly-status")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/loan-utlization')"><a
+                                                [routerLink]="['/reports/operations/loan-utlization']">{{getName("/loan-utlization")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']"
+                                        *ngIf="hasSubMod('/opp-portfolio-at-risk-time-series')">
+                                        <a
+                                                [routerLink]="['/reports/operations/opp-portfolio-at-risk-time-series']">{{getName("/opp-portfolio-at-risk-time-series")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/op-female-participation-ratio')">
+                                        <a
+                                                [routerLink]="['/reports/operations/op-female-participation-ratio']">{{getName("/op-female-participation-ratio")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/branch-target-managment')"><a
+                                                [routerLink]="['/reports/operations/branch-target-managment']">{{getName("/branch-target-managment")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/oop-portfolio-status-duration')">
+                                        <a
+                                                [routerLink]="['/reports/operations/oop-portfolio-status-duration']">{{getName("/oop-portfolio-status-duration")}}</a>
+                                </li>
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/attendance-monitoring')"><a
+                                                [routerLink]="['/reports/operations/attendance-monitoring']">{{getName("/attendance-monitoring")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/agencies-target-tracking')"><a
+                                                [routerLink]="['/reports/operations/agencies-target-tracking']">{{getName("/agencies-target-tracking")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/sales-2-pending')"><a
+                                                [routerLink]="['/reports/operations/sales-2-pending']">{{getName("/sales-2-pending")}}</a>
+                                </li>
+
+                        </ul>
+                </div>
+        </mat-expansion-panel> -->
+
+        <!------------------ BDO     REPORTS  ---------------->
+
+
+        <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Donor Tagging Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/donor-tagging-report')"><a
+                                                [routerLink]="['/reports/donor-tagging-report']">{{getName("/donor-tagging-report")}}</a>
+                                </li>
+                                <!-- <li><a [routerLink]="['/reports/donor-tagging-report']">Donor Tagging Report </a>
+                                </li> -->
+                        </ul>
+                </div>
+        </mat-expansion-panel>
+
+        <!------------------ FINANCE REPORTS  ---------------->
+
+
+        <!-- <mat-expansion-panel *ngIf="auth.role == 'admin'">
+                <mat-expansion-panel-header>
+                        <mat-panel-title>
+                                Finance Reports
+                        </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="leftmenu">
+                        <ul class="leftmenu">
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/funds-report')"><a
+                                                [routerLink]="['/reports/finance/funds-report']">{{getName("/funds-report")}}</a>
+                                </li>
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/recovery-report')"><a
+                                                [routerLink]="['/reports/finance/recovery-report']">{{getName("/recovery-report")}}</a>
+                                </li>
+
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/disbursment-report')"><a
+                                                [routerLink]="['/reports/finance/disbursment-report']">{{getName("/disbursment-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/fund-managment-tool')"><a
+                                                [routerLink]="['/reports/finance/fund-managment-tool']">{{getName("/fund-managment-tool")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/organization-tagging-report')">
+                                        <a
+                                                [routerLink]="['/reports/finance/organization-tagging-report']">{{getName("/organization-tagging-report")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/product-wise-disbursement')">
+                                        <a
+                                                [routerLink]="['/reports/finance/product-wise-disbursement']">{{getName("/product-wise-disbursement")}}</a>
+                                </li>
+                                <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/organization-time')">
+                                        <a
+                                                [routerLink]="['/reports/finance/organization-time']">{{getName("/organization-time")}}</a>
+                                </li>
+
+                        </ul>
+                </div>
+        </mat-expansion-panel> -->
+
+</mat-accordion>

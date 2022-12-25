@@ -1,0 +1,120 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+
+    <div class="content">
+      <h6 class="mt-3">Products</h6>
+      <form (ngSubmit)="onSubmit()" #infoForm="ngForm">
+        <div class="cRow">
+          <!-- <div class="cCol1" [hidden]="isEdit !== 'true'"> -->
+          <div class="cCol1">
+            <mat-form-field>
+              <input matInput placeholder="ID:" type="text" id="id" [(ngModel)]="product.prdId" name="id"
+                [disabled]="isEdit == 'true'" #id="ngModel">
+            </mat-form-field>
+          </div>
+          <div class="cCol3-col">
+            <mat-form-field>
+              <input type="text" matInput id="name" required [(ngModel)]="product.prdNm" name="name" #name="ngModel"
+                placeholder="Product Name:">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol1 ">
+            <br>
+            <mat-radio-group [(ngModel)]="product.irrFlg" name="irrFlg">
+              <mat-radio-button class="w-50" *ngFor="let disFlag of disFlags" (change)="irrChange()"
+                [value]="disFlag.value">{{disFlag.name}}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" (keypress)="onlyNumberWithPoint($event)" maxlength="10" [disabled]="!product.irrFlg"
+                matInput placeholder="Irr Value" id="irrValue" [(ngModel)]="product.irrVal" name="irrValue"
+                #irrValue="ngModel">
+            </mat-form-field>
+          </div>
+          <div class="cCol1 text-center">
+            <br>
+            <mat-checkbox class="example-margin" [(ngModel)]="product.mltLoanFlg" name="multiLoans">
+              Multi Credit:</mat-checkbox>
+          </div>
+          <div class="cCol1 text-center">
+            <br>
+            <mat-checkbox class="example-margin" [(ngModel)]="product.dailyAccuralFlg" name="multiLoans">
+              Daily Arrural:</mat-checkbox>
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol1 ">
+            <mat-form-field>
+              <mat-select placeholder="Product type:" [(ngModel)]="product.prdTypKey" name="prdTypKey" required
+                [errorStateMatcher]="matcher" pattern="^[1-9]\d*$">
+                <mat-option *ngFor="let edu of activities" [value]="edu.codeKey">
+                  {{edu.codeValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Rounding Scale:" id="roundingScale"
+                [(ngModel)]="product.rndngScl" name="roundingScale" maxlength="3" #roundingScale="ngModel"
+                (keypress)="onlyNumbers($event)">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" matInput
+                placeholder="Rounding Adjustment:" id="roundingAdjustment" [(ngModel)]="product.rndngAdj"
+                name="roundingAdjustment" #roundingScale="ngModel">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" matInput placeholder="Number of PDC:"
+                id="pdcNum" [(ngModel)]="product.pdcNum" name="pdcNum" #pdcNum="ngModel">
+            </mat-form-field>
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <mat-select placeholder="Status:" [(ngModel)]="product.prdStsKey" name="prdStsKey" required
+                [errorStateMatcher]="matcher" pattern="^[1-9]\d*$">
+                <mat-option *ngFor="let edu of status" [value]="edu.codeKey">
+                  {{edu.codeValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol6">
+            <mat-form-field>
+              <textarea matInput placeholder="Comments:" id="comments" [(ngModel)]="product.prdCmnt" name="comments"
+                #comments="ngModel"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="cRow mb-md-5">
+
+          <!-- <div class="cCol1">
+          <mat-form-field>
+            <input type="text" (keypress)="onlyNumbers($event)" placeholder="Funded By:" matInput id="fundedBy"
+                   [(ngModel)]="product.fndByKey" name="fundedBy"
+                   #fundedBy="ngModel">
+          </mat-form-field>
+        </div> -->
+
+        </div>
+        <button (click)="onContinue()" [disabled]="!infoForm.valid" routerLinkActive="active"
+          class="btn btn-primary">Continue</button>
+        <button type="Submit" [disabled]="!formSaved" class="btn btn-default">Save</button>
+      </form>
+    </div>
+  </div>
+
+
+</main>

@@ -1,0 +1,366 @@
+
+        <div class="content">
+            <div class="row clearfix">
+              <div class="col-sm-4">
+                <mat-form-field>
+                  <input [matDatepickerFilter]="myFilter" matInput required [max]="maxDate" [min]="minDate"
+                    [(ngModel)]="attDate" (dateChange)="getForDate()" placeholder="Attendance Date:"
+                    [matDatepicker]="picker1" readonly>
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <!-- <div class="col-sm-6">
+                  <button class="btn btn-primary" type="button"  (click)="getForDate()">Get Attedance</button>
+              </div> -->
+              <div class="col-sm-2">
+                <button *ngIf="showGen" class="btn btn-primary btn-sm" type="button"
+                  (click)="generate()">Generate</button>
+              </div>
+              <div class="col-sm-6 addBtn">
+                <button [disabled]="fieldpost" class="btn btn-primary btn-sm" (click)="postAllAttendence()"> Post All
+                </button>
+              </div>
+            </div>
+  
+            <!-- <form [formGroup]="attendanceForm" (ngSubmit)="onAttendSubmit()"> -->
+  
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Employee ID</th>
+                    <!-- <th style="width:13%">Employee Sequence</th> -->
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th style="width:13%">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let obj of attendanceListing; let i = index; let k = index">
+                    <td>{{obj.employee_id}}</td>
+                    <!-- <td>
+                          <input type="text" formControlName="empSeq" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && f.empSeq.errors }">
+    
+    
+                          <div *ngIf="submitted && f.empSeq.errors" class="invalid-feedback">
+                            <div *ngIf="f.empSeq.errors.required">Employee Sequence is required</div>
+                          </div>
+                        </td> -->
+                    <td>{{obj.emp_nm}}</td>
+                    <td>{{obj.designation}}</td>
+                    <td>{{obj.department}}</td>
+                    <td style="width: 10%">
+                      <select [disabled]="obj.postFlg" *ngIf="obj.gender == 'M'" [(ngModel)]="obj.leave_id"
+                        class="form-control" (change)="onLeaveIdChange($event)">
+  
+                        <option *ngFor="let leave of leaveStatusListingForMale" [disabled]="leave.short_desc === 'MT'"
+                          [value]="leave.leave_id">{{leave.short_desc}}
+                        </option>
+                      </select>
+  
+                      <select [disabled]="obj.postFlg" *ngIf="obj.gender == 'F'" [(ngModel)]="obj.leave_id"
+                        class="form-control" (change)="onLeaveIdChange($event)">
+  
+                        <option *ngFor="let leave of leaveStatusListingForFemale" [disabled]="leave.short_desc == 'PAT'"
+                          [value]="leave.leave_id">
+                          {{leave.short_desc}}
+                        </option>
+                      </select>
+                      <!-- <div *ngIf="submitted && f.leaveTypes.errors" class="invalid-feedback">
+                            <div *ngIf="f.leaveTypes.errors.required">Select a Leave Type</div>
+                          </div> -->
+                    </td>
+                    <td>
+                      <span *ngIf="obj.leave_id == 6 || obj.leave_id == 3">
+                        <input [disabled]="obj.postFlg" [owlDateTime]="i" [(ngModel)]="obj.time_in"
+                          [ngClass]="{'redshadow': obj.checkInSaved == false, 'greenshadow': obj.checkInSaved == true}"
+                          [owlDateTimeTrigger]="i" placeholder="Check In Time">
+                        <owl-date-time [hour12Timer]="true" [pickerType]="'timer'" #i></owl-date-time>
+                      </span>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="obj.checkInSaved && obj.time_in ">
+                        <span *ngIf="obj.leave_id == 6 || obj.leave_id == 3">
+                          <input [disabled]="obj.postFlg" [min]="obj.time_in" [max]="maxAttDate" [owlDateTime]="k"
+                            [ngClass]="{'redshadow': obj.checkOutSaved == false, 'greenshadow': obj.checkOutSaved == true}"
+                            [(ngModel)]="obj.time_out" [owlDateTimeTrigger]="k" placeholder="Check Out Time" required>
+                          <owl-date-time [hour12Timer]="true" [pickerType]="'timer'" #k></owl-date-time>
+                        </span>
+                      </ng-container>
+                    </td>
+                    <td>
+  
+                      <ng-container>
+                        <button *ngIf="obj.leave_id == 6 || obj.leave_id == 3" [disabled]="!obj.time_in || obj.postFlg "
+                          (click)="onCheckInSubmit(obj)" class="btn btn-group-sm" data-toggle="tooltip" title="Save"><i
+                            class="fa fa-sign-in"></i></button>
+                      </ng-container>
+                      <!-- 
+                        <ng-container *ngIf="obj.checkInSaved && obj.time_out">
+                          <button *ngIf="obj.leave_id == 6" [disabled]="!obj.time_out || obj.postFlg "
+                            (click)="onCheckOutSubmit(obj)" class="btn btn-group-sm" data-toggle="tooltip"
+                            title="Check Out"><i class="fa fa-sign-out"></i></button>
+                        </ng-container> -->
+  
+                      <span *ngIf="obj.leave_id != 6" data-toggle="tooltip" title="Leave Application">
+                        <a class="iconBtn" (click)="onLeaveRequestClick(obj)"><i class="fa fa-user"></i></a>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- </form> -->
+            <div class="modal fade" id="attendance" role="dialog">
+              <div class="modal-dialog bigger mymodal">
+  
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Leave Application</h5>
+                  </div>
+                  <form [formGroup]="leaveForm" (ngSubmit)="onLeaveSubmit()">
+                    <div class="modal-body">
+                      <div class="cRow">
+  
+  
+  
+                        <div class="cCol2">
+                          <label>Leave Type:</label>
+                          <select disabled formControlName="leaveId" name="leaveId" class="form-control">
+  
+                            <option *ngFor="let leave of leaveStatusListing" [value]="leave.leave_id">
+                              {{leave.description}}
+                            </option>
+                          </select>
+                        </div>
+  
+  
+                        <!-- <div class="cCol2">
+                      <mat-form-field>
+                        <mat-label>Leave ID</mat-label>
+                        <mat-select disabled formControlName="leaveId" name="leaveId">
+                          <mat-option *ngFor="let leave of leaveStatusListing" [value]="leave.leave_id">
+                            {{leave.description}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div> -->
+  
+  
+  
+  
+                        <!---------------------------             Original latest Transaction Number          -------------------------------------------->
+  
+                        <!-- <div class="cCol2">
+                      <label>Transaction Number:</label>
+                      <input maxlength="5" (keypress)="onlyNumbers($event)" [readonly]="leaveForm.controls['postFlg'].value"
+                        type="text" class="form-control" formControlName="transactionNo" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.transactionNo.errors && f.transactionNo.touched }" />
+                      <div *ngIf="submitted && f.transactionNo.errors" class="invalid-feedback">
+                        <div *ngIf="f.transactionNo.errors.required">Transaction Number is required</div>
+                      </div>
+                    </div> -->
+  
+                        <!---------------------------             old one dont use it Transaction Number          ---------------------------------------------------->
+  
+  
+                        <!-- <div class="cCol2">
+                      <mat-form-field>
+                        <input matInput placeholder="Transaction Number:" maxlength="5" (keypress)="onlyNumbers($event)"
+                          [readonly]="leaveForm.controls['postFlg'].value" type="text" formControlName="transactionNo"
+                          [ngClass]="{ 'is-invalid': submitted && f.transactionNo.errors && f.transactionNo.touched }">
+                        <div *ngIf="submitted && f.transactionNo.errors" class="invalid-feedback">
+                          <div *ngIf="f.transactionNo.errors.required">Transaction Number is required</div>
+                        </div>
+                      </mat-form-field>
+                    </div> -->
+  
+  
+  
+                        <div class="cCol2">
+                          <label>Application Date:</label>
+                          <input disabled type="text" class="form-control" formControlName="applicationDate">
+                        </div>
+  
+  
+                        <!-- <div class="cCol2">
+                      <mat-form-field>
+                        <input matInput readonly placeholder="Application Date:" formControlName="applicationDate">
+                      </mat-form-field>
+                    </div> -->
+  
+  
+                        <div class="cCol2">
+                          <label>From Date/Time:</label>
+                          <input [disabled]="leaveForm.controls['postFlg'].value" [min]="minLeaveRequestDate"
+                            class="form-control" formControlName="fromDate" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
+                            [max]="fromDateMax"
+                            [ngClass]="{ 'is-invalid': submitted && f.fromDate.errors && f.fromDate.touched }" />
+                          <owl-date-time [hour12Timer]="true"
+                            [pickerType]="leaveForm.controls['leaveId'].value=='3' ? 'timer':'calendar'" #dt2>
+                          </owl-date-time>
+                          <div *ngIf="submitted && f.fromDate.errors" class="invalid-feedback">
+                            <div *ngIf="f.fromDate.errors.required">From Date/Time is required</div>
+                          </div>
+                        </div>
+  
+  
+                        <!-- <div class="cCol2">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker" placeholder="From Date/Time:"
+                          [disabled]="leaveForm.controls['postFlg'].value" [min]="minLeaveRequestDate"
+                          formControlName="fromDate"
+                          [ngClass]="{ 'is-invalid': submitted && f.fromDate.errors && f.fromDate.touched }">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                      <div *ngIf="submitted && f.fromDate.errors" class="invalid-feedback">
+                        <div *ngIf="f.fromDate.errors.required">From Date/Time is required</div>
+                      </div>
+                    </div> -->
+  
+  
+  
+  
+  
+  
+                        <div class="cCol2">
+                          <label>To Date/Time:</label>
+                          <input [disabled]="leaveForm.controls['postFlg'].value"
+                            [min]="leaveForm.controls['fromDate'].value || fromDateMax" [max]="" class="form-control"
+                            formControlName="toDate" [owlDateTime]="dt3" [owlDateTimeTrigger]="dt3"
+                            [ngClass]="{ 'is-invalid': submitted && f.toDate.errors && f.toDate.touched }" />
+                          <owl-date-time [hour12Timer]="true"
+                            [pickerType]="leaveForm.controls['leaveId'].value=='3' ? 'timer':'calendar'" #dt3>
+                          </owl-date-time>
+                          <div *ngIf="submitted && f.toDate.errors" class="invalid-feedback">
+                            <div *ngIf="f.toDate.errors.required">To Date/Time is required</div>
+                          </div>
+                        </div>
+  
+  
+                        <!-- <div class="cCol2">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker2" placeholder="To Date/Time:"
+                          [disabled]="leaveForm.controls['postFlg'].value" [min]="leaveForm.controls['fromDate'].value"
+                          formControlName="toDate"
+                          [ngClass]="{ 'is-invalid': submitted && f.toDate.errors && f.toDate.touched }">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                        <div *ngIf="submitted && f.toDate.errors" class="invalid-feedback">
+                          <div *ngIf="f.toDate.errors.required">To Date/Time is required</div>
+                        </div>
+                      </mat-form-field>
+                    </div> -->
+  
+  
+  
+  
+  
+                        <div class="cCol2">
+                          <label>Approved By Code:</label>
+                          <select class="form-control" formControlName="approvedId" [(ngModel)]="selectedApprovedBy"
+                            (change)="onSelectionChanged($event)"
+                            [ngClass]="{ 'is-invalid': submitted && f.approvedId.errors && f.approvedId.touched }">
+                            <option [disabled]="leaveForm.controls['postFlg'].value" *ngFor="let approv of approvedBy"
+                              [value]="approv">{{approv}}
+                            </option>
+                          </select>
+                          <div *ngIf="submitted && f.approvedId.errors" class="invalid-feedback">
+                            <div *ngIf="f.approvedId.errors.required">Approved By Code is required</div>
+                          </div>
+                        </div>
+  
+  
+                        <!-- <div class="cCol2">
+                      <mat-form-field>
+                        <mat-label>Approved By Code:</mat-label>
+                        <mat-select formControlName="approvedId" [(ngModel)]="selectedApprovedBy"
+                          (change)="onSelectionChanged($event)"
+                          [ngClass]="{ 'is-invalid': submitted && f.approvedId.errors && f.approvedId.touched }">
+                          <mat-option [disabled]="leaveForm.controls['postFlg'].value" *ngFor="let approv of approvedBy"
+                            [value]="approv">{{approv}}
+                          </mat-option>
+                        </mat-select>
+                        <div *ngIf="submitted && f.approvedId.errors" class="invalid-feedback">
+                          <div *ngIf="f.approvedId.errors.required">Approved By Code is required</div>
+                        </div>
+                      </mat-form-field>
+                    </div> -->
+  
+  
+  
+  
+  
+  
+  
+                        <div class="cCol2" *ngIf="this.leaveForm.controls['approvedId'].value == 'Other'">
+                          <label>Approved By Other:</label>
+                          <input [readonly]="leaveForm.controls['postFlg'].value" maxlength="5" class="form-control"
+                            type="text" formControlName="selectedAppreoved"
+                            [ngClass]="{ 'is-invalid': submitted && f.selectedAppreoved.errors && f.selectedAppreoved.touched}">
+                          <div *ngIf="submitted && f.selectedAppreoved.errors" class="invalid-feedback">
+                            <div *ngIf="f.selectedAppreoved.errors.required">Approved By Other is required</div>
+                          </div>
+                        </div>
+  
+                        <!-- <div class="cCol2" *ngIf="this.leaveForm.controls['approvedId'].value == 'Other'">
+                      <mat-form-field>
+                        <input [readonly]="leaveForm.controls['postFlg'].value" maxlength="5" type="text"
+                          formControlName="selectedAppreoved"
+                          [ngClass]="{ 'is-invalid': submitted && f.selectedAppreoved.errors && f.selectedAppreoved.touched}"
+                          matInput placeholder="Approved By Other:">
+                        <div *ngIf="submitted && f.selectedAppreoved.errors" class="invalid-feedback">
+                          <div *ngIf="f.selectedAppreoved.errors.required">Approved By Other is required</div>
+                        </div>
+                      </mat-form-field>
+                    </div> -->
+  
+  
+  
+                        <div class="col-full">
+                          <label>Reason:</label>
+                          <textarea [readonly]="leaveForm.controls['postFlg'].value" type="text" class="form-control"
+                            formControlName="reason"
+                            [ngClass]="{ 'is-invalid': submitted && f.reason.errors && f.reason.touched}">
+                                  </textarea>
+                          <div *ngIf="submitted && f.reason.errors" class="invalid-feedback">
+                            <div *ngIf="f.reason.errors.required">Reason is required</div>
+                          </div>
+                        </div>
+  
+  
+                        <!-- <div class="col-full">
+                      <mat-form-field>
+                        <textarea matInput placeholder="Reason" [readonly]="leaveForm.controls['postFlg'].value" type="text"
+                          formControlName="reason"
+                          [ngClass]="{ 'is-invalid': submitted && f.reason.errors && f.reason.touched}">
+                                  ></textarea>
+                        <div *ngIf="submitted && f.reason.errors" class="invalid-feedback">
+                          <div *ngIf="f.reason.errors.required">Reason is required</div>
+                        </div>
+                      </mat-form-field>
+                    </div> -->
+  
+  
+  
+  
+                      </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button [disabled]="leaveForm.controls['postFlg'].value || !leaveForm.valid" type="submit"
+                        class="btn btn-primary btn-min">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>

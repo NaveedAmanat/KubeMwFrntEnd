@@ -1,0 +1,15 @@
+.loaninfo {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+.loaninfo tr {
+    border-bottom: 1px solid #dee2e6;
+    }
+.loaninfo td{
+    padding: .1rem;
+}
+.loaninfo td span{
+    color: #5ea5e5; 
+}

@@ -1,0 +1,217 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row"> 
+            <div class="col-sm-6">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" (click)="openCityModal()"><i class="fa fa-plus"></i> Add</button>
+
+
+              <div class="modal fade" id="AssignLocation" role="dialog">
+                <div class="modal-dialog bigger mymodal">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Assign Location </h5>
+                    </div>
+                    <div class="modal-body">
+                      <!-- Added by Areeba - 26-04-2022 -->
+                      <div class="col-sm-4">
+                        <div class="mysearchbox" (click)="ucShowField()" *ngIf="!ucShowFields">
+                          <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                            <i class="fa fa-search"> </i>
+                          </h6>
+                        </div>
+                        <div class="mysearch" *ngIf="ucShowFields">
+                          <form (ngSubmit)="ucApplyFilter(ucSearchVal)" #searchForm="ngForm">
+                            <div class="col-sm-10" style="float:left;">
+                              <mat-form-field *ngIf="ucShowFields">
+                                <input id="ucSearchBox" (keyup)="ucSearchValue()" autofocus matInput name="ucSearchValue"
+                                  [(ngModel)]="ucSearchVal" placeholder="Search">
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-2" style="float:right;">
+                              <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <!-- Ended search -->
+                      <div class="table-responsive">
+                        <table class="table last-left" id="myTable1" style="text-align:left">
+                          <thead class="thead-light last-left">
+                            <tr>
+                              <th></th>
+                              <th>Province</th>
+                              <th>District</th>
+                              <th>Tehseel</th>
+                              <th>UC</th>
+                              <th style="text-align:left">UC Name</th>
+
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let location of ucs">
+                                  <th><input type="checkbox" [checked]="location.checked" value="{{location.checked}}"
+                                    (click)="changeRadioStatus($event, location)"></th>
+                                  <th>{{location.provinceName}}</th>
+                                  <th>{{location.districtName}}</th> 
+                                  <th>{{location.tehsilName}}</th>
+                                  <th>{{location.ucName}}</th>
+                                  <th style="text-align:left">{{location.ucComments}}</th>
+    
+                                </tr>
+                            
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+
+                    <div class="modal-footer text-center pt-0">
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+                      <!-- <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button> -->
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="modal fade" id="addprduct" role="dialog">
+                <form (ngSubmit)="addCityForm()" #cityForm="ngForm">
+                  <div class="modal-dialog big mymodal">
+
+                    <!-- Modal content-->
+                    <div class="modal-content text-left">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Add City</h5>
+                      </div>
+                      <div class="modal-body">
+                        <div class="cRow">
+                          <div class="cCol1"></div>
+                          <div class="cCol2">
+                            <mat-form-field>
+                              <input matInput type="text" value="" required id="CityName" name="cityName" [(ngModel)]="city.cityNm"
+                                maxlength="15" #cityName="ngModel" (keypress)="alphaNumeric($event)" placeholder="City Name:">
+                            </mat-form-field>
+                          </div>
+                          <div class="cCol4">
+                            <mat-form-field>
+                              <input matInput type="text" value="" required id="Description" name="description"
+                                [(ngModel)]="city.cityCmnt" maxlength="15" #description="ngModel" (keypress)="alphaNumeric($event)"
+                                placeholder="Description:">
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer text-center">
+                        <button type="submit" class="btn btn-primary btn-min" [disabled]="!cityForm.valid" >Ok</button>
+                        <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+            <!---- DATA TABLES---->
+
+            <div class="table-responsive mb-md-5">
+              <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+  
+                <!-- Reference Id Column -->
+                <ng-container matColumnDef="cityCode">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>City Code</th>
+                  <td mat-cell *matCellDef="let city">{{city.cityCd}}</td>
+                </ng-container>
+  
+                <!-- Description Column -->
+                <ng-container matColumnDef="cityName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>City Name</th>
+                  <td mat-cell *matCellDef="let city">{{city.cityNm}}</td>
+                </ng-container>
+  
+                <!-- Category Column -->
+                <ng-container matColumnDef="desc">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+                  <td mat-cell *matCellDef="let city">{{(city.cityCmnt == null)? "": city.cityCmnt}}</td>
+                </ng-container>
+  
+                <!-- Action Column -->
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                  <td mat-cell *matCellDef="let city">
+                      <a class="iconBtn" (click)="openUcModal(city)"><img src="assets/images/uc.png"
+                        alt=""></a>
+                    <a (click)="openCityModalToEdit(city)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                     <a (click)="deleteItem(city)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> 
+                    <!-- <a class="iconBtn"><i class="fa fa-history"></i></a> -->
+                </ng-container>
+  
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+  
+              <mat-paginator [length]="datalength"  [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+
+          <!-- <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>City Code</th>
+                  <th>City Name</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let city of cities">
+                  <td>{{city.cityCd}}</td>
+                  <td>{{city.cityNm}} </td>
+                  <td>{{(city.cityCmnt == null)? "": city.cityCmnt}}</td>
+                  <td>
+                    <a class="iconBtn" (click)="openUcModal(city)"><img src="assets/images/uc.png"
+                        alt=""></a>
+                    <a (click)="openCityModalToEdit(city)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                     <a (click)="deleteItem(1)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> 
+                    <a class="iconBtn"><i class="fa fa-history"></i></a>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

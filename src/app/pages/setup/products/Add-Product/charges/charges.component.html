@@ -1,0 +1,238 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+
+    <div class="content">
+
+      <div class="modal fade" id="AssignCheque" role="dialog">
+        <div class="modal-dialog mymodal" style="top:2%">
+
+          <!-- Modal content-->
+
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Assign Cheque</h5>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th><b>Installment #.</b></th>
+                      <th><b>Select</b></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let seg of segregateArray">
+                      <td>{{seg.instNum}}</td>
+                      <td>
+                        <mat-checkbox class="example-margin" name="selfPDC" (change)="addUpdateSegrigate(seg, $event)"
+                          [(ngModel)]="seg.ischecked">
+                        </mat-checkbox>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer smmodal-footer text-center">
+                <button (click)="segregateAdded()" class="btn btn-primary btn-min">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <h6 class="mt-3">Products</h6>
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="colorBlack">Charges</h6>
+        </div>
+        <div class="col-sm-6 addBtn">
+          <button class="btn btn-primary btn-sm" data-toggle="modal" (click)="openCharges()"><i class="fa fa-plus"></i>
+            Add</button>
+        </div>
+        <div class="modal fade" id="Charges" role="dialog">
+          <div class="modal-dialog big mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onSubmitChares()" [formGroup]="chargesForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Charges</h5>
+                </div>
+                <div class="modal-body">
+                  <div class="cRow">
+                    <!-- <div class="cCol2">
+                  <mat-form-field>
+                    <input type="text" matInput [errorStateMatcher]="matcher"
+                           placeholder="Charge Name:" formControlName="chargeName">
+                  </mat-form-field>
+                </div> -->
+                    <div class="cCol2">
+                      <mat-form-field>
+                        <mat-select placeholder="Charge Type:" formControlName="chrgTypSeq" name="prdGrpSts"
+                          [errorStateMatcher]="matcher">
+                          <mat-option *ngFor="let edu of chargeTypes" [value]="edu.typSeq">
+                            {{edu.typStr}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol2">
+                      <mat-form-field>
+                        <mat-select placeholder="Type:" formControlName="chrgCalcTypKey" name="prdGrpSts2"
+                          [errorStateMatcher]="matcher">
+                          <mat-option [value]="1">Flat</mat-option>
+                          <mat-option [value]="2">Percent</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol2">
+                      <mat-form-field>
+                        <input type="text" name="chrgVal" matInput placeholder="Value:" (keypress)="onlyNumbers($event)"
+                          maxlength="9" [errorStateMatcher]="matcher" formControlName="chrgVal">
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol2">
+                      <mat-form-field>
+                        <input type="text" matInput name="sgrtInstNum" placeholder="Segregate in Installments:"
+                          maxlength="2" (keypress)="onlyNumbers($event)" [errorStateMatcher]="matcher"
+                          formControlName="sgrtInstNum">
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol2">
+                    </div>
+                    <div class="cCol2">
+                      <mat-checkbox class="example-margin" name="upfrontFlg" formControlName="upfrontFlg"
+                        (change)="upFrontChangeListener($event)">
+                        Up Front</mat-checkbox>
+                    </div>
+                    <div class="cCol2">
+                      <mat-checkbox class="example-margin" name="adjustRoundingFlg" formControlName="adjustRoundingFlg">
+                        Adjust Rounding</mat-checkbox>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min" [disabled]="chargesForm.invalid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th width=14.28%>Charge Type</th>
+              <th width=14.28%>Type</th>
+              <th width=14.28%>Value</th>
+              <th width=14.28%>Upfront</th>
+              <th width=20%>Segregate in Installments</th>
+              <th width=14.28%>Adjust Rounding</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let charge of allitemsCharges">
+              <td>{{getNameByKeyTypes(charge.chrgTypSeq, chargeTypesOrig)}}</td>
+              <td>{{(charge.chrgCalcTypKey == 1) ? "Flat":'Percent'}}</td>
+              <td>
+                <button class="btn btn-dots" (click)="openProductChargeSlbModal(charge)"></button>
+              </td>
+              <td>
+                <mat-checkbox class="example-margin" name="selfPDC" [(ngModel)]="charge.upfrontFlg" disabled>
+                </mat-checkbox>
+              </td>
+              <td style="padding-left:65px">
+                <a class="iconBtn" data-toggle="modal" (click)="openSegregate(charge)"><i class="fa fa-plus"></i></a>
+                <span>{{charge.sgrtInstNum}}</span>
+              </td>
+
+              <td>
+                <mat-checkbox class="example-margin" name="selfPDC" [(ngModel)]="charge.adjustRoundingFlg" disabled>
+                </mat-checkbox>
+              </td>
+              <td><a (click)="editCharges(charge)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                <a (click)="deleteCharges(charge)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                <a href="#." class="iconBtn"><i class="fa fa-history"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a routerLink="/setup/addProduct/accounting-setup" class="btn btn-primary">Continue</a>
+      <!-- <button class="btn btn-default">Save</button> -->
+    </div>
+  </div>
+
+
+
+  <!--- Value Modal--->
+  <div class="modal fade" id="value" role="dialog">
+    <div class="modal-dialog big mymodal">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Value</h5>
+        </div>
+        <div class="modal-body">
+          <div class="cRow" *ngFor="let a of chrgForSlb.slbs;let first = first;let last = last;">
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="number" disabled matInput placeholder="Min Limit:" [(ngModel)]="a.startLmt" name="startLmt"
+                  #startLmt="ngModel" maxlength="5">
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="number" [disabled]="!last" matInput placeholder="Max Limit:" [(ngModel)]="a.endLmt"
+                  name="endLmt" #endLmt="ngModel" maxlength="5">
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="number" matInput placeholder="Value:" [(ngModel)]="a.val" name="val" #val="ngModel"
+                  maxlength="5">
+              </mat-form-field>
+            </div>
+            <!-- <div class="cCol2">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Type:">
+                </mat-form-field>
+              </div> -->
+            <!-- <div class="cCol2">
+                <mat-form-field>
+                  <mat-select placeholder="Status:">
+                    <mat-option [value]="1">Active</mat-option>
+                    <mat-option [value]="2">Inactive</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+            <a class="btn btn-danger btn-min" *ngIf="!first" (click)="deleteLine(a)" style="color:red !important;"
+              role="button">Remove entry {{a.endLimit}}</a>
+
+            <a class="btn btn-primary btn-min"
+              *ngIf="last && a.endLmt!=undefined && a.endLmt!=0 && a.endLmt!=null && a.endLmt>=a.startLmt && a.val!=null && a.val!=undefined"
+              (click)="addLine()" role="button">Add entry</a>
+          </div>
+          <!-- <a class="btn btn-primary btn-min" *ngIf="a.prdChrgSlbSeq != null || a.prdChrgSlbSeq != undefined || a.prdChrgSlbSeq != 0" (click)="saveChrgSlb()" role="button">Save</a> -->
+          <!-- <h6 style="color:red" *ngIf="error.length>0">Provide End Limit First</h6> -->
+
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button"
+            [disabled]=" (chrgForSlb.slbs[chrgForSlb.slbs.length-1].endLmt!=undefined || chrgForSlb.slbs[chrgForSlb.slbs.length-1].endLmt!=null) && chrgForSlb.slbs[chrgForSlb.slbs.length-1].endLmt>= chrgForSlb.slbs[chrgForSlb.slbs.length-1].startLmt && (chrgForSlb.slbs[chrgForSlb.slbs.length-1].val == 0 || chrgForSlb.slbs[chrgForSlb.slbs.length-1].val == undefined || chrgForSlb.slbs[chrgForSlb.slbs.length-1].val == null)"
+            class="btn btn-primary btn-min" (click)="SlbSubmit()">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

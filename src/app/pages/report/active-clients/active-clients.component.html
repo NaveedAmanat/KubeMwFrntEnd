@@ -1,0 +1,40 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-reports-leftside-bar></app-reports-leftside-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Active Clients <i class="fa fa-print"> </i></h6>
+                <div class="mysearch">
+                  <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..."
+                    title="Type in a name">
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <br>
+          <div class="row">
+            <form class="md-float-material" [formGroup]="ngForm" (ngSubmit)="onSubmitActiveClients()">
+              <div class="cRow">
+                <div class="cCol3">
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print Active Clients</button>
+
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

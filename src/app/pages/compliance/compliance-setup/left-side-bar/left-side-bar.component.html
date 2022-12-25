@@ -1,0 +1,25 @@
+<div class="leftSideBar">
+    <h6><i class="fa fa-bar-chart"></i> Compliance</h6>
+    <div class="leftmenu">
+        <ul>
+            <!-- <li [routerLinkActive]="['active']"><a
+                    [routerLink]="['/compliance/compliance-setup/target-managment']">Target Managment</a></li>
+            <li [routerLinkActive]="['active']"><a
+                    [routerLink]="['/compliance/compliance-setup/categories']">Categories</a></li>
+            <li [routerLinkActive]="['active']"><a [routerLink]="['/compliance/compliance-setup/issues']">Issues</a>
+            </li>
+            <li [routerLinkActive]="['active']"><a
+                    [routerLink]="['/compliance/compliance-setup/device-register']">Device Register</a></li> -->
+
+            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/target-managment')"><a
+                    [routerLink]="['/compliance/compliance-setup/target-managment']">{{getName("/target-managment")}}</a>
+            </li>
+            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/categories')"><a
+                    [routerLink]="['/compliance/compliance-setup/categories']">{{getName("/categories")}}</a>
+            </li>
+            <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/device-register')"><a
+                    [routerLink]="['/compliance/compliance-setup/device-register']">{{getName("/device-register")}}</a>
+            </li>
+        </ul>
+    </div>
+</div>

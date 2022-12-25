@@ -1,0 +1,114 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="voucherinfo">
+            <br>
+            <br>
+
+            <!-- Branch Name  -->
+            <ul class="infolist">
+              <li> <strong>Branch Name : </strong> <span> {{branchName}} </span></li>
+            </ul>
+
+            <!--  Total Target Clients and Amount   -->
+            <ul class="infolist">
+              <li><strong>Total Branch Target Client : </strong><span> {{totalBranchTargetClient}} </span></li>
+              <li><strong>Total Branch Target Amount : </strong><span> {{totalBranchTargetAmount}} </span></li>
+            </ul>
+          </div>
+
+          <!--      Generate Listing Form               -->
+
+          <form [formGroup]="generateListForm" (ngSubmit)="generateListings()">
+            <div class="cRow">
+
+              <!--  All Products Dropdown   -->
+
+              <div class="cCol2">
+                <ng-select [items]="allProducts" required bindValue="prdGrpSeq" name="prdNm" bindLabel="prdGrpNm"
+                  placeholder="Select Product" formControlName="productControl"
+                  (change)="onSelectionChangeProducts($event)">
+                </ng-select>
+              </div>
+
+              <!--  All Period Dropdown   -->
+
+              <div class="cCol2" *ngIf="selectPeriod">
+                <ng-select [items]="periodSpan" required bindValue="perdKey" name="perdKey" bindLabel="perdKey"
+                  placeholder="Select Period" formControlName="perd" (change)="onSelectionChangPeriod($event)">
+                </ng-select>
+              </div>
+
+            </div>
+          </form>
+
+          <!--  Table for Listing of branch Portfolios  -->
+          <form [formGroup]="branchPortfolioForm" (submit)="onSubmitBranchPortfolioForAll()">
+
+            <div class="table-responsive">
+              <table class="table record" id="myTable">
+                <thead class="thead-blue thead-light">
+                  <tr>
+                      <th>Potfolio ID</th>
+                    <th>BDO Name</th>
+                    <th>Target Client</th>
+                    <th style="text-align: left">Target Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr formArrayName="branchTargetPortfolio"
+                    *ngFor="let bdo of branchPortfolioForm['controls'].branchTargetPortfolio['controls'] ;let i=index;">
+
+                    <td formGroupName={{i}}>
+                      {{bdo.get('portId').value}}
+                    </td>
+
+                    <td formGroupName={{i}}>
+                      {{bdo.get('bdoName').value}}
+                    </td>
+
+                    <td formGroupName={{i}}>
+                      <mat-form-field>
+                        <input matInput placeholder="Target Clients" formControlName="trgtClnt"
+                          (keypress)="onlyNumbers($event)" (keyup)="onSelectionChangTargetBdoClient($event)">
+                      </mat-form-field>
+                    </td>
+
+                    <td formGroupName={{i}}>
+                      <mat-form-field>
+                        <input matInput placeholder="Target Amount" formControlName="trgtAmt"
+                          (keypress)="onlyNumbers($event)" (keyup)="onSelectionChangTargetBdoAmount($event)">
+                      </mat-form-field>
+                    </td>
+
+                  </tr>
+                </tbody>
+                <tbody>
+                  <tr class="total-info">
+                    <td></td>
+                    <td></td>
+                    <td><b>Total BDO Target Client:</b> {{totalBdoTargetClient}}</td>
+                    <td class="text-left"><b>Total BDO Target Amount:</b> {{totalBdoTargetAmount}}</td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+
+            <div *ngIf="saveAllPortfolio" class="text-left mt-2 pb-3">
+              <button type="submit" class="btn btn-primary btn-min">Save
+                All</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

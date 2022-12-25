@@ -1,0 +1,767 @@
+<header *ngIf="closing" class="header" style="top: 0px;position: absolute;width: 100%;">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-7">
+        <a class="logo"><img [src]="'../../../assets/images/logo.png'" alt="Logo Image"></a>
+        <form class="form-inline searchForm" style="display:none">
+          <input class="form-control mr-2 form-control-sm" type="text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-sm searchBtn" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="col-sm-5">
+        <div class="helpSection">
+          <a class="btn btn-link btn-sm"><i class="fa fa-question fa-lg"></i> Help</a>
+          <div class="dropdown">
+            <button type="button" class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false"> <i class="fa fa-user fa-lg"></i> Hi
+              {{auth.emp_name | uppercase}} </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a (click)="logout()" class="dropdown-item">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topNavBar">
+    <nav class="navbar navbar-expand-md">
+      <button class="navbar-toggler fa fa-bars" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"></button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active"><a class="nav-link">Admin</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!--<br><br>-->
+<!--<br><br>-->
+
+
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <div *ngIf="!closing">
+          <app-left-side-bar-admin></app-left-side-bar-admin>
+        </div>
+      </div>
+      <div class="modal fade" id="businessector" role="dialog">
+        <div class="modal-dialog big mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Expense</h5>
+            </div>
+
+            <form [formGroup]="expenseForm" (ngSubmit)="addExpensesSubmit()">
+              <div class="modal-body">
+                <ul class="infolist">
+                </ul>
+                <div class="cRow">
+
+                  <div class="cCol6">
+                    <label>Type:</label>
+                    <mat-radio-group name="pymtRctFlg" required formControlName="pymtRctFlg">
+                      <mat-radio-button class="w-100" [value]="1">Payment</mat-radio-button>
+                      <mat-radio-button class="w-100" [value]="2">Receipt</mat-radio-button>
+
+                    </mat-radio-group>
+
+                  </div>
+                </div>
+
+                <div class="cRow">
+                  <!-- <div class="cCol2" >
+                    <label>Expense Id:</label>
+                    <input type="text" formControlName="expnsId" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.expnsId.errors }" />
+                    <div *ngIf="submitted && form.expnsId.errors" class="invalid-feedback">
+                        <div *ngIf="form.expnsId.errors.required">Expense Id is required                                
+                        </div>
+                    </div>
+                </div> -->
+                  <div class="cCol2">
+                    <label>Description:</label>
+                    <input type="text" formControlName="expnsDscr" class="form-control"
+                      [ngClass]="{ 'is-invalid': form.expnsDscr.errors }" />
+                    <div *ngIf="form.expnsDscr.errors" class="invalid-feedback">
+                      <div *ngIf="form.expnsDscr.errors.required">Description is required</div>
+                    </div>
+                  </div>
+
+                  <div class="cCol2">
+                    <label>Category:</label>
+                    <select type="" formControlName="expnsTypSeq" class="form-control" id="expnsTypSeq"
+                      [ngClass]="{ 'is-invalid': form.expnsTypSeq.errors }">
+                      <option *ngFor="let expense of expenseArray" [value]="expense.typSeq">{{expense.typStr}}</option>
+                    </select>
+                    <div *ngIf="form.expnsTypSeq.errors" class="invalid-feedback">
+                      <div *ngIf="form.expnsTypSeq.errors.required">Expense Type is required</div>
+                    </div>
+                  </div>
+
+                  <div class="cCol2">
+                    <label>Amount:</label>
+                    <input type="text" formControlName="expnsAmt" class="form-control"
+                      [ngClass]="{ 'is-invalid': form.expnsAmt.errors }" />
+                    <div *ngIf="form.expnsAmt.errors" class="invalid-feedback">
+                      <div *ngIf="form.expnsAmt.errors.required">Expense Amount is required
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="cCol2">
+                    <label>Instrument No.:</label>
+                    <input type="text" formControlName="instrNum" class="form-control"
+                      [ngClass]="{ 'is-invalid': form.instrNum.errors }" />
+                    <div *ngIf="form.instrNum.errors" class="invalid-feedback">
+                      <div *ngIf="form.instrNum.errors.required">Instrument # is required
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  <div class="cCol2">
+                    <label>Mode:</label>
+                    <select type="" formControlName="pymtTypSeq" class="form-control" id="payment"
+                      [ngClass]="{ 'is-invalid': form.pymtTypSeq.errors }">
+                      <option *ngFor="let payment of paymentArray" [value]="payment.typSeq">{{payment.typStr}}</option>
+                    </select>
+                    <div *ngIf="form.pymtTypSeq.errors" class="invalid-feedback">
+                      <div *ngIf="form.pymtTypSeq.errors.required">Payment Type is required</div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button appNoDblClick type="button" (click)="addExpensesSubmit()"
+                  class="btn btn-primary btn-min">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+              <!-- </div> -->
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="AdjustPayment" role="dialog">
+        <div class="modal-dialog mymodal big">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Adjust Payment</h5>
+            </div>
+            <form [formGroup]="adjustPayment" (ngSubmit)="onAdjustPaymentSubmit()">
+              <div class="modal-body">
+                <div class="cRow">
+                  <input type="hidden" formControlName="trxId" />
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Client Id:" formControlName="clntId">
+                      <mat-error *ngIf="af.clntId.errors?.required">
+                        Client Id <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Client Name:" formControlName="clientNm">
+                      <mat-error *ngIf="af.clientNm.errors?.required">
+                        Client Name <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Loan Id:" formControlName="loanId">
+                      <mat-error *ngIf="af.loanId.errors?.required">
+                        Loan Id is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="cCol2 ">
+                    <mat-form-field>
+                      <mat-select placeholder="Institution Name:" formControlName="rcvryTypsSeq">
+                        <mat-option *ngFor="let edu of tempInstituteArray" [value]="edu.typSeq">
+                          {{edu.typStr}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="af.rcvryTypsSeq.errors?.required">
+                        Institution Name is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Instrument Number:" formControlName="instr">
+                      <mat-error *ngIf="af.instr.errors?.required">
+                        instrument number is <strong>required</strong>
+                      </mat-error>
+                      <mat-error *ngIf="af.instr.errors?.maxlength">
+                        instrument number length should be <strong>20 characters</strong>
+                      </mat-error>
+                      <mat-error *ngIf="af.instr.errors?.minlength">
+                        instrument number length should be <strong>20 characters</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input matInput required name="adjPymtDt" [min]="minDate" [max]="maxDate" id="adjPymtDt"
+                        formControlName="adjPymtDt" disabled readonly placeholder="Slip Date:"
+                        [matDatepicker]="picker2">
+                      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                      <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+                      <mat-error *ngIf="af.adjPymtDt.errors?.required">
+                        Slip Date is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+
+                  </div>
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" matInput placeholder="Payment Amount:" pattern="^-?[\d.]+(?:e-?\d+)?$"
+                        formControlName="pymtAmt">
+                      <mat-error *ngIf="af.pymtAmt.errors?.required">
+                        Payment Amount is <strong>required</strong>
+                      </mat-error>
+                      <mat-error *ngIf="af.pymtAmt.errors?.paymtamterror">
+                        Payment Amount is <strong>Greater then Due Amount</strong>
+                      </mat-error>
+                      <mat-error *ngIf="af.pymtAmt.errors?.pattern">
+                        Payment Amount is <strong>Invalid</strong>
+                      </mat-error>
+
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button type="button" appNoDblClick (click)="onAdjustPaymentSubmit()" [disabled]="!adjustPayment.valid"
+                  class="btn btn-primary btn-min">Ok</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-9">
+        <div class="content">
+          <h6 class="d-inline-block searchshow">Closing Type</h6>
+          <!-- <div class="cRow">
+                <div class="cCol1 pt-0">
+                	<label class="mb-0">Closing Type:</label>
+                  <select class="form-control">
+                    <option>Day</option>
+                    <option>Day</option>
+                  </select>
+                </div>
+              </div>
+          
+		<div class="cRow">
+                <div class="cCol1">
+                <label class="mb-0">Closing Date:</label>
+                <div class="input-group date">
+                  <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+                  <div class="input-group-append input-group-addon	">
+                    <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                  </div>
+                </div>
+              </div>
+              </div> 
+         -->
+          <div class="buttons mt-3">
+            <button [disabled]="allDisbursements.length>0 || allRecoveries.length>0 || allExpenses.length>0"
+              class="btn btn-primary btn-min mr-3" (click)="postMultiple()">Close</button>
+            <!-- <button class="btn btn-default btn-min">Cancel</button> -->
+
+          </div>
+
+          <!---------------------------------------------           DISBURSMENT          ------------------------------------------------------------->
+
+          <h2>Disbursement</h2>
+          <div class="buttons mt-3">
+            <!-- <button class="btn btn-primary btn-min mr-3">Post All Disbursement</button> -->
+            <!-- <button class="btn btn-default btn-min">Cancel</button> -->
+
+          </div>
+          <!--      
+        <span><input type="checkbox" class="check1" [(ngModel)]="disbursementCheck" (change)="addDisbursements($event)"/></span>
+        -->
+
+          <!-- <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th></th>
+                  <th>Tx ID</th>
+                  <th>Client ID</th>
+                  <th>Client Name</th>
+                  <th>Product</th>
+                  <th>Voucher Date</th>
+                  <th>Payment Mode</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let disbursement of allDisbursements">
+
+                  <td><input type="checkbox" class="check1"></td>
+                  <td>{{disbursement.txId}}</td>
+                  <td>{{disbursement.clientId}}</td>
+                  <td>{{disbursement.clientName}}</td>
+                  <td>{{disbursement.product}}</td>
+                  <td>{{disbursement.voucherDate | date :'dd-MM-yyyy'}}</td>
+                  <td>{{disbursement.paymentMode}}</td>
+                  <td>{{disbursement.amount | currency:'PKR':''}}</td>
+                  <td><span>Unposted</span></td>
+                  <td><span>
+                      <a class="iconBtn" (click)="onEditDisbursement(disbursement.loanAppSeq)"><i
+                          class="fa fa-pencil"></i></a>
+                      <a class="iconBtn" (click)="postSingleDisbursement(disbursement)"><i
+                          class="fa fa-check-square-o"></i></a>
+                    </span>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div> -->
+
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSourceDisbursment" class="table" multiTemplateDataRows matSort
+              id="myTable">
+
+              <!-- Checkbox Column -->
+              <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox color="primary" (change)="$event ? masterToggleDisbursment() : null"
+                    [checked]="selectionDisbursment.hasValue() && isAllSelectedDisbursment()"
+                    [indeterminate]="selectionDisbursment.hasValue() && !isAllSelectedDisbursment()"
+                    [aria-label]="isAllSelectedDisbursment()">
+                  </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                    (change)="$event ? selectionDisbursment.toggle(row) : null"
+                    [checked]="selectionDisbursment.isSelected(row)" [aria-label]="checkboxLabelDisbursment(row)">
+                  </mat-checkbox>
+                </td>
+              </ng-container>
+
+              <!-- Tx ID Column -->
+              <ng-container matColumnDef="txId">
+                <th mat-header-cell *matHeaderCellDef>Tx ID</th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.txId}} </td>
+              </ng-container>
+
+              <!-- Client ID Column -->
+              <ng-container matColumnDef="clientId">
+                <th mat-header-cell *matHeaderCellDef> Client ID </th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.clientId}} </td>
+              </ng-container>
+
+              <!-- clientName Column -->
+              <ng-container matColumnDef="clientName">
+                <th mat-header-cell *matHeaderCellDef> Client Name </th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.clientName}} </td>
+              </ng-container>
+
+              <!-- product Column -->
+              <ng-container matColumnDef="product">
+                <th mat-header-cell *matHeaderCellDef> Product </th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.product}} </td>
+              </ng-container>
+
+              <!-- Voucher Date Column -->
+              <ng-container matColumnDef="voucherDate">
+                <th mat-header-cell *matHeaderCellDef> Voucher Date </th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.voucherDate | date :'dd-MM-yyyy'}} </td>
+              </ng-container>
+
+              <!-- paymentMode Column -->
+              <ng-container matColumnDef="paymentMode">
+                <th mat-header-cell *matHeaderCellDef> Payment Mode </th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.paymentMode}} </td>
+              </ng-container>
+
+              <!-- amount Column -->
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef> Amount </th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.amount | currency:'PKR':''}} </td>
+              </ng-container>
+
+              <!-- status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let disbursement"> {{disbursement.status}} </td>
+              </ng-container>
+
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let disbursement">
+                  <span>
+                    <!-- Modified by Areeba - Edit button removed from KM Sale 2 -->
+                    <button *ngIf="disbursement.productGroup != 6" class="customButtonForAnchors" (click)="onEditDisbursement(disbursement.loanAppSeq)"><i
+                        class="fa fa-pencil"></i></button>
+                    <button class="customButtonForAnchors" (click)="postSingleDisbursement(disbursement)"><i
+                        class="fa fa-check-square-o"></i></button>
+                  </span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsDisbursment" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row1; columns: displayedColumnsDisbursment;">
+              </tr>
+            </table>
+
+            <!-- <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons>
+            </mat-paginator> -->
+          </div>
+          <label>Total Transaction: {{disbTxCounter}}</label> <br>
+          <label>Total Amount: {{disbAmountCalculator}}</label>
+
+
+
+
+          <!-------------------------------------------------  RECOVERY -------------------------------------------------------->
+
+
+
+          <h2>Recovery</h2>
+          <!--          
+    <span><input type="checkbox" class="check1" [(ngModel)]="recoveryCheck" (change)="addRecoveries($event)"/></span>
+     -->
+          <!-- <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th></th>
+                  <th>Tx ID</th>
+                  <th>Client ID</th>
+                  <th>Client Name</th>
+                  <th>Product</th>
+                  <th>Credit ID</th>
+                  <th>Payment Mode</th>
+                  <th>Instrument</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let recovery of allRecoveries">
+                  <td><input type="checkbox" class="check1"></td>
+                  <td>{{recovery.txId}}</td>
+                  <td>{{recovery.clientId}}</td>
+                  <td>{{recovery.clientName}}</td>
+                  <td>{{recovery.product}}</td>
+                  <td>{{recovery.loanId}}</td>
+                  <td>{{recovery.paymentMode}}</td>
+                  <td>{{recovery.instrument}}</td>
+                  <td>{{recovery.amount | currency:'PKR':''}}</td>
+                  <td>{{recovery.status}}</td>
+                  <td><span *ngIf="recovery.status=='Unposted' && !recoveryCheck">
+                      <a class="iconBtn" (click)="openAdjustPayment(recovery)"><i class="fa fa-pencil"></i></a>
+                      <a class="iconBtn" (click)="postSingleRecovery(recovery)"><i class="fa fa-check-square-o"></i></a>
+                    </span>
+                  </td>
+
+                </tr>
+
+              </tbody>
+            </table> -->
+
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSourceRecovery" class="table" multiTemplateDataRows matSort id="myTable">
+
+              <!-- Checkbox Column -->
+              <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox color="primary" (change)="$event ? masterToggleRecoveries() : null"
+                    [checked]="selectionRecovery.hasValue() && isAllSelectedRecoveries()"
+                    [indeterminate]="selectionRecovery.hasValue() && !isAllSelectedRecoveries()"
+                    [aria-label]="checkboxLabelRecoveries()">
+                  </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                    (change)="$event ? selectionRecovery.toggle(row) : null"
+                    [checked]="selectionRecovery.isSelected(row)" [aria-label]="checkboxLabelRecoveries(row)">
+                  </mat-checkbox>
+                </td>
+              </ng-container>
+
+              <!-- Tx ID Column -->
+              <ng-container matColumnDef="txId">
+                <th mat-header-cell *matHeaderCellDef>Tx ID</th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.txId}} </td>
+              </ng-container>
+
+              <!-- Client ID Column -->
+              <ng-container matColumnDef="clientId">
+                <th mat-header-cell *matHeaderCellDef> Client ID </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.clientId}} </td>
+              </ng-container>
+
+              <!-- clientName Column -->
+              <ng-container matColumnDef="clientName">
+                <th mat-header-cell *matHeaderCellDef> Client Name </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.clientName}} </td>
+              </ng-container>
+
+              <!-- product Column -->
+              <ng-container matColumnDef="product">
+                <th mat-header-cell *matHeaderCellDef> Product </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.product}} </td>
+              </ng-container>
+
+              <!-- loanId Column -->
+              <ng-container matColumnDef="loanId">
+                <th mat-header-cell *matHeaderCellDef> Loan ID </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.loanId}} </td>
+              </ng-container>
+
+              <!-- paymentMode Column -->
+              <ng-container matColumnDef="paymentMode">
+                <th mat-header-cell *matHeaderCellDef> Payment Mode </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.paymentMode}} </td>
+              </ng-container>
+
+              <!-- instrument Column -->
+              <ng-container matColumnDef="instrument">
+                <th mat-header-cell *matHeaderCellDef> Instrument </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.instrument}} </td>
+              </ng-container>
+
+              <!-- Amount Column -->
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef> Amount </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.amount}} </td>
+              </ng-container>
+
+              <!-- status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let recovery"> {{recovery.status}} </td>
+              </ng-container>
+
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let recovery">
+                  <span *ngIf="recovery.status=='Unposted' && !recoveryCheck">
+                    <button class="customButtonForAnchors" (click)="openAdjustPayment(recovery)"><i
+                        class="fa fa-pencil"></i></button>
+                    <button class="customButtonForAnchors" (click)="postSingleRecovery(recovery)"><i
+                        class="fa fa-check-square-o"></i></button>
+                  </span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsRecovery" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row1; columns: displayedColumnsRecovery;">
+              </tr>
+            </table>
+
+            <!-- <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons>
+            </mat-paginator> -->
+          </div>
+          <label>Total Transaction: {{recoveryTxCounter}}</label> <br>
+          <label>Total Amount: {{recoveryAmountCalculator}}</label>
+
+          <!-------------------------------------------          EXPENSES      ---------------------------------->
+
+          <h2>Expenses</h2>
+
+          <!-- <span><input type="checkbox" class="check1" [(ngModel)]="expenseCheck"
+                (change)="addExpenses($event)" /></span>
+            <a class="iconBtn"><i class="fa fa-check-square-o"></i></a> -->
+          <!-- <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th></th>
+                  <th>Client ID</th>
+                  <th>Expense ID</th>
+                  <th>Description</th>
+                  <th>Expense Type</th>
+                  <th>Insutrument #</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let exp of allExpenses; let i = index">
+                  <td><input type="checkbox" class="check1"></td>
+                  <td>{{exp.txId}}</td>
+                  <td>{{exp.expenseId}}</td>
+                  <td>{{exp.description}}</td>
+                  <td>{{exp.expenseType}}</td>
+                  <td>{{exp.instrumentNum}}</td>
+                  <td>{{exp.amount | currency:'PKR':''}}</td>
+                  <td>{{exp.status}}</td>
+                  <td><span> <a class="iconBtn" (click)="onEditExpenses(exp)"><i class="fa fa-pencil"></i></a>
+                      <a class="iconBtn" (click)="postSingleExpense(exp)"><i class="fa fa-check-square-o"></i></a>
+                      <a class="iconBtn delBtn" (click)="onItDelete(exp.expenseId , i)"><i
+                          class="fa fa-trash-o"></i></a>
+                    </span>
+                  </td>
+
+                </tr>
+
+              </tbody>
+            </table> -->
+
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort id="myTable">
+
+              <!-- Checkbox Column -->
+              <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                  </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+                    [aria-label]="checkboxLabel(row)">
+                  </mat-checkbox>
+                </td>
+              </ng-container>
+
+              <!-- Tx ID Column -->
+              <ng-container matColumnDef="txId">
+                <th mat-header-cell *matHeaderCellDef>Client ID</th>
+                <td mat-cell *matCellDef="let exp"> {{exp.txId}} </td>
+              </ng-container>
+
+              <!-- Expense ID Column -->
+              <ng-container matColumnDef="expenseId">
+                <th mat-header-cell *matHeaderCellDef> Expense ID </th>
+                <td mat-cell *matCellDef="let exp"> {{exp.expenseId}} </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let exp"> {{exp.description}} </td>
+              </ng-container>
+
+              <!-- Expense Type Column -->
+              <ng-container matColumnDef="expenseType">
+                <th mat-header-cell *matHeaderCellDef> Expense Type </th>
+                <td mat-cell *matCellDef="let exp"> {{exp.expenseType}} </td>
+              </ng-container>
+
+              <!-- instrument Num Column -->
+              <ng-container matColumnDef="instrumentNum">
+                <th mat-header-cell *matHeaderCellDef> Instrument Number </th>
+                <td mat-cell *matCellDef="let exp"> {{exp.instrumentNum}} </td>
+              </ng-container>
+
+              <!-- Amount Column -->
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef> Amount </th>
+                <td mat-cell *matCellDef="let exp"> {{exp.amount | currency:'PKR':''}} </td>
+              </ng-container>
+
+              <!-- Status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let exp"> {{exp.status}} </td>
+              </ng-container>
+
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let exp">
+                  <button *ngIf="expenseType == 'FUNERAL CHARGES'" class="customButtonForAnchors"
+                    (click)="onEditExpenses(exp)"><i class="fa fa-pencil"></i></button>
+                  <button class="customButtonForAnchors" (click)="postSingleExpense(exp)"><i
+                      class="fa fa-check-square-o"></i></button>
+                  <button class="customButtonForAnchors delBtn" (click)="onItDelete(exp.expenseId , i)"><i
+                      class="fa fa-trash-o"></i></button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+              </tr>
+            </table>
+
+            <!-- <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons>
+            </mat-paginator> -->
+          </div>
+          <label>Total Transaction: {{expenseTxCounter}}</label><br>
+          <label>Total Amount: {{expenseAmountCalculator}}</label>
+
+          <!-- 
+<h2>Insurance Claims</h2>      <label >Total Transaction: {{insuranceClaimTxCounter}}</label> <label >Total Amount: {{insuranceClaimAmountCalculator}}</label>
+<span><input type="checkbox" class="check1" [(ngModel)]="insuranceclaimCheck" (change)="addInsuranceclaim($event)"/></span>
+
+<table class="table" id="myTable" >
+<thead class="thead-light">
+<tr>
+<th>Tx ID</th>
+<th>Client ID</th>
+<th>Client Name</th>
+<th>Payment Mode</th>
+<th>Insutrument #</th>
+<th>Claim Amount</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>	
+<tr *ngFor="let ic of allInsuranceClaims">      
+<td>{{ic.txId}}</td> 
+<td>{{ic.clientId}}</td>
+<td>{{ic.clientName}}</td>
+<td>{{ic.paymentMode}}</td>
+<td>{{ic.instrument}}</td>
+<td>{{ic.claimAmount}}</td>
+<td>{{ic.status}}</td>
+<td ><span *ngIf="ic.status=='Unposted' && !insuranceClaimCheck">
+<a  class="iconBtn" (click)="postSingleInsuranceClaim(ic)"><i class="fa-envelope-o"></i></a>
+</span>
+</td>
+
+</tr>
+
+</tbody>
+</table> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>

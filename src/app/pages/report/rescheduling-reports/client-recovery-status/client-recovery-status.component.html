@@ -1,0 +1,47 @@
+<div class="col-md-12">
+  <div class="content">
+    <div class="mysearchbox">
+      <h6 class="d-inline-block searchshow">Client Recovery Status</h6>
+      <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+      </div>
+    </div>
+
+    <form [formGroup]="ngForm" (ngSubmit)="onSubmitClientRecoveryReport()">
+      <div class="cRow">
+        <div class="cCol12">
+
+          <input *ngIf="auth.role != 'admin'" type="hidden" formControlName="branch" readonly />
+          <!-- <mat-form-field *ngIf="auth.role == 'admin'">
+              <mat-select placeholder="Branch" formControlName="branch">
+                <mat-option *ngFor="let b of branchs" [value]="b.brnchSeq">
+                  {{b.brnchNm}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+
+
+          <ng-select *ngIf="auth.role != 'bdo' && auth.role != 'bm'" [items]="branchs" required
+            bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+            formControlName="branch">
+          </ng-select>
+
+          <mat-form-field>
+            <input matInput required formControlName="frstInstDt" [max]="maxDate" placeholder="Reported Date:"
+              [matDatepicker]="picker3" disabled readonly />
+            <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+            <mat-datepicker required #picker3 disabled="false"></mat-datepicker>
+            <mat-error *ngIf="!ngForm.get('frstInstDt').valid">
+              First Installment Date is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="modal-footer text-center">
+        <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print</button>
+      </div>
+    </form>
+
+
+  </div>
+</div>

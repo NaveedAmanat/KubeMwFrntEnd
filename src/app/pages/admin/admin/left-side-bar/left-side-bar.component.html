@@ -1,0 +1,211 @@
+<div class="leftSideBar">
+  <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+    <li class="nav-item"> <a class="nav-link active" id="nominee-tab" data-toggle="tab" href="#nominee" role="tab"
+        aria-controls="home" aria-selected="true"> <i class="fa fa-sliders fa-lg"></i> Admin</a> </li>
+    <li class="nav-item"> <a class="nav-link" id="address-tab" data-toggle="tab" href="#addressTab" role="tab"
+        aria-controls="addressTab" aria-selected="false"><i class="fa fa-sliders fa-lg"></i> Filter</a> </li>
+  </ul>
+
+  <div class="tab-content" id="borrowerTabsContent">
+    <div class="tab-pane fade show active" id="nominee" role="tabpanel" aria-labelledby="nominee-tab">
+
+      <div class="leftmenu  mt-3">
+        <ul>
+          <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/closing')"><a
+              [routerLink]="['/admin/closing']">{{getName("/closing")}}</a></li>
+          <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/transfers')"><a
+              [routerLink]="['/admin/transfers']">{{getName("/transfers")}}</a></li>
+          <!--
+              <li [routerLinkActive]="['active']" ><a [routerLink]="['/admin/reschedule']" >Reschedule</a></li>
+              <li [routerLinkActive]="['active']" ><a [routerLink]="['/admin/write-off']" >Write-off</a></li>
+              -->
+          <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/loan-servicing')"><a
+              [routerLink]="['/admin/loan-servicing']">{{getName("/loan-servicing")}}</a></li>
+          <!-- Added by Areeba - Dated - 22-04-2022 -->
+          <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/od-check')"><a
+              [routerLink]="['/admin/od-check']">{{getName("/od-check")}}</a></li>
+          <!-- Ended by Areeba -->
+
+          <li *ngIf="hasSubMod('/file-upload')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/file-upload']">{{getName("/file-upload")}}</a></li>
+          <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/access-recoveries')"><a
+              [routerLink]="['/admin/access-recoveries']">{{getName("/access-recoveries")}}</a></li>
+          <li [routerLinkActive]="['active']" *ngIf="hasSubMod('/ClientHealthInsuranceClaims')"><a
+              [routerLink]="['/admin/ClientHealthInsuranceClaims']">{{getName("/ClientHealthInsuranceClaims")}}</a>
+          </li>
+          <li *ngIf="hasSubMod('/journel-voucher')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/journel-voucher']">{{getName("/journel-voucher")}}</a></li>
+          <li *ngIf="hasSubMod('/attendance')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/attendance']">{{getName("/attendance")}}</a></li>
+          <!-- <li  [routerLinkActive]="['active']" ><a [routerLink]="['/admin/animal-insr-claim']" >Animal Insurance Claim</a></li> -->
+          <li *ngIf="auth.role=='bm'" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/target-managment']">Target Managment</a></li>
+          <li *ngIf="hasSubMod('/employee-assignment')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/employee-assignment']">{{getName("/employee-assignment")}}</a></li>
+          <!-- <li [routerLinkActive]="['active']"><a [routerLink]="['/admin/donor-tagging']">Donor Tagging</a></li> -->
+          <li *ngIf="hasSubMod('/donor-tagging')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/donor-tagging']">{{getName("/donor-tagging")}}</a></li>
+          <li *ngIf="hasSubMod('/write-off')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/write-off']">{{getName("/write-off")}}</a></li>
+          <li *ngIf="hasSubMod('/nacta-management')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/nacta-management']">{{getName("/nacta-management")}}</a></li>
+
+          <!-- Added by Areeba - Dated 1-2-2022 - Client Tag List -->
+          <li *ngIf="hasSubMod('/client-tag-list')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/client-tag-list']">{{getName("/client-tag-list")}}</a></li>
+          <!-- Ended by Areeba -->
+
+          <!-- Added By Naveed - Date - 24-02-2022 -->
+          <!-- SCR - Upaisa and HBL Konnect Payment Mode -->
+          <li *ngIf="hasSubMod('/atm-cards-management')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/atm-cards-management']">{{getName("/atm-cards-management")}}</a></li>
+          <!-- Ended by Naveed -->
+
+          <!-- Added by Areeba - Dated 24-2-2022 - Jubliee Panel Hospital List for KSZB clients -->
+          <li *ngIf="hasSubMod('/panel-hospital')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/panel-hospital']">{{getName("/panel-hospital")}}</a></li>
+          <!-- Ended by Areeba -->
+
+          <!-- Added by Areeba - Dated 17-3-2022 - Monthly Accounts Reporting -->
+          <li *ngIf="hasSubMod('/account-reporting')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/account-reporting']">{{getName("/account-reporting")}}</a></li>
+          <!-- Ended by Areeba -->
+
+          <!-- Added By Naveed - Date - 10-05-2022 -->
+          <!-- ASCR - MCB Disbursement -->
+          <li *ngIf="hasSubMod('/mcb_disbursement')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/mcb_disbursement']">{{getName("/mcb_disbursement")}}</a></li>
+          <!-- Ended by Naveed -->
+
+          <!-- Added By Naveed - Date - 14-06-2022 -->
+          <!-- SCR - systemization Funds Request -->
+          <li *ngIf="hasSubMod('/branchExpenseFundsRequest')" [routerLinkActive]="['active']"><a
+              [routerLink]="['/admin/branchExpenseFundsRequest']">{{getName("/branchExpenseFundsRequest")}}</a></li>
+          <!-- Ended by Naveed -->
+
+          <!-- Added By Areeba - Date - 23-06-2022 -->
+          <!-- SCR - HR Travelling -->
+          <li *ngIf="hasSubMod('/hr-trvlng-expense')" [routerLinkActive]="['active']"><a
+            [routerLink]="['/admin/hr-trvlng-expense']">{{getName("/hr-trvlng-expense")}}</a></li>
+          <!-- Ended by Areeba -->
+
+          <!-- Added By Areeba - Date - 09-09-2022 -->
+          <!-- Target/ Outreach -->
+          <li *ngIf="hasSubMod('/target-outreach')" [routerLinkActive]="['active']"><a
+            [routerLink]="['/admin/target-outreach']">{{getName("/target-outreach")}}</a></li>
+          <!-- Ended by Areeba -->
+
+            <!-- Added By Naved - Date - 14-09-2022 -->
+          <!-- SCR - Vechile Loan -->
+          <li *ngIf="hasSubMod('/vehicleLoans')" [routerLinkActive]="['active']"><a
+            [routerLink]="['/admin/vehicleLoans']">{{getName("/vehicleLoans")}}</a></li>
+          <!-- Ended by NAveed -->
+
+        </ul>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="addressTab" role="tabpanel" aria-labelledby="address-tab">
+      <div class="filtersWrap mt-3">
+        <div class="cRow">
+          <div class="cCol3">
+            <label class="mb-0">From Date:</label>
+            <div class="input-group date">
+              <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+              <div class="input-group-append input-group-addon	">
+                <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="cCol3">
+            <label class="mb-0">To Date:</label>
+            <div class="input-group date">
+              <input type="text" class="form-control" placeholder="DD / MM / YYYY">
+              <div class="input-group-append input-group-addon	">
+                <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="cCol2">
+            <label class="blankLabel d-block mb-0">&nbsp;</label>
+            <div class="checkbox mb-1 mr-2 d-inline-block">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" id="checkbox1" name="coBorrower" class="custom-control-input">
+                <label class="custom-control-label" for="checkbox1"> Overdue</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter"> <a href="#." class="acc_trigger">Organization</a>
+          <div class="collapse acc_container" id="region">
+            <div class="listmenu">
+              <ul class="sub-menu">
+                <li>LAHORE REGION
+                  <ul class="sub-menu">
+                    <li>ALAHORE-02
+                      <ul class="sub-menu">
+                        <li>SIRAJ PURA
+                          <ul class="sub-menu">
+                            <li>North</li>
+                          </ul>
+                        </li>
+                        <li>BEDIAN
+                          <ul class="sub-menu">
+                            <li>South</li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>SAHIWAL REGION
+                  <ul class="sub-menu">
+                    <li>KASUR-01
+                      <ul class="sub-menu">
+                        <li>KASUR-01
+                          <ul class="sub-menu">
+                            <li>East</li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>BAHAWALPUR REGION
+                  <ul class="sub-menu">
+                    <li>BAHAWALPUR-01
+                      <ul class="sub-menu">
+                        <li>BAHAWALPUR-01
+                          <ul class="sub-menu">
+                            <li>West</li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>KPK/PINDI REGION
+                  <ul class="sub-menu">
+                    <li>MARDAN
+                      <ul class="sub-menu">
+                        <li>MARDAN KHAAS
+                          <ul class="sub-menu">
+                            <li>South</li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+
+</div>

@@ -1,0 +1,64 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-reports-leftside-bar></app-reports-leftside-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow"> Risk And Social KPIs <i class="fa fa-print"> </i></h6>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <form [formGroup]="ngForm" (ngSubmit)="printReport()">
+              <div class="cRow">
+                <div class="cCol6">
+                
+            <div class="cRow">
+            <!--------------- REGIONS DROPDOWN---------->
+          
+            <div *ngIf="disabledRegion">
+              <ng-select *ngIf="auth.role != 'bdo' && auth.role != 'bm' && auth.role !='am' && auth.role != 'rm'"
+                (change)="getArea($event)" [items]="allRegions" bindLabel="regNm" bindValue="regSeq" name="regNm"
+                placeholder="Select Region:" formControlName="regSeq">
+              </ng-select>
+            </div>
+
+            <!--------------- AREA DROPDOWN---------->
+
+            <div *ngIf="disabledArea">
+              <ng-select *ngIf="auth.role != 'bdo' && auth.role != 'bm' && auth.role !='am'"
+                (change)="getBranch($event)" [items]="allAreas" bindLabel="areaNm" bindValue="areaSeq" name="areaNm"
+                placeholder="Select Area:" formControlName="areaSeq">
+              </ng-select>
+            </div>
+
+                  <mat-form-field>
+                    <input matInput required formControlName="frmDt" [max]="maxDate" placeholder="From Date:"
+                      [matDatepicker]="picker1" disabled readonly />
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput required formControlName="toDt" [max]="maxDate" placeholder="To Date:"
+                      [matDatepicker]="picker2" disabled readonly />
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

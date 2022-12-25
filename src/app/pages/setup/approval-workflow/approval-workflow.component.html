@@ -1,0 +1,103 @@
+<app-header></app-header>
+<main class="main">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="leftSideBar">
+					<h6><i class="fa fa-sliders fa-lg"></i> Setup</h6>
+					<div class="leftmenu">
+						<ul>
+		                 	<li routerLinkActive="active"><a routerLink="/setup">Common Codes</a></li>
+		                     <li routerLinkActive="active"><a routerLink="/setup/organization">Organization</a></li>
+		                    
+		                     <li routerLinkActive="active"><a routerLink="/setup/geography">Geography</a></li>
+		                     <!-- <li routerLinkActive="active"><a routerLink="/setup/approval-workflow">Approval Workflow</a></li> -->
+							 <li routerLinkActive="active"><a routerLink="/setup/communication-workflow">Communication Workflow</a></li>
+		
+		                     <li><a href="#">Products</a></li>
+		                     <li><a href="#">Rules</a></li>
+		                     <li><a href="#">User Management</a></li>
+		                 </ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="content mb-md-5">
+                <div class="row">
+						<div class="col-sm-6">
+                        <div class="mysearchbox">
+							<h6 class="d-inline-block searchshow">Approval Workflow <i class="fa fa-search"> </i></h6>
+                            <div class="mysearch">
+                            	<a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                            	 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+                            </div>
+                            </div>
+						</div>
+						 <div class="col-sm-6 addBtn">
+                         <a class="btn btn-primary btn-sm" routerLink="/setup/approval-workflow/add-workflow"><i class="fa fa-plus"></i> Add</a>
+        </div>
+        
+					</div>
+					<div class="table-responsive">
+				<table class="table" id="myTable">
+					<thead class="thead-light">
+						<tr>
+							<th>Workflow  ID</th>
+							<th>Rule name</th>
+                            <th>Object</th>
+                            <th>Criteria</th>
+                            <th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>	
+						<tr *ngFor="let approval of pagedItems">
+							<td>{{approval.aprvlWfSeq}}</td>
+							<td>{{approval.aprvlWfNm}}</td>
+                            <td>{{approval.aprvlWfSeq}}</td>
+                            <td>{{approval.aprvlWfRulStr}}</td>
+                            <td class="colorGreen">{{approval.aprvlWfStsKey}}</td>
+							<td>
+                            	<a routerLink="/setup/approval-workflow/add-workflow{{approval.aprvlWfSeq}}" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                                <a (click)="deleteItem(approval.aprvlWfSeq)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+								<a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+							</td>
+						</tr>
+                       
+						
+                       
+                        <!--<tr>
+							<td>4</td>
+							<td>Description will here</td>
+                            <td>Client</td>
+                            <td>Create Date = Current Date</td>
+                            <td class="colorRed">Disable</td>
+							<td>
+                            	<a routerLink="/setup/approval-workflow/add-workflow" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                                <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+								<a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+							</td>
+						</tr>-->
+					</tbody>
+				</table>
+			</div>
+			<nav aria-label="Page navigation ">
+				<ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+					<li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+					<a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+					</li>
+					<li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+					<a class="page-link" (click)="setPage(page)">{{page}}</a>
+					</li>
+					<li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+					<a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+					</li>
+				</ul>
+			</nav>	
+					
+                </div>
+			</div>
+		</div>
+	</div>
+</main>
+<app-footer></app-footer>

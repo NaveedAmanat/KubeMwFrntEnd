@@ -1,0 +1,270 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+
+            <div class="col-sm-6">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Sawari Loans
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <form [formGroup]="formControlFilter" (ngSubmit)="onFormSubmit()">
+                <div class="row">
+                <div class="col-sm-6">
+                <div *ngIf="disabledRegion">
+                  <ng-select *ngIf="auth.role != 'bdo' && auth.role != 'bm' && auth.role !='am' && auth.role != 'rm' && auth.role != 'ito' && auth.role != 'ra'"
+                    (change)="getArea($event)" [items]="allRegions" bindLabel="regNm" bindValue="regSeq" name="regNm"
+                    placeholder="Select Region:" formControlName="regSeq">
+                  </ng-select>
+                </div>
+    
+                <div *ngIf="disabledArea">
+                  <ng-select *ngIf="auth.role != 'bdo' && auth.role != 'bm' && auth.role !='am'"
+                    (change)="getBranch($event)" [items]="allAreas" bindLabel="areaNm" bindValue="areaSeq" name="areaNm"
+                    placeholder="Select Area:" formControlName="areaSeq">
+                  </ng-select>
+                </div>
+
+                <div *ngIf="disabledBranch">
+                  <ng-select *ngIf="auth.role != 'bdo' && auth.role != 'bm'" [items]="allBranches" bindLabel="brnchNm"
+                    bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:" formControlName="brnchSeq" (change)="fetchDetail($event)">
+                  </ng-select>
+                </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+          </div>
+
+          <div class="row clearfix">
+            <div class="col-sm-6">
+              <div class="cRow">
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="ApplyPayment" role="dialog">
+            <div class="modal-dialog mymodal bigger">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Vehicle Insurance Enrollment (Post Disbursement)</h5>
+                </div>
+                <form [formGroup]="vehicleInsrForm">
+                  <div class="modal-body">
+                    <div class="cRow">
+                      <div class="cCol2">
+                        <label>Owner Name <sup>*</sup></label>
+                        <input type="text"  formControlName="ownerNm" class="form-control" (keypress)="alpha($event)" [value]="setValue('ownerNm', ownerNm.value)"/>
+                        <div *ngIf="ownerNm.invalid && ownerNm.touched">
+                          <small class="text-danger" *ngIf="ownerNm.errors?.required">Owner Name is <strong> required </strong> </small>
+                          <small class="text-danger" *ngIf="ownerNm.errors?.maxlength">Exceeding Character limit <strong>{{ownerNm.errors?.maxlength.requiredLength}}</strong> </small> 
+                          <small class="text-danger" *ngIf="ownerNm.errors?.minlength">Under Character limit <strong>{{ownerNm.errors?.minlength.requiredLength}}</strong> </small>
+                        </div>
+                      </div>
+                      <div class="cCol2">
+                        <label>Maker of Vehicle <sup>*</sup></label>
+                        <select class="form-control" name="refCdVhclMakerSeq" formControlName="refCdVhclMakerSeq">
+                         <option *ngFor="let maker of vehicleMakers" [value]="maker.codeKey">{{maker.codeValue}}</option>
+                        </select>
+                      </div>
+                      <div class="cCol2">
+                        <label>Bike Color <sup>*</sup></label>
+                        <select class="form-control" name="vhcleColor" formControlName="vhcleColor">
+                          <option *ngFor="let color of vehicleColor" [value]="color.codeKey">{{color.codeValue}}</option>
+                        </select>
+                      </div>
+                      <div class="cCol2">
+                        <label>Model Year <sup>*</sup></label>
+                        <input type="text"  formControlName="vhcleModelYr" class="form-control" (keyup)="isVechicleYrValid($event)" (keypress)="alphaNumeric($event)" [attr.maxlength]="modelYrMaxLength" [value]="setValue('vhcleModelYr', vhcleModelYr.value)"/>
+                        <div *ngIf="vhcleModelYr.invalid && vhcleModelYr.touched">
+                          <small class="text-danger" *ngIf="vhcleModelYr.errors?.required">Model Year is <strong> required </strong> </small>
+                          <small class="text-danger" *ngIf="vhcleModelYr.errors?.pattern">Vehicle Model Year <strong> Invalid </strong>. e.g. 2022,2022A </small> 
+                          <small class="text-danger" *ngIf="vhcleModelYr.errors?.max">Vehicle Model Year should no be greater then <strong>{{vhcleModelYr.errors?.max.max}}</strong> </small> 
+                          <small class="text-danger" *ngIf="vhcleModelYr.errors?.min">Vehicle Model Year should no be smaller then <strong>{{vhcleModelYr.errors?.min.min}}</strong> </small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cRow">
+                      <div class="cCol2">
+                        <label>Vehicle Registration Number <sup>*</sup></label>
+                        <input type="text"  formControlName="vhcleRegtrnNo" class="form-control" (keypress)="alphaNumeric($event)" [attr.maxlength]="rgstrNumLength" [value]="setValue('vhcleRegtrnNo', vhcleRegtrnNo.value)"/>
+                      </div>
+                      <div class="cCol2">
+                        <label>Engine Number <sup>*</sup></label>
+                        <input type="text"  formControlName="engneNo" class="form-control" (keypress)="alphaNumeric($event)" [attr.maxlength]="engnNumLength" [value]="setValue('engneNo', engneNo.value)"/>
+                      </div>
+                      <div class="cCol2">
+                        <label>Engine Power cc <sup>*</sup></label>
+                        <select class="form-control" name="engnePwrCc" formControlName="engnePwrCc">
+                          <option *ngFor="let power of vehiclePower" [value]="power.codeKey">{{power.codeValue}}</option>
+                        </select>
+                      </div>
+                      <div class="cCol2">
+                        <label>Chassis Number <sup>*</sup></label>
+                        <input type="text"  formControlName="chassisNO" class="form-control" (keypress)="alphaNumeric($event)" [attr.maxlength]="chasisNumLength" [value]="setValue('chassisNO', chassisNO.value)"/>
+                      </div>
+                    </div>
+                    <div class="cRow">
+                      <div class="cCol2">
+                        <label>Insured Amount <sup>*</sup></label>
+                        <input type="text" disabled="readonly" formControlName="insurdAmt" class="form-control" (keypress)="onlyNumbers($event)"/>
+                        <div *ngIf="insurdAmt.invalid && insurdAmt.touched">
+                          <small class="text-danger" *ngIf="insurdAmt.errors?.required">Insured Amount is <strong> required </strong> </small> 
+                          <small class="text-danger" *ngIf="insurdAmt.errors?.pattern">Insured Amount 5 to 6 digits </small>
+                          <small class="text-danger" *ngIf="insurdAmt.errors?.min">Insured Amount should not be less then {{insurdAmt.errors?.min.min}} </small>
+                        </div>
+                      </div>
+                      <div class="cCol2" style="margin-top: 13px;">
+                          <mat-form-field>
+                            <input matInput required formControlName="prchseDt" [max]="maxDate" [min]="minDate" placeholder="Purchase Data"
+                              [matDatepicker]="picker2" disabled readonly />
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+                          </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button appNoDblClick [disabled]="!vehicleInsrForm.valid" type="button"
+                      class="btn btn-primary btn-min" (click)="onVehicleFormSubmit()">Add</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+           <!---- DATA TABLES---->
+
+           <div class="table-responsive mb-md-5">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+              <!-- Reference Region Column -->
+              <ng-container matColumnDef="clntId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client ID</th>
+                <td mat-cell *matCellDef="let element">{{element.clntSeq}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="loanAppSeq">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Credit ID</th>
+                <td mat-cell *matCellDef="let element">{{element.loanAppSeq}}</td>
+              </ng-container>
+
+              <!-- Branch Column -->
+              <ng-container matColumnDef="clntName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                <td mat-cell *matCellDef="let element">{{element.clntName}}</td>
+              </ng-container>
+
+              <!-- Account Column -->
+              <ng-container matColumnDef="ownerNm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Owner Name</th>
+                <td mat-cell *matCellDef="let element">{{element.ownerNm=='NA' ? '' : element.ownerNm}}</td>
+              </ng-container>
+
+              <!-- Amount Column -->
+              <ng-container matColumnDef="insurdAmt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Insured Amount</th>
+                <td mat-cell *matCellDef="let element">{{element.insurdAmt=='0' ? '' : (element.insurdAmt | currency:'PKR':'')}}</td>
+              </ng-container>
+
+              <!-- Expense Purpose Column -->
+              <ng-container matColumnDef="vhcleRegtrnNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Registration No. </th>
+                <td mat-cell *matCellDef="let element">{{element.vhcleRegtrnNo=='NA' ? '' : element.vhcleRegtrnNo}}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                <td mat-cell *matCellDef="let element">
+                  <ng-container>
+                     <span *ngIf="element.vhcleSeq==''" title="add Vehicle detail"><a  href="#" data-toggle="modal" (click)="onVehicleClick(element, false)"
+                      class="iconBtn"><i class="fa fa-car" aria-hidden="true"></i></a></span>
+
+                     <span *ngIf="!element.vhcleSeq==''" title="edit Vehicle detail"><a  href="#" data-toggle="modal" (click)="onVehicleClick(element, true)"
+                      class="iconBtn"><i class="fa fa-car" aria-hidden="true"></i></a></span>
+
+                      <span><a href="#" data-toggle="modal" (click)="onImageViewer(element, false)"
+                        class="iconBtn"><i class="fa fa-picture-o" aria-hidden="true"></i></a></span>
+                  </ng-container>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [length]="datalength"  [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+          <div class="modal fade" id="imageModel" role="dialog" >
+            <div class="modal-dialog fullpop mymodal">
+  
+              <!-- Modal content-->
+              <form>
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Vehicle Images</h5>
+                  </div>
+                  <div class="modal-body text-left">
+                    <div class="row">
+                      <div class="col-md-2" *ngFor="let img of imageDocuments">
+                        <img *ngIf="img.imageSrc" [src]="img.imageSrc" alt="" width="120px" height="110px" style="margin-bottom: 5px;" (click)="loadModal(img)" [title]="img.desc">
+                        <img *ngIf="!img.imageSrc" src="assets/images/picture.png" alt="" width="120px" height="110px" style="margin-bottom: 5px;" [title]="img.desc">
+                        <div class="caption1">
+                          <small><b>{{img.desc}}</b></small>
+                          <div>
+                            <div class="container" style="margin-top: 15px;">
+                              <button mat-button (click)="openFile(file)"><i class="fa fa-upload" aria-hidden="true"></i> Upload</button>
+                              <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+                              (change)="handle($event, img.id)">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div id="imageViewModel" class="modal1">
+                        <span (click)="closeModal()" class="close1">&times;</span>
+                         <img class="modal-content1" [src]="modelSrc">
+                         <div id="caption1">{{modalCaption}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+</main>

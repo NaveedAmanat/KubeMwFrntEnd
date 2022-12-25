@@ -1,0 +1,49 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-reports-leftside-bar></app-reports-leftside-bar>
+      </div>
+<div class="col-md-9">
+  <div class="content mb-md-5">
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="mysearchbox">
+          <h6 class="d-inline-block searchshow">Premium Data <i class="fa fa-print"> </i></h6>
+          <div class="mysearch">
+            <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..."
+              title="Type in a name">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <form [formGroup]="ngForm" (ngSubmit)="premiumData()">
+        <div class="cRow">
+          <div class="cCol8">
+            <mat-form-field >
+              <input matInput [matDatepicker]="dp" [formControl]="date" [max]="maxDate"  placeholder="To Date:" readonly disabled>
+              <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+              <mat-datepicker #dp required disabled="false"
+                              startView="multi-year"
+                              (yearSelected)="chosenYearHandler($event)"
+                              (monthSelected)="chosenMonthHandler($event, dp)"
+                              panelClass="example-month-picker">
+              </mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+    </div>
+</main>

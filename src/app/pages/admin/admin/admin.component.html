@@ -1,0 +1,231 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row clearfix">
+            <div class="col-sm-5" *ngIf="allTransfers?.length>0 || this.auth.role == 'bm'">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-6">
+             <div class="row">
+              <div class="col-sm-10">
+                <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                  <ng-select *ngIf="auth.role != 'bm'" [items]="branchs" required (change)="getAllTransferRecord($event)"
+                    bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+                    formControlName="branch">
+                  </ng-select>
+                </form>
+              </div>
+              <div class="col-sm-12">
+                <div class="row">
+                  <div class="col-sm-10">
+                    <form [formGroup]="portfolioForm" *ngIf="brnchPortfolio?.length > 0">
+                      <ng-select  [items]="brnchPortfolio" required (change)="filterByPortfolio($event)"
+                        bindLabel="portNm" bindValue="portSeq" name="portNm" placeholder="Select Portfolio"
+                        formControlName="portfolio">
+                      </ng-select>
+                    </form>
+                  </div>
+                  <div class="col-sm-2">
+                    <div class="col-sm-1 addBtn">
+                      <!-- *ngIf="allTransfersToUpdate.length=1" disabled="true" -->
+                      <button  class="btn btn-primary btn-sm"
+                        *ngIf="!checkBoxFlag && allTransfers?.length>0" (click)="transferAllPort()">All Clients</button>
+
+                      <button  class="btn btn-primary btn-sm"
+                        *ngIf="checkBoxFlag && allTransfers?.length>0" (click)="onEditClick(allTransfersToUpdate,'',allTransfersToUpdate[0])">Client</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+             </div>
+            </div>
+            <div class="col-sm-6" *ngIf="!brnchPortfolio?.length > 0 && isAdmin">
+              <button class="btn btn-primary btn-sm upload" (click)="openFile(file)">
+                <i class="fa fa-upload" aria-hidden="true"></i> Upload
+                <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+                  (change)="handle($event)">
+              </button>
+            </div>
+          </div>
+          <div class="modal fade" id="cmmoncodes" role="dialog">
+            <div class="modal-dialog mymodal bigger">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Transfer Client</h5>
+                </div>
+                <form [formGroup]="transferForm" (ngSubmit)="updatePortfolio(allTransfersToUpdate)">
+                  <div class="modal-body">
+                    <ul class="infolist mt-1 mb-1">
+                      <!--     
+                      <label ><li>Current Region: <span> {{transferForm.region}}</span></li></label>
+                      <label ><li> Current Area: <span> {{transferForm.area}}</span></li></label>
+                      <label ><li> Current Branch: <span> {{transferForm.branch}}</span></li></label>-->
+                    </ul>
+                    <h6 class="colorBlack mt-3 mb-0 small">Transfer to:</h6>
+                    <div class="cRow">
+                      <div class="cCol2  " *ngIf="isAdmin">
+                        <label>Select Region:</label>
+                        <select class="form-control" [disabled]="!isAdmin" name="regSeq" formControlName="regSeq"
+                          (change)="getArea()">
+                          <option value="0">Select</option>
+                          <option *ngFor="let reg of allRegions" [selected]="transferForm.region == reg.regNm"
+                            [value]="reg.regSeq">{{reg.regNm}}</option>
+                        </select>
+                      </div>
+                      <div class="cCol2" *ngIf="isAdmin">
+                        <label>Select Area:</label>
+                        <select class="form-control" [disabled]="!isAdmin" formControlName="area"
+                          (change)="getBranch()">
+                          <option>Select</option>
+                          <option *ngFor="let area of allAreas" [selected]="transferForm.area == area.areaNm"
+                            [value]="area.areaSeq">{{area.areaNm}}</option>
+                        </select>
+                      </div>
+                      <div class="cCol2" *ngIf="isAdmin">
+                        <label>Select Branch:</label>
+                        <select class="form-control" formControlName="branch" [disabled]="!isAdmin"
+                          (change)="getPortfolio()">
+                          <option>Select</option>
+                          <option *ngFor="let branch of allBranches" [selected]="transferForm.branch == branch.brnchNm"
+                            [value]="branch.brnchSeq">{{branch.brnchNm}}</option>
+                        </select>
+                      </div>
+                      <div class="cCol2">
+                        <label>Select Portfolio: </label>
+                        <select class="form-control" (change)="onSelectedIndexChanged()" formControlName="portfolio"
+                          name="portfolio">
+                          <option>Select</option>
+                          <option *ngFor="let port of allPortfolios" [value]="port.portSeq">{{port.portNm}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-primary btn-min" [disabled]="!transferForm.valid"
+                      (click)="updatePortfolio(allTransfersToUpdate)" >Transfer</button>
+                    <button type="button" class="btn btn-primary btn-min"
+                      data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="table-responsive">
+            <table class="table record" id="myTable">
+              <thead class="thead-blue thead-light">
+                <tr>
+                  <th>
+                    Client <a href="#" class="icon" data-toggle="tooltip" title="we will help you"><img
+                        src="assets/images/info_icon.png" alt=""></a></th>
+                  <th> Address <a href="#" class="icon" data-toggle="tooltip" title="we will help you"><img
+                        src="assets/images/info_icon.png" alt=""></a></th>
+                  <th>Branch <a href="#" class="icon" data-toggle="tooltip" title="we will help you"><img
+                        src="assets/images/info_icon.png" alt=""></a></th>
+                  <th>Portfolio <a href="#" class="icon" data-toggle="tooltip" title="we will help you"><img
+                        src="assets/images/info_icon.png" alt=""></a></th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let transfer of allTransfers">
+                  <td><input type="checkbox" class="check1" [(ngModel)]="transfer.ischecked"
+                      (change)="addTransfer(transfer, $event)">
+                    <a href="#" class="userImg"><img src="assets/images/user_img.png" alt="">
+                      <span>{{transfer.firstName}}
+                        <br><sup>{{transfer.clientId}}</sup></span>
+                    </a></td>
+                  <td>{{transfer.house_num}}</td>
+                  <td>{{transfer.branch}}</td>
+                  <td>{{transfer.portfolio}}</td>
+                  <td class="text-center">
+                    <div *ngIf="!checkBoxFlag" (click)="onEditClick(allTransfersToUpdate,'empty',transfer)"><a
+                        data-toggle="modal" data-target="#cmmoncodes" class="iconBtn"></a><img
+                        src="assets/images/icon4.png" alt="" /></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+              <!-- Client Column -->
+              <ng-container matColumnDef="firstName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+                <td mat-cell *matCellDef="let transfer">
+                  <input type="checkbox" class="check1" [(ngModel)]="transfer.ischecked"
+                    (change)="addTransfer(transfer, $event)">
+                  <a class="userImg"><img src="assets/images/user_img.png" alt="">
+                    <span>{{transfer.firstName}} {{transfer.lastName}}
+                      <br><sup>{{transfer.clntSeq}}</sup></span>
+                  </a></td>
+              </ng-container>
+
+              <!--Address Column -->
+              <ng-container matColumnDef="house_num">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>CNIC NO.</th>
+                <td mat-cell *matCellDef="let transfer">{{transfer.cnicNum}}</td>
+              </ng-container>
+
+              <!-- Branch Column -->
+              <ng-container matColumnDef="branch">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Branch</th>
+                <td mat-cell *matCellDef="let transfer">{{transfer.branch}}</td>
+              </ng-container>
+
+              <!-- Portfolio Column -->
+              <ng-container matColumnDef="portfolio">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Portfolio</th>
+                <td mat-cell *matCellDef="let transfer">{{transfer.portfolio}}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <!-- <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let transfer">
+                  <div *ngIf="!checkBoxFlag" (click)="onEditClick(allTransfersToUpdate,'empty',transfer)"><a
+                      data-toggle="modal" data-target="#cmmoncodes" class="iconBtn"></a><img
+                      src="assets/images/icon4.png" alt="" /></div>
+                </td>
+              </ng-container> -->
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [length]="datalength"  [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

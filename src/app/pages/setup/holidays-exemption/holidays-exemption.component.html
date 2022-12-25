@@ -1,0 +1,223 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+
+            <div class="col-sm-6">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Holidays
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput
+                        name="searchValue" [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" (click)="addNewRecord()">
+                <i class="fa fa-plus"></i> Add
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="openFile(file)">
+                <i class="fa fa-upload" aria-hidden="true"></i> Upload
+                <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+                  (change)="handle($event)">
+              </button>
+            </div>
+          </div>
+
+          <div class="row clearfix">
+            <div class="col-sm-6">
+              <div class="cRow">
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="holidayModel" role="dialog">
+            <div class="modal-dialog mymodal bigger">
+
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Holiday</h5>
+                </div>
+                <form [formGroup]="holidayForm">
+                  <div class="modal-body">
+                    <div class="cRow">
+                      <div class="cCol2">
+                        <label>Holiday Category <sup>*</sup></label>
+                        <select class="form-control" name="refCdHolidayCtgrySeq" formControlName="refCdHolidayCtgrySeq">
+                          <option *ngFor="let ctgry of holidayCtgryList" [value]="ctgry.codeKey">{{ctgry.codeValue}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="cCol2">
+                        <label>Holiday Type <sup>*</sup></label>
+                        <select class="form-control" name="refCdHolidayTypSeq" formControlName="refCdHolidayTypSeq">
+                          <option *ngFor="let typ of holidayTypList" [value]="typ.codeKey">{{typ.codeValue}}</option>
+                        </select>
+                      </div>
+                      <br/>
+                      <div class="cCol2">
+                        <mat-checkbox formControlName="mndtryFlg"><b> Mandentry</b></mat-checkbox>
+                      </div>
+                      <div class="cCol2">
+                        <mat-checkbox formControlName="calcPpalFlg"><b>Principal </b></mat-checkbox>
+                      </div>
+                    </div>
+                    <div class="cRow">
+                      <div class="cCol2" style="margin-top: 13px;">
+                        <mat-form-field>
+                          <input matInput required formControlName="holidayFrom" 
+                            placeholder="Holiday From" [matDatepicker]="holidayFrom" disabled readonly />
+                          <mat-datepicker-toggle matSuffix [for]="holidayFrom"></mat-datepicker-toggle>
+                          <mat-datepicker required #holidayFrom disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol2" style="margin-top: 13px;">
+                        <mat-form-field>
+                          <input matInput required formControlName="holidayTo" 
+                            placeholder="Holiday To" [matDatepicker]="holidayTo" disabled readonly />
+                          <mat-datepicker-toggle matSuffix [for]="holidayTo"></mat-datepicker-toggle>
+                          <mat-datepicker required #holidayTo disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                      <br/>
+                      <div class="cCol2">
+                        <mat-checkbox formControlName="calcScFlg"><b>Service Charges</b></mat-checkbox>
+                      </div>
+                      <div class="cCol2">
+                        <mat-checkbox formControlName="calcPrmiumFlg"><b>Permimum</b></mat-checkbox>
+                      </div>
+                    </div>
+
+                    <div class="cRow">
+                      <div class="cCol75">
+                        <label>Remarks</label>
+                        <textarea name="remarks" id="remarks" cols="100" rows="4" formControlName="remarks"></textarea>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button appNoDblClick 
+                    [disabled]="!holidayForm.valid" type="button" class="btn btn-primary btn-min"
+                      (click)="onHolidaysFormSubmit()">Add</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="table">
+
+              <!-- Reference Region Column -->
+              <ng-container matColumnDef="refCdHolidayCtgrySeq">
+                <th mat-header-cell *matHeaderCellDef>Holiday Category</th>
+                <td mat-cell *matCellDef="let element">{{findValueByKeyHolidayCtgry(element.refCdHolidayCtgrySeq)}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="refCdHolidayTypSeq">
+                <th mat-header-cell *matHeaderCellDef>Holiday Type</th>
+                <td mat-cell *matCellDef="let element">{{findValueByKeyHolidayTyp(element.refCdHolidayTypSeq)}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="holidayFrom">
+                <th mat-header-cell *matHeaderCellDef>Holiday From</th>
+                <td mat-cell *matCellDef="let element">{{element.holidayFrom | date:'mediumDate' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="holidayTo">
+                <th mat-header-cell *matHeaderCellDef>Holiday To</th>
+                <td mat-cell *matCellDef="let element">{{element.holidayTo | date:'mediumDate'}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="aprvdFlg">
+                <th mat-header-cell *matHeaderCellDef>Approved</th>
+                <td mat-cell *matCellDef="let element"> <mat-checkbox [checked]="element.aprvdFlg"></mat-checkbox> </td>
+              </ng-container>
+
+              <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                <td mat-cell *matCellDef="let element">{{element.remarks}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element">
+                  <ng-container *ngIf="!element.aprvdFlg">
+                    <a  class="iconBtn" (click)="onEdit(tag)"><i class="fa fa-pencil"></i></a>
+                    <a  class="iconBtn delBtn" (click)="onDelete(tag.tagsSeq)"><i class="fa fa-trash-o"></i></a>
+                  </ng-container>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+
+
+          <div class="modal fade" id="invalidRecords" role="dialog">
+            <form (ngSubmit)="addCityForm()" #cityForm="ngForm">
+              <div class="modal-dialog big mymodal">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Invalid Records</h5>
+                </div>
+                <form class="md-float-material">
+                  <div class="modal-body pb-1 pt-2">
+                    <div class="table-responsive">
+                      <table class="table mb-0 last-left">
+                        <thead class="thead-light last-left">
+                          <tr>
+                            <th>Sr.#</th>
+                            <th>Sr.#</th>
+                            <th>Warning</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let invalid of invalidLists; let i = index;">
+                            <td>{{invalidLists.length}}</td>
+                            <td>{{i+1}}</td>
+                            <td>{{invalid['warning']}}</td>
+                            <td>Invalid</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center pb-3">
+                    <button class="btn btn-primary" data-dismiss="modal">Ok</button>
+                  </div>
+                </form>
+              </div>
+              </div>
+            </form>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

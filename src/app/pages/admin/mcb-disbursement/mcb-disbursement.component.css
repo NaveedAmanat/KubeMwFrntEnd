@@ -1,0 +1,13 @@
+td.mat-cell {
+    text-align: center;
+    /* row border */
+    border-bottom: 1px solid #c0dee7;
+    border-top: 1px solid #c0dee7;
+    border-right: 1px solid #c0dee7;
+    border-left: 1px solid #c0dee7;
+}
+
+table {
+    /* row spacing / margin */
+    border-spacing: 0 8px !important;
+}

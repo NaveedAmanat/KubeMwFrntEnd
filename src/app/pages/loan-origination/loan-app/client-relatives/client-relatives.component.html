@@ -1,0 +1,299 @@
+<main class="main">
+    <div class="container-fluid">
+      <app-breadcrumb></app-breadcrumb>
+      <div class="content">
+        <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+  
+  
+        <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="nominee-tab" data-toggle="tab" href="#nominee" role="tab" aria-controls="home"
+              aria-selected="true">Client Relative Info</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="address-tab" data-toggle="tab" href="#addressTab" role="tab" aria-controls="addressTab"
+              aria-selected="false">Address</a>
+          </li>
+        </ul>
+        <form (ngSubmit)="onclientRelFormSubmit()" #clientRelForm="ngForm">
+  
+          <div class="tab-content borrowerTabsContent mb-md-5" id="borrowerTabsContent">
+            <div class="tab-pane fade show active" id="nominee" role="tabpanel" aria-labelledby="nominee-tab">
+              <!-- <div class="pt-1 pb-1">
+                <label>Client Relative Same as Nominee</label>
+                <br>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="sameAsBorrowerYes" name="sameAsBorrowerYes" class="custom-control-input"
+                         [(ngModel)]="model.clientRel.isSame" value="true">
+                  <label class="custom-control-label" for="sameAsBorrowerYes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="sameAsBorrowerNo" name="sameAsBorrowerNo" class="custom-control-input"
+                         [(ngModel)]="model.clientRel.isSame" value="false">
+                  <label class="custom-control-label" for="sameAsBorrowerNo">No</label>
+                </div>
+              </div> -->
+              <h6 class="colorBlack mt-2 mb-2">Client Relative Detail</h6>
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" (keyup)="cnicPattern($event, 'clientRel')" maxlength="15" required pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$"
+                      id="cobCNIC" name="cobCNIC" matInput [disabled]="readonly || true" placeholder="CNIC" minlength="15" #cobCNIC="ngModel"
+                      [errorStateMatcher]="matcher" [(ngModel)]="cnicPatternObj.cobCNIC">
+                    <mat-error *ngIf="cobCNIC.invalid">
+                      cnic number is
+                      <strong>invalid</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput required [matDatepicker]="picker2" placeholder="CNIC Issue Date"
+                      (dateChange)="onExpChange(model.clientRel.cnicIssueDate)" name="cnicIssueDate" [(ngModel)]="model.clientRel.cnicIssueDate"
+                      [disabled]="!hasPermission">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker startView="year" [disabled]="!hasPermission" #picker2></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input matInput [disabled]="!hasPermission" [min]="now" name="Expiry" id="cnicExpryDate" [(ngModel)]="model.clientRel.cnicExpryDate"
+                      placeholder="CNIC Expiry Date" [matDatepicker]="picker1" #cnicExpryDate="ngModel">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker startView="year" #picker1 [disabled]="!hasPermission"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <button class="velBtn" type="button" *ngIf="!validated" [disabled]="cobCNIC.invalid || cnicExpryDate.invalid" (click)="validate()">Validate
+                    with KASHF</button>
+                </div>
+              </div>
+              <div *ngIf="validated">
+                <div class="cRow">
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyLetters($event)" required matInput [readonly]="readonly && !hasPermission" id="firstName" #firstName="ngModel"
+                        pattern="([a-zA-Z ]{3,30}\s*)+" [errorStateMatcher]="matcher" name="firstName" [(ngModel)]="model.clientRel.firstName"
+                        placeholder="First Name">
+                      <mat-error *ngIf="firstName.invalid">
+                        first name is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyLetters($event)" id="lastName" name="lastName" #lastName="ngModel"
+                        pattern="([a-zA-Z ]{3,30}\s*)+" [errorStateMatcher]="matcher" [(ngModel)]="model.clientRel.lastName"
+                        placeholder="Last Name" matInput [readonly]="readonly && !hasPermission">
+                      <mat-error *ngIf="lastName.invalid">
+                        last name is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <!-- <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" id="fatherFirstName" name="fatherFirstName" [(ngModel)]="model.clientRel.fatherFirstName" placeholder="Father First Name"
+                      matInput>
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" id="fatherLastName" name="fatherLastName" [(ngModel)]="model.clientRel.fatherLastName" placeholder="Father Last Name"
+                      matInput>
+                  </mat-form-field>
+                </div> -->
+                  <div class="cCol1 ">
+                    <mat-form-field>
+                    
+                        <input matInput [disabled]="readonly && !hasPermission" (keypress)="onlyNumbers($event)" type="text" required maxlength="11"
+                        [(ngModel)]="model.clientRel.phone" id="phone" name="phone" placeholder="Phone No."
+                        pattern="^[0-9]{11}$" [errorStateMatcher]="matcher" #phone="ngModel">
+                      <mat-error *ngIf="phone.invalid">
+                        phone is
+                        <strong>invalid</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field> <!-- [max]="eightenYearsBefore"  [min]="minDobYear"-->
+                      <input matInput [readonly]="readonly && !hasPermission" required name="dob" [matDatepicker]="picker3" [max]="eightenYearsBefore" 
+                      (dateChange)="onDOBChange(model.clientRel.dob)" placeholder="Date of birth" [value]="date.value" [(ngModel)]="model.clientRel.dob" >
+                      <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                      <mat-datepicker startView="multi-year" #picker3 [disabled]="!hasPermission"></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1 ">
+                    <mat-form-field>
+                      <input matInput [readonly]="readonly" type="text" readonly disabled [(ngModel)]="age" id="age" name="age" placeholder="Age">
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Gender" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                        [(ngModel)]="model.clientRel.genderKey" name="genderKey" required>
+                        <mat-option *ngFor="let edu of gender" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="gender" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Gender"
+                    [(ngModel)]="model.clientRel.genderKey">
+                  </ng-select> -->
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Occupation" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                        [(ngModel)]="model.clientRel.occupationKey" name="occupationKey" required>
+                        <mat-option *ngFor="let edu of occupation" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="occupation" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Occupation"
+                    [(ngModel)]="model.clientRel.occupationKey"></ng-select> -->
+                  </div>
+  
+                </div>
+                <div class="cRow">
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Relation" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                        [(ngModel)]="model.clientRel.relationKey" name="relationKey" required>
+                        <mat-option *ngFor="let edu of relationType" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="relationType" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Relationship with Client"
+                    [(ngModel)]="model.clientRel.relationKey"></ng-select> -->
+                  </div>
+                  <div class="cCol1">
+                    <mat-form-field>
+                      <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Marital Status" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                        [(ngModel)]="model.clientRel.maritalStatusKey" name="maritalStatusKey" required>
+                        <mat-option *ngFor="let edu of maritalStatus" [value]="edu.codeKey">
+                          {{edu.codeValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <ng-select [items]="maritalStatus" required bindLabel="codeValue" bindValue="codeKey" name="codeValue" placeholder="Select Marital Status"
+                    [(ngModel)]="model.clientRel.maritalStatusKey"></ng-select> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="addressTab" role="tabpanel" aria-labelledby="address-tab">
+              <div class="cRow">
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="province" name="province" [(ngModel)]="model.clientRel.provinceName"
+                      readonly placeholder="Province">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input required matInput readonly id="district" name="district" [(ngModel)]="model.clientRel.districtName"
+                      readonly placeholder="District">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="tehsil" name="tehsil" [(ngModel)]="model.clientRel.tehsilName"
+                      readonly placeholder="Tehsil">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="uc" name="uc" [(ngModel)]="model.clientRel.ucName" readonly
+                      placeholder="UC">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 ">
+                  <mat-form-field>
+                    <input matInput readonly required id="city" name="city" [(ngModel)]="model.clientRel.cityName"
+                      readonly placeholder="City">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1 mt-3">
+                  <button [disabled]="readonly && !hasPermission" type="button" class="btn btn-dots" data-toggle="modal" data-target="#Location"></button>
+                </div>
+              </div>
+  
+              <div class="cRow">
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="houseNum" required name="houseHum" [(ngModel)]="model.clientRel.houseNum"
+                      matInput [disabled]="readonly && !hasPermission" placeholder="House Number">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="street" required name="street" [(ngModel)]="model.clientRel.sreet_area"
+                      matInput [disabled]="readonly && !hasPermission" placeholder="Street/Area">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" value="" id="village" required name="village" [(ngModel)]="model.clientRel.village"
+                      matInput [disabled]="readonly && !hasPermission" placeholder="Village">
+                  </mat-form-field>
+                </div>
+                <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" id="other" name="other" required [(ngModel)]="model.clientRel.otherDetails"
+                      matInput [disabled]="readonly && !hasPermission" placeholder="Other Details">
+                  </mat-form-field>
+                </div>
+              </div>
+  
+            </div>
+          </div>
+  
+          <button (click)="continueClicked()" [disabled]="!formSaved" type="button" class="btn btn-primary">Continue</button>
+          <button class="btn btn-default" [disabled]="readonly && !hasPermission"  type="submit">Save</button>
+        </form>
+        <div class="modal fade" id="Location" role="dialog">
+          <div class="modal-dialog bigger mymodal">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Location </h5>
+              </div>
+              <div class="modal-body">
+                <div class="table-responsive">
+                  <table class="table last-left">
+                    <thead class="thead-light last-left">
+                      <tr>
+                        <th>Province</th>
+                        <th>District</th>
+                        <th>Tehsil</th>
+                        <th width="20%">UC</th>
+                        <th>City</th>
+                        <th>Select</th>
+                      </tr>
+                    </thead>
+                    <tbody class="evenodd">
+                      <tr *ngFor="let address of addresses">
+                        <td>{{address.provinceName}} </td>
+                        <td>{{address.districtName}}</td>
+                        <td>{{address.tehsilName}}</td>
+                        <td>{{address.ucName}}</td>
+                        <td>{{address.cityName}}</td>
+                        <td>
+                          <button data-dismiss="modal" type="button" class="btn btn-primary btn-min" (click)="selectAddress(address)">Select</button>
+                        </td>
+                      </tr>
+  
+                    </tbody>
+                  </table>
+                </div>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>

@@ -1,0 +1,229 @@
+<main class="main nomargin">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="leftSideBar mt-sm-4">
+          <h6><i class="fa fa-sliders fa-lg"></i> Filter</h6>
+          <div class="filtersWrap">
+            <div class="filter nofilter">
+              <a href="#." class="sidetitle">Recent Activity</a>
+              <div class="acc_container">
+                <ul class="moreless">
+                  <li>Client On Boarding (John Smith)</li>
+                  <li>Disbursement (Credit ID)</li>
+                  <li>Client On Boarding (John Smith)</li>
+                  <li>Disbursement (Credit ID)</li>
+                  <li>Client On Boarding (John Smith)</li>
+                  <li>Disbursement (Credit ID)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="filter nofilter mb-3">
+              <a href="#." class="sidetitle">Favorites</a>
+              <div class="acc_container">
+                <ul>
+                  <li>Daily Closing Report</li>
+                  <li>Accounts Ledger</li>
+                  <li>Funds Statement</li>
+                </ul>
+              </div>
+            </div>
+
+            <button class="btn btn-primary"> <i class="fa fa-plus"></i> Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="content dashboard-wrap mb-md-5">
+          <div class="board-head">
+            <div class="row">
+              <div class="col-sm-8">
+                <div class="title-Dashboard">
+                  <h1>Dashboard</h1>
+                  <span class="subtitle"></span>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="timerbox">
+                  {{now | date:'h:mm:ss'}} <sub>{{now | date:'a'}}</sub>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 pb-3">
+            <div class="custom-control custom-radio bidradio custom-control-inline">
+              <input type="radio" id="weekly" checked name="coBorrower" class="custom-control-input">
+              <label class="custom-control-label" for="weekly">Weekly</label>
+            </div>
+            <div class="custom-control custom-radio bidradio custom-control-inline">
+              <input type="radio" id="monthly" name="coBorrower" class="custom-control-input">
+              <label class="custom-control-label" for="monthly">Monthly</label>
+            </div>
+          </div>
+
+          <div class="info-bloks">
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="dashboard-info">
+                  <div class="board-box">
+                    <h3> 08</h3>
+                    <p class="m-0">Target</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="dashboard-info">
+                  <div class="board-box purple-bg">
+                    <h3> 03</h3>
+                    <p class="m-0">Achieved</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="dashboard-info">
+                  <div class="board-box darkgreen-bg">
+                    <h3>10</h3>
+                    <p class="m-0">Will Be Completed</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <h6>Tasks</h6>
+            <table class="table">
+              <thead class="thead-light">
+              <tr>
+                <th>Task</th>
+                <th>Owner</th>
+                <th>Due Date</th>
+                <th>Completion Date</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let task of tasks">
+                <td>{{task.name}}</td>
+                <td>{{task.owner}} </td>
+                <td>{{task.dueDate}}</td>
+                <td>{{task.completionDate}}</td>
+                <td>{{task.description}}</td>
+                <td ngClass="{{statusColors.get(task.status)}}" >{{task.status}}</td>
+                <td>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <td>Disburse</td>
+                <td>MUMTAZ</td>
+                <td>3/31/2018</td>
+                <td></td>
+                <td>Discription will here</td>
+                <td class="colorBrown">On Hold</td>
+                <td>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <td>Credit No.</td>
+                <td>SUGHRAN</td>
+                <td>3/31/2018</td>
+                <td></td>
+                <td>Discription will here</td>
+                <td class="colorRed">Overdue</td>
+                <td>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <td>Client</td>
+                <td>Abida </td>
+                <td>3/31/2018</td>
+                <td>3/31/2018</td>
+                <td>Discription will here</td>
+                <td class="colorGreen">Active</td>
+                <td>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <td>Disburse</td>
+                <td>SOBIA</td>
+                <td>3/31/2018</td>
+                <td></td>
+                <td>Discription will here</td>
+                <td class="colorPurple">Inprogress</td>
+                <td>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <td>Credit No.</td>
+                <td>MUSSARAT</td>
+                <td>3/31/2018</td>
+                <td></td>
+                <td>Discription will here</td>
+                <td class="colorRed">Overdue</td>
+                <td>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <td>Client</td>
+                <td>Nabila </td>
+                <td>3/31/2018</td>
+                <td></td>
+                <td>Discription will here</td>
+                <td class="colorRed">Overdue</td>
+                <td>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn"><i class="fa fa-history"></i></a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <nav aria-label="Page navigation ">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">4</a></li>
+              <li class="page-item"><a class="page-link" href="#">5</a></li>
+              <li class="page-item"><a class="page-link" href="#">6</a></li>
+              <li class="page-item"><a class="page-link" href="#">7</a></li>
+              <li class="page-item"><a class="page-link" href="#">8</a></li>
+              <li class="page-item"><a class="page-link" href="#">9</a></li>
+              <li class="page-item"><a class="page-link" href="#">10</a></li>
+              <li class="page-item"><a class="page-link" href="#">11</a></li>
+              <li class="page-item"><a class="page-link" href="#">12</a></li>
+              <li class="page-item"><a class="page-link" href="#">13</a></li>
+              <li class="page-item"><a class="page-link" href="#">14</a></li>
+              <li class="page-item"><a class="page-link" href="#">15</a></li>
+              <li class="page-item"><a class="page-link" href="#">16</a></li>
+              <li class="page-item"><a class="page-link" href="#">17</a></li>
+              <li class="page-item"><a class="page-link" href="#">18</a></li>
+              <li class="page-item"><a class="page-link" href="#">19</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

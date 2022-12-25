@@ -1,0 +1,30 @@
+tr.mat-header-row {
+    height: 0px;
+}
+
+tr.mat-row {
+  height: 0px;
+}
+
+.mat-cell, .mat-header-cell {
+  font-size: 14px;
+}
+
+.mat-cell, .mat-footer-cell {
+  font-size: 13px;
+}
+table {
+  width: 100%;
+}
+
+td,
+th {
+  width: 27%;
+}
+
+.upload{
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  transform: translate(-50%, -50%);
+}

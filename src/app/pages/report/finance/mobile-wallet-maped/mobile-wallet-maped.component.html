@@ -1,0 +1,27 @@
+<div class="col-md-12">
+  <div class="content">
+    <div class="mysearchbox">
+      <h6 class="d-inline-block searchshow">Mobile Wallet Mapped Branches</h6>
+      <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+      </div>
+    </div>
+    <form class="md-float-material" [formGroup]="ngForm" (ngSubmit)="print()">
+    <div class="cRow">
+      <div class="cCol6-col">
+        <ng-select [items]="walletMode" required
+         bindLabel="typStr" bindValue="typId" name="typStr" placeholder="Select Wallet Mode"
+         formControlName="mode">
+       </ng-select>
+        <mat-radio-group formControlName="isXls">
+          <mat-radio-button value="1">Excel </mat-radio-button>
+          <mat-radio-button class="ml-3" checked value="0">PDF </mat-radio-button>
+        </mat-radio-group>
+        </div>
+    </div>
+      <div class="cRow">
+        <button type="submit" class="btn btn-primary">Print</button>
+      </div>
+      </form>
+  </div>
+</div>

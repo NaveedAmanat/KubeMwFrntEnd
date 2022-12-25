@@ -1,0 +1,100 @@
+<main class="main">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <app-left-side-bar></app-left-side-bar>
+        </div>
+        <div class="col-md-9">
+          <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Questionnaire
+                  <!-- <i class="fa fa-search"></i> -->
+                </h6>
+                <div class="mysearch">
+                  <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                   <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..." title="Type in a name">
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#businessector" (click)="onAddNewClick()"><i class="fa fa-plus"></i> Add</button>
+            </div> -->
+            <div class="modal fade" id="businessector" role="dialog">
+              <div class="modal-dialog big mymodal"> 										
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Questionnaire</h5>
+                  </div>
+                  <form [formGroup]="questionnaireForm" (ngSubmit)="addQuestionnaireSubmit()">
+                  <div class="modal-body">
+                  <ul class="infolist">
+                  </ul>
+                    <div class="cRow">
+                        <div class="cCol2">
+                            <label>Questionnaire Name:</label>
+                            <input type="text" formControlName="qstnrNm" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.qstnrNm.errors }" />
+                            <div *ngIf="submitted && form.qstnrNm.errors" class="invalid-feedback">
+                                <div *ngIf="form.qstnrNm.errors.required">Questionnaire Name is required</div>
+                            </div>
+                          </div>     
+
+                        <div class="cCol2">
+                            <label>Status:</label>
+                            <select type="" formControlName="qstnrStsKey" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.qstnrStsKey.errors }">
+                                <option *ngFor="let status of statusArray" [value]="status.codeKey" >{{status.codeValue}}</option>
+                              </select>
+                            <div *ngIf="submitted && form.qstnrStsKey.errors" class="invalid-feedback">
+                                <div *ngIf="form.qstnrStsKey.errors.required">Status is required</div>
+                            </div>
+                          </div>
+            </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                      <button type="button" class="btn btn-primary btn-min" (click)="addQuestionnaireSubmit()">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+              </div>
+            </div>
+          </div>
+            <div class="table-responsive">
+          <table class="table" id="myTable">
+            <thead class="thead-light">
+              <tr>
+                <th>Questionnaire ID</th>
+                <th>Questionnaire Name</th>
+                <th>Questions</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+  </thead>
+  <tbody>	
+    <tr *ngFor="let questionnaire of questionnaires">
+      <td>{{questionnaire.qstnrId}}</td> 
+      <td>{{questionnaire.qstnrNm}}</td>
+      <td><a  [routerLink]="['/setup/question']" (click)="onClick(questionnaire.qstnrSeq)"><span class="qbtn">&nbsp;</span></a></td>
+      
+      <td>{{findValueByKey(questionnaire.qstnrStsKey)}}</td>
+      <td>						
+        <a  class="iconBtn" (click)="onEdit(questionnaire)"><i class="fa fa-pencil"></i></a>
+        <a  class="iconBtn delBtn" (click)="onDelete(questionnaire.qstnrSeq)"><i class="fa fa-trash-o"></i></a>
+        <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+      </td>
+    </tr>
+  </tbody>
+  </table>
+        </div>	
+        <!-- <div class="back">
+          <a href="setup.html" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+        </div> -->
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>

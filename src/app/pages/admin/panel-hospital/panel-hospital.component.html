@@ -1,0 +1,297 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <!-- Search bar -->
+            <div class="col-sm-5">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer">
+                  Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float: left">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float: right">
+                    <button class="btn btn-primary btn-lg" type="submit">
+                      Search
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- Buttons -->
+            <div class="col-sm-7 addBtn" *ngIf="auth.role != 'bm'">
+              <button class="btn btn-primary btn-sm" (click)="addNewPanelHospital()">
+                <i class="fa fa-plus"></i> Add
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="manageHospitalInfo()">
+                <i class="fa fa-edit"></i> Manage Hospitals
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="deleteAllPanelHospitals()">
+                Delete All
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="openFile(file)">
+                <i class="fa fa-upload" aria-hidden="true"></i> Upload
+                <input type="file" style="display:none" #file multiple="false" (click)="inputClear($event)"
+                  (change)="handle($event)">
+              </button>
+            </div>
+            <div class="modal fade" id="AdvanceRules" role="dialog">
+              <div class="modal-dialog bigger mymodal" style="max-width: 60%; top: 2%; min-height: 50%">
+                <!-- Modal content -->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" *ngIf="!isEdit">Add Hospital</h5>
+                    <h5 class="modal-title" *ngIf="isEdit">Edit Hospital</h5>
+                  </div>
+                  <form [formGroup]="PnlHsptlForm" (ngSubmit)="onSubmit()">
+                    <div class="modal-body">
+                      <ul class="infolist">
+                      </ul>
+                      <div class="cRow">
+                        <div class="cCol3" *ngIf="disableb">
+                          <label>Mapped Kashf Branch</label>
+                          <input type="text" formControlName="brnchNm" disabled="true" class="form-control" />
+                        </div>
+
+                        <div class="cCol3" *ngIf="disableh">
+                          <label>Panel Hospital</label>
+                          <input type="text" formControlName="hsptlsNm" disabled="true" class="form-control" />
+                        </div>
+
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol3" *ngIf="vbrnchs">
+                          <ng-select 
+                            [items]="branchs" bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm"
+                            placeholder="Select Branch:" formControlName="brnchSeq"
+                            [ngClass]="{ 'is-invalid': submitted && form.brnchSeq?.errors }">
+                          </ng-select>
+                          <div *ngIf="submitted && form.brnchSeq?.errors" class="invalid-feedback">
+                            <div *ngIf="form.brnchSeq?.errors.required">Mapped Kashf Branch Required</div>
+                          </div>
+                        </div>
+                        <div class="cCol3" *ngIf="vhsptls">
+                          <ng-select
+                            *ngIf="vbrnchs && vhsptls && vrel && !vhsptlform"
+                            [items]="nbhospitals" bindLabel="hsptlsNm" bindValue="id" name="hsptlsNm"
+                            placeholder="Select Hospital:" formControlName="hsptlsId"
+                            [ngClass]="{ 'is-invalid': submitted && form.hsptlsId.errors }" (change)="onChange()">
+                          </ng-select>
+                          <ng-select
+                            *ngIf="((!vbrnchs && !vhsptls && vrel && !vhsptlform) || (!vrel && vhsptlform))"
+                            [items]="hospitals" bindLabel="hsptlsNm" bindValue="id" name="hsptlsNm"
+                            placeholder="Select Hospital:" formControlName="hsptlsId"
+                            [ngClass]="{ 'is-invalid': submitted && form.hsptlsId.errors }" (change)="onChange()">
+                          </ng-select>
+                          <div *ngIf="submitted && form.hsptlsId.errors" class="invalid-feedback">
+                            <div *ngIf="form.hsptlsId.errors.required">Panel Hospital Required</div>
+                          </div>
+
+                        </div>
+
+                        <div class="cCol2" *ngIf="vadd">
+                          <button (click)="CreateNew()" class="iconBtn" style="vertical-align: middle; border: none;">
+                            <i class="fa fa-plus"></i>
+                          </button>
+                        </div>
+
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol2" *ngIf="!vbrnchs && !vrel && vhsptlform">
+                          <label for="cb" style="display: inline-block;">
+                            <input type="checkbox" name="cb" id="cb" (click)="changeChecked($event)"
+                              style="vertical-align: middle;"/>
+                            &nbsp;
+                            <span style="vertical-align: middle;">New Hospital</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div style="background-color: whitesmoke; width: auto; margin: 0px auto;">
+                        <div style="width: 98%; margin: 0px auto;">
+                          <div class="cRow" *ngIf="vhsptlform">
+                            <div class="cCol3">
+
+                              <label>Name</label>
+                              <input type="text" formControlName="hsptlsNm" (keypress)="onlyAlphaNumeric($event)"
+                                maxlength="50" class="form-control"
+                                [ngClass]="{ 'is-invalid': submitted && form.hsptlsNm.errors }" />
+                              <div *ngIf="submitted && form.hsptlsNm.errors" class="invalid-feedback">
+                                <div *ngIf="form.hsptlsNm.errors.required">Hospital Name Required</div>
+                              </div>
+                            </div>
+                            <div class="cCol3">
+                              <label>Phone No.</label>
+                              <input type="text" formControlName="hsptlsPh" (keypress)="onlyNumbers($event)"
+                                class="form-control" maxlength="100" />
+                                <small id="phoneHelp" class="form-text text-muted">e.g. 042-8599250, 32155674</small>
+                            </div>
+                            <div class="cCol2" *ngIf="vclose">
+                              <a (click)="CancelNew()" href="javascript:void(0);" class="iconBtn">
+                                <i class="fa fa-close"></i>
+                              </a>
+                            </div>
+                          </div>
+                          <div class="cRow" *ngIf="vhsptlform">
+                            <div class="cCol7">
+                              <label>Address</label>
+                              <textarea type="text" formControlName="hsptlsAddr" (keypress)="onlyAlphaNumeric($event)"
+                                maxlength="100" class="form-control"
+                                [ngClass]="{ 'is-invalid': submitted && form.hsptlsAddr.errors }">
+                          </textarea>
+                              <div *ngIf="submitted && form.hsptlsAddr.errors" class="invalid-feedback">
+                                <div *ngIf="form.hsptlsAddr.errors.required">Address Required</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="cRow" *ngIf="vhsptlform">
+                            <div class="cCol3">
+                              <ng-select [items]="hospitalTypes" bindValue="codeKey" name="hsptlsTypSeq"
+                                bindLabel="codeValue" placeholder="Hospital Type" formControlName="hsptlsTypSeq"
+                                [ngClass]="{ 'is-invalid': submitted && form.hsptlsTypSeq.errors }">
+                              </ng-select>
+                              <div *ngIf="submitted && form.hsptlsTypSeq.errors" class="invalid-feedback">
+                                <div *ngIf="form.hsptlsTypSeq.errors.required">Hospital Type Required</div>
+                              </div>
+                            </div>
+                            <div class="cCol3">
+                              <ng-select [items]="hospitalStatuses" bindValue="codeKey" name="hsptlsStsSeq"
+                                bindLabel="codeValue" placeholder="Hospital Status" formControlName="hsptlsStsSeq"
+                                [ngClass]="{ 'is-invalid': submitted && form.hsptlsStsSeq.errors }">
+                              </ng-select>
+                              <div *ngIf="submitted && form.hsptlsStsSeq.errors" class="invalid-feedback">
+                                <div *ngIf="form.hsptlsStsSeq.errors.required">Hospital Status Required</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="cRow" *ngIf="vrel">
+                        <div class="cCol2">
+                          <label>Distance from KF (in km)</label>
+                          <input type="text" formControlName="distance" placeholder="0000.00" maxlength="7"
+                            (keypress)="onlyDecimalNumbers($event)" 
+                            class="form-control" [ngClass]="{ 'is-invalid': submitted && form.distance.errors }" />
+                            <small id="distanceHelp" class="form-text text-muted">e.g. 5049.25</small>
+                            <div *ngIf="submitted && form.distance.errors" class="invalid-feedback">
+                            <div *ngIf="form.distance.errors.required">Distance Required</div>
+                            <div *ngIf="form.distance.errors.pattern">Incorrect Format</div>
+                          </div>
+                        </div>
+                        <div class="cCol4">
+                          <label>Remarks</label>
+                          <input type="text" formControlName="remarks" (keypress)="onlyAlpha($event)"
+                            class="form-control" maxlength="50" />
+                        </div>
+                      </div>
+
+
+                      <div class="modal-footer text-center">
+                        <button type="submit" class="btn btn-primary btn-min">Ok</button>
+                        <button *ngIf="bdel" type="button" class="btn btn-primary btn-min"
+                          (click)="deleteHospital()">Delete</button>
+                        <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-responsive mb-md-5">
+            <table class="table" id="myTable" mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows
+              matSort>
+              <!-- Reference Id Column -->
+              <ng-container matColumnDef="relId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr. No.</th>
+                <td mat-cell *matCellDef="let hsp; let i = dataIndex ">{{ (paginatorRef.pageIndex *
+                  paginatorRef.pageSize) + (i + 1) }}</td>
+              </ng-container>
+              <!-- renderIndex -->
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="brnchNm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Branch Name</th>
+                <td mat-cell *matCellDef="let hsp" class="text-center">{{hsp.brnchNm}}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="hsptlsNm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Hospital Name</th>
+                <td mat-cell *matCellDef="let hsp">{{ hsp.hsptlsNm }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="hsptlsAddr">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="">Address</th>
+                <td mat-cell *matCellDef="let hsp">{{ hsp.hsptlsAddr }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="hsptlsPh">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone No.</th>
+                <td mat-cell *matCellDef="let hsp">{{ hsp.hsptlsPh }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="distance">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Distance from KF</th>
+                <td mat-cell *matCellDef="let hsp" class="text-center">{{ hsp.distance }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="hsptlsSts">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Hospital Status</th>
+                <td mat-cell *matCellDef="let hsp" class="text-center">{{ hsp.hsptlsSts }}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action" >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Action</th>
+                <td mat-cell *matCellDef="let hsp" class="text-center">
+                  <div *ngIf="auth.role != 'bm'">
+                    <!-- Edit button -->
+                    <a (click)="onEditPanelHospital(hsp)" href="javascript:void(0);" class="iconBtn"><i
+                        class="fa fa-pencil"></i></a>
+                    <a (click)="onDeleteRel(hsp.relId)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator #paginatorRef [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+<script>
+  $(".searchshow").click(function () {
+    $(".mysearchbox").addClass("intro");
+  });
+  $(".remove-search").click(function () {
+    $(".mysearchbox").removeClass("intro");
+  });
+</script>

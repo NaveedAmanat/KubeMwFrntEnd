@@ -1,0 +1,62 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+      <h6 class="mt-3">Products</h6>
+      <div class="pt-1">
+        <label>Select Form:</label>
+      </div>
+
+      <div class="checkbox mb-1" *ngFor="let form of allFormsAssignment">
+        <mat-checkbox class="example-margin"
+                      name="selfPDC"
+                      (change)="openOrderModal(form)"
+                      [(ngModel)]="form.ischecked">{{form.formNm}}</mat-checkbox>
+
+
+                      
+                      <input *ngIf="form.ischecked " matInput type="text" (keypress)="onlyNumbers($event, form)" style=" margin-left: 1%; width: 3%; "   required [(ngModel)]="form.formSortOrdr" id="order" name="order"
+                    placeholder="Order" >
+
+                    <button *ngIf="form.ischecked && !form.isSaved" type="button" class="btn btn-primary btn-min" (click)="updateFromAssignment(form)" style=" margin-left: 2%; border-radius: 20px; min-width: 2px !important; ">Save</button>
+      </div>
+
+      <div class="mt-5">
+        <button routerLink="/setup/addProduct/documents-assignment" class="btn btn-primary btn-min" >Continue</button>
+        <!-- <button class="btn btn-default" (click)="onSave()">Save</button> -->
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- <div class="modal fade" id="setorder" role="dialog">
+    <div class="modal-dialog mymodal">
+      <div class="modal-content">
+        <form (ngSubmit)="updateFromAssignment(form)" #addInsuranceMemberForm="ngForm">
+          <div class="modal-header">
+            <h5 class="modal-title">Set Form Sort Order</h5>
+          </div>
+          <div class="modal-body">
+            <div class="cRow">
+              <div class="cCol2">
+                <mat-form-field>
+                  <input matInput type="text" (keypress)="onlyNumbers($event)" required [(ngModel)]="form.sortOrder" id="order" name="order"
+                    placeholder="Name" >
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="submit" class="btn btn-primary btn-min" >Ok</button>
+            <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()" data-dismiss="modal">Cancel</button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> -->
+
+
+
+</main>

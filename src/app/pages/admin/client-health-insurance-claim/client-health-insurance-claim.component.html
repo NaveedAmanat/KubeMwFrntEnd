@@ -1,0 +1,224 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <!-- <div class="mysearchbox">
+            <h6 class="d-inline-block searchshow">KSZB Claims <i class="fa fa-search"> </i></h6>
+            <div class="mysearch"> <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+              <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."
+                title="Type in a name">
+            </div>
+          </div> -->
+
+          <div class="row">
+            <div class="col-sm-4" *ngIf="clientHealthInsuranceClaims?.length>0 || this.auth.role == 'bm'">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <!-- Modified by Zohaib Asim - Dated 24-12-2020 - KSZB Claims to Health Claims -->
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Health Claims
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Added by Zohaib Asim - Dated 16-12-2020 -->
+            <!-- Claim Type selection -->
+            <div class="col-sm-4">
+              <form [formGroup]="hlthClmTypeForm" (ngSubmit)="onSubmitBranchForm()">
+                <ng-select [items]="hlthClmTypes" required (change)="onSelectHlthClmType($event)"
+                  bindLabel="refCdDscr" bindValue="refCd" name="refCdDscr" placeholder="Select Claim Type:"
+                  formControlName="hlthClmType">
+                </ng-select>
+              </form>
+            </div>
+            <!-- End by Zohaib Asim -->
+
+            <div class="col-sm-4">
+              <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                <ng-select *ngIf="auth.role != 'bm'" [items]="branchs" required (change)="onSelectBranch($event)"
+                  bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm" placeholder="Select Branch:"
+                  formControlName="branch">
+                </ng-select>
+              </form>
+            </div>
+          </div>
+
+          <div class="row clearfix">
+            <div class="col-sm-6">
+              <div class="cRow">
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="ApplyPayment" role="dialog">
+            <div class="modal-dialog mymodal bigger">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">KSZB Claim</h5>
+                </div>
+                <form [formGroup]="clientHealthInsuranceClaimForm">
+                  <div class="modal-body">
+
+                    <div class="cRow">
+                      <div class="cCol2">
+                        <label>Branch</label>
+                        <input type="text" disabled="readonly" formControlName="brnchSeq" class="form-control" />
+                      </div>
+                      <div class="cCol2">
+                        <label>Client</label>
+                        <input type="text" disabled="readonly" formControlName="clntSeq" class="form-control" />
+                      </div>
+                      <div class="cCol2">
+                        <label>Claim Amount</label>
+                        <input type="text" disabled="readonly" formControlName="clmAmt" class="form-control" />
+                      </div>
+                      <div class="cCol2">
+                        <label>Claim ID</label>
+                        <input type="text" disabled="readonly" formControlName="transactionId" class="form-control" />
+                      </div>
+                      <div class="cCol2">
+                        <label>Claim Status</label>
+                        <label>{{findValueByKey(form.clmStsKey)}}</label>
+                        <input type="text" disabled="readonly" formControlName="clmStsKey" class="form-control">
+                      </div>
+                      <div class="cCol2">
+                        <label>Payment Mode</label>
+                        <mat-select type="" formControlName="paymentMode" class="form-control" id="paymentMode"
+                          [ngClass]="{ 'is-invalid': form.paymentMode.errors?.required }"
+                          (selectionChange)="onSelectChange()">
+                          <mat-option *ngFor="let payment of paymentArray" [value]="payment">{{payment.typStr}}
+                          </mat-option>
+                        </mat-select>
+                        <div *ngIf="form.paymentMode.errors?.required" class="invalid-feedback">
+                          Payment Mode is required
+                        </div>
+                      </div>
+
+                      <div class="cCol2" *ngIf="!isCash">
+                        <label>Instrument #</label>
+                        <input type="text" formControlName="instrumentNum" class="form-control"
+                          [ngClass]="{ 'is-invalid': form.instrumentNum.errors?.required }" />
+                        <div *ngIf="form.instrumentNum.errors?.required" class="invalid-feedback">
+                          Instrument No. is required
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="modal-footer text-center">
+                    <button appNoDblClick [disabled]="!clientHealthInsuranceClaimForm.valid" type="button"
+                      class="btn btn-primary btn-min" (click)="onPayClick()">Pay</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+           <!---- DATA TABLES---->
+
+           <div class="table-responsive mb-md-5">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+              <!-- Reference Id Column -->
+              <ng-container matColumnDef="brnch">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Branch</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.brnchNm}}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="clntId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client Id</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.clntId}}</td>
+              </ng-container>
+
+              <!-- Category Column -->
+              <ng-container matColumnDef="clntName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client Name</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.clntName}}</td>
+              </ng-container>
+
+              <!-- Amount Column -->
+              <ng-container matColumnDef="clmAmount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Claim Amount</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.clmAmt | currency:'PKR':''}}</td>
+              </ng-container>
+
+              <!-- Instrument No. Column -->
+              <ng-container matColumnDef="clmId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Claim Id</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.transactionId}}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                <td mat-cell *matCellDef="let clnt">
+                  <ng-container >
+                    <span><a href="#" data-toggle="modal" (click)="onPaymentClick(clnt)"
+                      class="iconBtn"><img src="assets/images/rscheck.png" alt=""></a></span>
+                  <a *ngIf="auth.role=='admin'" class="iconBtn delBtn"
+                    (click)="onDelete(clnt.clntHlthClmSeq)"><i class="fa fa-trash-o"></i></a>
+                  </ng-container>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [length]="datalength"  [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+          
+          <!-- <div class="table-responsive">
+            <table class="table record" id="myTable">
+              <thead class="thead-blue thead-light">
+                <tr>
+                  <th>Branch</th>
+                  <th>Client Id</th>
+                  <th>Client Name</th>
+                  <th>Claim Amount</th>
+                  <th>Claim ID</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let clientHealthInsuranceClaim of clientHealthInsuranceClaims">
+                  <td>{{clientHealthInsuranceClaim.brnchNm}}</td>
+                  <td>{{clientHealthInsuranceClaim.clntId}}</td>
+                  <td>{{clientHealthInsuranceClaim.clntName}}</td>
+                  <td>{{clientHealthInsuranceClaim.clmAmt}}</td>
+                  <td>{{clientHealthInsuranceClaim.transactionId}}</td>
+                  <td>
+                    <span><a href="#" data-toggle="modal" (click)="onPaymentClick(clientHealthInsuranceClaim)"
+                        class="iconBtn"><img src="assets/images/rscheck.png" alt=""></a></span>
+                    <a *ngIf="auth.role=='admin'" class="iconBtn delBtn"
+                      (click)="onDelete(clientHealthInsuranceClaim.clntHlthClmSeq)"><i class="fa fa-trash-o"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

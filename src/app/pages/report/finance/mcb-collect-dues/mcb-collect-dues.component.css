@@ -1,0 +1,6 @@
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 12px;
+}
+.wi{
+  width:100%;
+}

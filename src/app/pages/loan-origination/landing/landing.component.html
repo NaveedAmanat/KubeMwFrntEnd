@@ -1,0 +1,1464 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="leftSideBar">
+          <h6>
+            <i class="fa fa-sliders fa-lg"></i> Filter</h6>
+          <div class="selectedFilter">
+            <ul>
+              <li *ngFor="let filter of filters">{{filter.key}} : {{filter.value}}
+                <a (click)="deleteFilter(filter)">
+                  <i class="fa fa-times"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="filtersWrap">
+            <div class="filter">
+              <a class="acc_trigger">Organization</a>
+              <div class="collapse acc_container" id="region">
+                <div class="listmenu">
+                  <ul class="sub-menu">
+                    <li *ngFor="let reg of org">
+                      <span class="nav-click" style="width: 10%;margin-left: 90%;"
+                        (click)="navClick($event.srcElement)"></span>
+                      <!-- (click)="regionClick(reg)" -->
+                      <span style=" cursor: pointer; ">{{reg.regionName}}</span>
+                      <ul class="sub-menu">
+                        <li *ngFor="let area of reg.areas">
+                          <!-- (click)="areaClick(area)" -->
+                          <span class="nav-click" style="width: 10%;margin-left: 90%;"
+                            (click)="navClick($event.srcElement)"></span><span
+                            style=" cursor: pointer; ">{{area.areaName}}</span>
+                          <ul class="sub-menu">
+                            <li *ngFor="let branch of area.branches">
+                              <span class="nav-click" style="width: 10%;margin-left: 90%;"
+                                (click)="navClick($event.srcElement)"></span><span (click)="branchClick(branch)"
+                                style=" cursor: pointer; ">{{branch.branchName}}</span>
+                              <ul class="sub-menu">
+                                <li *ngFor="let port of branch.portfolio"><span (click)="portClick(port)"
+                                    style=" cursor: pointer; ">{{port.portfolioName}}</span></li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="filter">
+              <a class="acc_trigger">Geography </a>
+              <div class="collapse acc_container" id="country">
+                <div class="listmenu">
+                  <ul>
+                    <li *ngFor="let country of geography">
+                      <span class="nav-click" style="width: 10%;margin-left: 90%;" (click)="navClick($event.srcElement)"></span>
+                      <span>{{country.countryName}}</span>
+                      <ul class="sub-menu">
+                        <li *ngFor="let state of country.states">
+                          <span class="nav-click" style="width: 10%;margin-left: 90%;" (click)="navClick($event.srcElement)"></span>
+                          <span (click)="stateClick(state)">{{state.provName}}</span>
+                          <ul class="sub-menu">
+                            <li *ngFor="let district of state.districts">
+                              <span class="nav-click" style="width: 10%;margin-left: 90%;" (click)="navClick($event.srcElement)"></span>
+                              <span (click)="districtClick(district)">{{district.districtName}}</span>
+                              <ul class="sub-menu">
+                                <li *ngFor="let tehsil of district.tehsils">
+                                  <span class="nav-click" style="width: 10%;margin-left: 90%;" (click)="navClick($event.srcElement)"></span>
+                                  <span (click)="tehsilClick(tehsil)">{{tehsil.thslName}}</span>
+                                  <ul class="sub-menu">
+                                    <li *ngFor="let uc of tehsil.ucs">
+                                      <span (click)="ucClick(uc)">{{uc.ucName}}- {{uc.ucDescription}}</span>
+                                    </li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div> -->
+            <div class="filter">
+              <a class="acc_trigger">Gender</a>
+              <div class="collapse acc_container">
+                <!-- <label></label> -->
+                <br>
+                <mat-radio-group (change)="genderFilter()" [(ngModel)]="genderSelected" name="gender" required>
+                  <mat-radio-button class="w-50" *ngFor="let gen of gender" [value]="gen.codeRefCd">{{gen.codeValue}}
+                  </mat-radio-button>
+                </mat-radio-group>
+                <br>
+              </div>
+            </div>
+            <div class="filter">
+              <a class="acc_trigger">Application Status</a>
+              <div class="collapse acc_container">
+                <!-- <label></label> -->
+                <br>
+                <mat-radio-group (change)="statusFilter()" [(ngModel)]="filterDto.StatusCd" name="gender" required>
+                  <mat-radio-button class="w-50" *ngFor="let gen of status" [value]="gen.codeRefCd">{{gen.codeValue}}
+                  </mat-radio-button>
+                </mat-radio-group>
+                <br>
+              </div>
+            </div>
+            <div class="filter">
+              <a class="acc_trigger">Marital Status</a>
+              <div class="collapse acc_container">
+                <!-- <label>Marital Status</label> -->
+                <br>
+                <mat-radio-group (change)="maritalStatusFilter()" [(ngModel)]="filterDto.maritalStsCd"
+                  name="maritalStatus+gen.codeRefCd" required>
+                  <mat-radio-button class="w-50" *ngFor="let gen of maritalStatus" [value]="gen.codeRefCd">
+                    {{gen.codeValue}}</mat-radio-button>
+                </mat-radio-group>
+                <br>
+                <!-- <label class="mt-2">Marital Status</label>
+                <br>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="yesM" name="mStatus" class="custom-control-input">
+                  <label class="custom-control-label" for="yesM">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="noM" name="mStatus" class="custom-control-input">
+                  <label class="custom-control-label" for="noM">No</label>
+                </div> -->
+              </div>
+            </div>
+            <!-- <button class="btn btn-primary btn-sm">More Filters</button> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-9" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <!-- <a  *ngIf="showFields">
+                          <i class="fa fa-window-close" (click)="cloaseField()"> </i> (keyup)="applyFilter($event.target.value)"
+                        </a> -->
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                      <!-- <button mat-button *ngIf="searchVal" matSuffix mat-icon-button aria-label="Clear" (click)="searchVal=''">
+                          <mat-icon>close</mat-icon>
+                        </button> -->
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button mat-raised-button color="primary" type="submit"
+                      style=" background-color: #76b1e7; height: 31px; margin: 6px; ">Search</button>
+                  </div>
+                </form>
+                <!-- <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
+              </div>
+            </div>
+            <div class="col-sm-6" *ngIf="auth.role != 'bm' && auth.role != 'bdo'">
+              <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                <ng-select *ngIf="auth.role != 'bm' && auth.role != 'bdo'" [items]="brnchs" required
+                  (change)="onSelectBranch($event)" bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm"
+                  placeholder="Select Branch:" formControlName="branch">
+                </ng-select>
+              </form>
+            </div>
+            <div class="col-sm-6 addBtn" *ngIf="auth.role == 'bdo'">
+              <a (click)="addLoanModel()" class="btn btn-primary btn-sm">
+                <i class="fa fa-plus"></i> Add</a>
+            </div>
+            <div class="col-sm-6 addBtn" *ngIf="auth.role == 'bm'">
+              <button type="button" (click)="refreshButton()" class="btn btn-primary btn-sm" 
+              data-toggle="tooltip" title="Get Data">
+              <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>  Get Data 
+                </button>
+            </div>
+
+            <!-- <div class="alert alert-warning mt-2 mb-2">
+                    <i class="fa fa-exclamation-circle"></i>  <strong>This is a Backlist.</strong></div> -->
+            <div class="modal fade" id="cmmoncodes" role="dialog">
+              <div class="modal-dialog mymodal bigger" style="max-width:95%; top:2%">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <form (ngSubmit)="onAddNewLoanSubmit()" #addNewLoanForm="ngForm">
+
+                    <div class="modal-header">
+                      <h5 class="modal-title">Validation & History</h5>
+                    </div>
+                    <div class="modal-body pt-0" style="max-height: 50em;">
+                      <div class="col-sm-12">
+                        <div class="row">
+
+                          <div class="col-sm-4" style="padding:8px 23px">
+                            <p>Client:</p>
+                            <div class="row" style="border: 1px solid silver;padding-bottom: 10px;">
+                              <div class="col-sm-6">
+                                <div class="mt-2">
+                                  <mat-form-field>
+                                    <input type="text" (keyup)="cnicPattern($event, 'client')" required id="clientCNIC"
+                                      name="clientCNIC" matInput placeholder="CNIC"
+                                      pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$" maxlength="15" minlength="15"
+                                      [(ngModel)]="cnicPatternObj.clientCNIC" #clientCNIC="ngModel">
+                                    <mat-error *ngIf="clientCNIC.invalid">
+                                      client cnic number is <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                              <div class="col-sm-6 mt-2">
+                                <mat-form-field>
+                                  <input matInput (keypress)="onlyNumbers($event)" required name="Expiry"
+                                    [max]="maxDate" id="cnicExpryDate" [(ngModel)]="model.expiryDate"
+                                    placeholder="CNIC Expiry Date" [matDatepicker]="picker1" readonly>
+                                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                  <mat-datepicker startView="multi-year" required #picker1 disabled="false">
+                                  </mat-datepicker>
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-4" style="padding:8px 23px">
+                            <p>Nominee:</p>
+                            <div class="row" style="border: 1px solid silver;padding-bottom: 10px;">
+                              <div class="col-sm-6">
+                                <div class="mt-2">
+                                  <mat-form-field>
+                                    <input type="text" (keydown)="cnicPattern($event, 'nominee')" id="nomCnic"
+                                      name="nomCnic" matInput placeholder="CNIC"
+                                      pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$" maxlength="15" minlength="15"
+                                      [errorStateMatcher]="matcher" [(ngModel)]="cnicPatternObj.nomCnic"
+                                      #nomCnic="ngModel">
+                                    <mat-error *ngIf="nomCnic.invalid">
+                                      nominee cnic number is <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                              <div class="col-sm-6 mt-2">
+                                <mat-form-field>
+                                  <input matInput (keypress)="onlyNumbers($event)" name="nomineeExpiry"
+                                    max="{{maxDate}}" min="{{date}}" id="nomineecnicExpryDate"
+                                    [(ngModel)]="model.nominee.cnicExpryDate" placeholder="CNIC Expiry Date"
+                                    [matDatepicker]="picker2" readonly>
+                                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                  <mat-datepicker startView="multi-year" #picker2 disabled="false"></mat-datepicker>
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-4" style="padding:8px 23px">
+                            <p>Co-Borrower:</p>
+                            <div class="row" style="border: 1px solid silver;padding-bottom: 10px;">
+                              <div class="col-sm-6">
+                                <div class="mt-2">
+                                  <mat-form-field>
+                                    <input type="text" (keydown)="cnicPattern($event, 'co-borrower')"
+                                      pattern="^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$" maxlength="15" minlength="15"
+                                      [errorStateMatcher]="matcher" id="cobCNIC" name="cobCNIC" matInput
+                                      placeholder="CNIC" [(ngModel)]="cnicPatternObj.cobCNIC" #cobCNIC="ngModel">
+                                    <mat-error *ngIf="cobCNIC.invalid">
+                                      co-borrower cnic number is <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                              <div class="col-sm-6 mt-2">
+                                <mat-form-field>
+                                  <input matInput (keypress)="onlyNumbers($event)" name="coBorrowerExpiry"
+                                    max="{{maxDate}}" min="{{date}}" id="coBorrowercnicExpryDate"
+                                    [(ngModel)]="model.coBorrower.cnicExpryDate" placeholder="CNIC Expiry Date"
+                                    [matDatepicker]="picker3" readonly>
+                                  <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                                  <mat-datepicker startView="multi-year" #picker3 disabled="false"></mat-datepicker>
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="row">
+                            <div>
+                              <button type="submit" [disabled]="!addNewLoanForm.form.valid"
+                                class="btn btn-primary btn-small btn-min">Validate
+                                with Kashf</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="content">
+                        <ul class="nav nav-tabs borrowerTabs" id="kpitasktab" role="tablist">
+                          <li class="nav-item" *ngIf="hashistory">
+                            <a class="nav-link active" id="kpi-tab" data-toggle="tab" href="#kpitab" role="tab"
+                              aria-controls="kpi-tab" aria-selected="true">Client</a>
+                          </li>
+                          <li class="nav-item" *ngIf="hasNomhistory">
+                            <a class="nav-link" id="task-tab" data-toggle="tab" href="#tasktab" role="tab"
+                              aria-controls="task-tab" aria-selected="false">Nominee</a>
+                          </li>
+                          <li class="nav-item" *ngIf="hasCobhistory">
+                            <a class="nav-link" id="tuc-tab" data-toggle="tab" href="#tuctab" role="tab"
+                              aria-controls="tuc-tab" aria-selected="false">Co-Borrower</a>
+                          </li>
+                        </ul>
+                        <div class="tab-content borrowerTabsContent mb-md-3" id="kpiTabsContent">
+                          <div class="tab-pane fade show active" id="kpitab" role="tabpanel" aria-labelledby="kpi-tab">
+                            <div class="info-bloks" [style.display]="hashistory ? 'block' : 'none'">
+                              <div class="row">
+                                <div class="container-fluid">
+                                  <div class="content">
+                                    <div class="row">
+                                      <div class="col-sm-9">
+                                        <div class="borderbox pb-0">
+                                          <ul class="infolist mt-2 mb-2">
+                                            <li>Branch:
+                                              <span> {{clientHistory.branchName}}</span>
+                                            </li>
+                                            <li>Portfolio:
+                                              <span>Portfolio {{clientHistory.portKey}}</span>
+                                            </li>
+                                            <li>BDO:
+                                              <span> {{clientHistory.portfolio}}</span>
+                                            </li>
+                                          </ul>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-sm-4">
+                                            <div class="pt-1">
+                                              <label>
+                                                <b>{{clientHistory.title}} Information:</b>
+                                              </label>
+                                            </div>
+                                            <div class="borderbox p-2 mnh-140">
+                                              <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                  <td width="60%">
+                                                    <b>{{clientHistory.title}} ID:</b>
+                                                  </td>
+                                                  <td>{{clientHistory.clientId}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%">
+                                                    <b>{{clientHistory.title}} Name: </b>
+                                                  </td>
+                                                  <td>{{clientHistory.firstName}} {{clientHistory.lastName}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%">
+                                                    <b>Gender:</b>
+                                                  </td>
+                                                  <td>{{clientHistory.gender}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="60%">
+                                                    <b>Father Name:</b>
+                                                  </td>
+                                                  <td>{{clientHistory.fathrFirstName}} {{clientHistory.fathrLastName}}
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td>
+                                                    <b>Address:</b>
+                                                  </td>
+                                                  <td width="70%">House No. {{clientHistory.houseNum}}
+                                                    {{clientHistory.cityName}},
+                                                    {{clientHistory.countryName}}</td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-4">
+                                            <div class="pt-1">
+                                              <label>
+                                                <b>Credit Information:</b>
+                                              </label>
+                                            </div>
+                                            <div class="borderbox p-2 mnh-140">
+                                              <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                  <td width="70%">
+                                                    <b>Credit ID:</b>
+                                                  </td>
+                                                  <td>{{clientHistory.loanAppSeq}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="70%">
+                                                    <b>Status:</b>
+                                                  </td>
+                                                  <td>{{clientHistory.status}}</td>
+                                                </tr>
+                                                <!-- <tr>
+                                                  <td width="70%">
+                                                    <b>Disbursement Date:</b>
+                                                  </td>
+                                                  <td>2/7/2018</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="70%">
+                                                    <b>Disbursement Amount:</b>
+                                                  </td>
+                                                  <td>20,000</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="70%">
+                                                    <b>Total #. of installment:</b>
+                                                  </td>
+                                                  <td>05</td>
+                                                </tr> -->
+                                              </table>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-4">
+                                            <div class="pt-1">
+                                              <label>
+                                                <b>Product:</b>
+                                              </label>
+                                            </div>
+                                            <div class="borderbox p-2 mnh-140">
+                                              <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                  <td width="40%">
+                                                    <b>Product ID:</b>
+                                                  </td>
+                                                  <td>{{clientHistory.prdSeq}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td width="40%">
+                                                    <b>Product Name:</b>
+                                                  </td>
+                                                  <td>{{clientHistory.prdName}}</td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <!-- <div class="col-sm-3 text-right">
+                                        <div class="picswrap">
+                                          <div class="borderpic">
+                                            <img src="assets/images/client-pic.jpg" alt="">
+                                          </div>
+                                          <p class="mt-2 mb-1">Robina Ashraf</p>
+                                          <div class="stars">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                          </div>
+                                        </div>
+                                      </div> -->
+                                    </div>
+                                    <!-- <h5>Payment History</h5>
+                                    <div class="table-responsive">
+                                      <table class="table last-left" id="myTable">
+                                        <thead class="thead-light last-left">
+                                          <tr>
+                                            <th>Installment #</th>
+                                            <th>Due Date</th>
+                                            <th>Principal Amount Due</th>
+                                            <th>Total Charges Due</th>
+                                            <th>Actual Paid Date</th>
+                                            <th>Actual Paid Amount</th>
+                                            <th>Status</th>
+                                            <th>Payment Method</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <td>1245796325663</td>
+                                            <td>3/11/2018</td>
+                                            <td>5000/-</td>
+                                            <td>5000/-</td>
+                                            <td>3/11/2018</td>
+                                            <td>5000/-</td>
+                                            <td>OD</td>
+                                            <td>Easy Paisa</td>
+                                          </tr>
+                                          <tr>
+                                            <td>1245796325663</td>
+                                            <td>3/11/2018</td>
+                                            <td>3000/-</td>
+                                            <td>3000/-</td>
+                                            <td>3/11/2018</td>
+                                            <td>3000/-</td>
+                                            <td>Performing</td>
+                                            <td>Branch</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div> -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="alert alert-warning mt-2 mb-2" *ngIf="severinity == 1">
+                              <i class="fa fa-exclamation-circle"></i>
+                              <strong>This is a Backlisted Client.</strong>
+                            </div>
+
+                            <div class="alert alert-warning mt-2 mb-2" *ngIf="severinity == 0" style="color: #cb9500;
+                              background-color: #ffd9b2;
+                              border-color: #ea9600;">
+                              <i class="fa fa-exclamation-circle" style="color: #cb9500;"></i>
+                              <strong>Warning.</strong>
+                            </div>
+
+                            <div class="alert alert-warning mt-2 mb-2"
+                              *ngIf="hashistory && clientHistory.status != 'Completed'" style="color: #cb9500;
+                              background-color: #ffd9b2;
+                              border-color: #ea9600;">
+                              <i class="fa fa-exclamation-circle" style="color: #cb9500;"></i>
+                              <strong>Warning.</strong>
+                              <p>Active as {{clientHistory.title}} with Credit [{{clientHistory.loanAppSeq}}] Client ID
+                                [{{clientHistory.clientId}}] Client Name [{{clientHistory.firstName}}
+                                {{clientHistory.lastName}}] Status[{{clientHistory.status}}] in
+                                [{{clientHistory.branchName}}] Branch.</p>
+                            </div>
+                          </div>
+                          <div class="tab-pane fade" id="tasktab" role="tabpanel" aria-labelledby="task-tab">
+                            <div class="container-fluid" [style.display]="hasNomhistory ? 'block' : 'none'">
+                              <div class="content">
+                                <div class="row">
+                                  <div class="col-sm-9">
+                                    <div class="borderbox pb-0">
+                                      <ul class="infolist mt-2 mb-2">
+                                        <li>Branch:
+                                          <span> {{nomHistory.branchName}}</span>
+                                        </li>
+                                        <li>Portfolio:
+                                          <span>Portfolio {{nomHistory.portKey}}</span>
+                                        </li>
+                                        <li>BDO:
+                                          <span> {{nomHistory.portfolio}}</span>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-sm-4">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>{{nomHistory.title}} Information:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td width="60%">
+                                                <b>{{nomHistory.title}} ID:</b>
+                                              </td>
+                                              <td>{{nomHistory.clientId}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="60%">
+                                                <b>{{nomHistory.title}} Name: </b>
+                                              </td>
+                                              <td>{{nomHistory.firstName}} {{nomHistory.lastName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="60%">
+                                                <b>Gender:</b>
+                                              </td>
+                                              <td>{{nomHistory.gender}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="60%">
+                                                <b>Father Name:</b>
+                                              </td>
+                                              <td>{{nomHistory.fathrLastName}} {{nomHistory.fathrLastName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Address:</b>
+                                              </td>
+                                              <td></td>
+                                            </tr>
+                                            <tr>
+                                              <td>House No. {{nomHistory.houseNum}} {{nomHistory.cityName}},
+                                                {{nomHistory.countryName}}.</td>
+                                              <td></td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-4">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>Credit Information:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td width="70%">
+                                                <b>Credit ID:</b>
+                                              </td>
+                                              <td>{{nomHistory.loanAppSeq}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="70%">
+                                                <b>Status:</b>
+                                              </td>
+                                              <td>{{nomHistory.status}}</td>
+                                            </tr>
+                                            <!-- <tr>
+                                              <td width="70%">
+                                                <b>Disbursement Amount:</b>
+                                              </td>
+                                              <td>20,000</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="70%">
+                                                <b>Total #. of installment:</b>
+                                              </td>
+                                              <td>05</td>
+                                            </tr> -->
+                                          </table>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-4">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>Branch Data:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td width="40%">
+                                                <b>Product ID:</b>
+                                              </td>
+                                              <td>{{nomHistory.prdSeq}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="40%">
+                                                <b>Product Name:</b>
+                                              </td>
+                                              <td>{{nomHistory.prdName}}</td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div>
+                                      <!-- <div class="col-sm-6">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>Nominee Information:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td>
+                                                <b>First Name:</b>
+                                              </td>
+                                              <td>{{nomHistory.nomFName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Last Name:</b>
+                                              </td>
+                                              <td>{{nomHistory.nomLName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Nominee Phone #:</b>
+                                              </td>
+                                              <td>{{nomHistory.nomPhone}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Relation:</b>
+                                              </td>
+                                              <td>{{nomHistory.nomRel}}</td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div> -->
+                                    </div>
+                                  </div>
+                                  <!-- <div class="col-sm-3 text-right">
+                                    <div class="picswrap">
+                                      <div class="borderpic">
+                                        <img src="assets/images/client-pic.jpg" alt="">
+                                      </div>
+                                      <p class="mt-2 mb-1">Robina Ashraf</p>
+                                      <div class="stars">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                      </div>
+                                    </div>
+                                  </div> -->
+                                </div>
+                              </div>
+                            </div>
+                            <div class="alert alert-warning mt-2 mb-2" *ngIf="nomSeverinity == 1">
+                              <i class="fa fa-exclamation-circle"></i>
+                              <strong>This is a Backlisted Client.</strong>
+                            </div>
+
+                            <div class="alert alert-warning mt-2 mb-2" *ngIf="nomSeverinity == 0" style="color: #cb9500;
+                              background-color: #ffd9b2;
+                              border-color: #ea9600;">
+                              <i class="fa fa-exclamation-circle" style="color: #cb9500;"></i>
+                              <strong>Warning.</strong>
+                            </div>
+
+                            <div class="alert alert-warning mt-2 mb-2"
+                              *ngIf="hashistory && clientHistory.status != 'Completed'" style="color: #cb9500;
+                              background-color: #ffd9b2;
+                              border-color: #ea9600;">
+                              <i class="fa fa-exclamation-circle" style="color: #cb9500;"></i>
+                              <strong>Warning.</strong>
+                              <p>Active as {{nomHistory.title}} with Credit [{{nomHistory.loanAppSeq}}] Client ID
+                                [{{nomHistory.clientId}}] Client Name [{{nomHistory.firstName}}
+                                {{nomHistory.lastName}}]
+                                Status[{{nomHistory.status}}].</p>
+                            </div>
+                          </div>
+
+                          <div class="tab-pane fade" id="tuctab" role="tabpanel" aria-labelledby="tuc-tab-tab">
+                            <div class="container-fluid" [style.display]="hasCobhistory ? 'block' : 'none'">
+                              <div class="content">
+                                <div class="row">
+                                  <div class="col-sm-9">
+                                    <div class="borderbox pb-0">
+                                      <ul class="infolist mt-2 mb-2">
+                                        <li>Branch:
+                                          <span> {{cobHistory.branch}}</span>
+                                        </li>
+                                        <li>Portfolio:
+                                          <span>Portfolio 5</span>
+                                        </li>
+                                        <li>BDO:
+                                          <span> {{cobHistory.portfolio}}</span>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-sm-4">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>{{cobHistory.title}} Information:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td width="60%">
+                                                <b>{{cobHistory.title}} ID:</b>
+                                              </td>
+                                              <td>{{cobHistory.clientId}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="60%">
+                                                <b>{{cobHistory.title}} Name: </b>
+                                              </td>
+                                              <td>{{cobHistory.firstName}} {{cobHistory.lastName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="60%">
+                                                <b>Gender:</b>
+                                              </td>
+                                              <td>{{cobHistory.gender}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="60%">
+                                                <b>Father Name:</b>
+                                              </td>
+                                              <td>{{cobHistory.fathrLastName}} {{cobHistory.fathrLastName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Address:</b>
+                                              </td>
+                                              <td></td>
+                                            </tr>
+                                            <tr>
+                                              <td>House No. {{cobHistory.houseNum}} {{cobHistory.city}},
+                                                {{cobHistory.country}}.</td>
+                                              <td></td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-4">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>Credit Information:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td width="70%">
+                                                <b>Credit ID:</b>
+                                              </td>
+                                              <td>{{cobHistory.loanAppSeq}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="70%">
+                                                <b>Status:</b>
+                                              </td>
+                                              <td>{{cobHistory.status}}</td>
+                                            </tr>
+                                            <!-- <tr>
+                                              <td width="70%">
+                                                <b>Disbursement Date:</b>
+                                              </td>
+                                              <td>2/7/2018</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="70%">
+                                                <b>Disbursement Amount:</b>
+                                              </td>
+                                              <td>20,000</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="70%">
+                                                <b>Total #. of installment:</b>
+                                              </td>
+                                              <td>05</td>
+                                            </tr> -->
+                                          </table>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-4">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>Product:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td width="40%">
+                                                <b>Product ID:</b>
+                                              </td>
+                                              <td>{{cobHistory.prdSeq}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td width="40%">
+                                                <b>Product Name:</b>
+                                              </td>
+                                              <td>{{cobHistory.prdName}}</td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div>
+                                      <!-- <div class="col-sm-6">
+                                        <div class="pt-1">
+                                          <label>
+                                            <b>Co-Borrower Information:</b>
+                                          </label>
+                                        </div>
+                                        <div class="borderbox p-2 mnh-140">
+                                          <table class="simpletale" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td>
+                                                <b>First Name:</b>
+                                              </td>
+                                              <td>{{cobHistory.nomFName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Last Name:</b>
+                                              </td>
+                                              <td>{{cobHistory.nomLName}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Phone #:</b>
+                                              </td>
+                                              <td>{{cobHistory.nomPhone}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <b>Relation:</b>
+                                              </td>
+                                              <td>{{cobHistory.nomRel}}</td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div> -->
+                                    </div>
+                                  </div>
+                                  <!-- <div class="col-sm-3 text-right">
+                                    <div class="picswrap">
+                                      <div class="borderpic">
+                                        <img src="assets/images/client-pic.jpg" alt="">
+                                      </div>
+                                      <p class="mt-2 mb-1">Robina Ashraf</p>
+                                      <div class="stars">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                      </div>
+                                    </div>
+                                  </div> -->
+                                </div>
+                              </div>
+                            </div>
+                            <div class="alert alert-warning mt-2 mb-2" *ngIf="cobSeverinity == 1">
+                              <i class="fa fa-exclamation-circle"></i>
+                              <strong>This is a Backlisted Client.</strong>
+                            </div>
+
+                            <div class="alert alert-warning mt-2 mb-2" *ngIf="cobSeverinity == 0" style="color: #cb9500;
+                              background-color: #ffd9b2;
+                              border-color: #ea9600;">
+                              <i class="fa fa-exclamation-circle" style="color: #cb9500;"></i>
+                              <strong>Warning.</strong>
+                            </div>
+
+                            <div class="alert alert-warning mt-2 mb-2"
+                              *ngIf="hashistory && clientHistory.status != 'Completed'" style="color: #cb9500;
+                              background-color: #ffd9b2;
+                              border-color: #ea9600;">
+                              <i class="fa fa-exclamation-circle" style="color: #cb9500;"></i>
+                              <strong>Warning.</strong>
+                              <p>Active as {{cobHistory.title}} with Credit [{{cobHistory.loanAppSeq}}] Client ID
+                                [{{cobHistory.clientId}}] Client Name [{{cobHistory.firstName}}
+                                {{cobHistory.lastName}}]
+                                Status[{{cobHistory.status}}].</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="cRow mb-2">
+                        <button (click)="createNewLoan()" type="button" [disabled]="!isValid"
+                          class="btn btn-primary btn-small btn-min">Continue
+                          with Credit Application</button>
+                        <button type="button" class="btn btn-primary btn-small btn-min"
+                          data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                    <!-- <div class="modal-header">
+                      <h5 class="modal-title">Verification</h5>
+                    </div>
+                    <div class="modal-body">
+                      <h6 class="colorBlack mt-1 mb-0 small"> </h6>
+                      <div class="cRow">
+                        <div class="cCol3">
+                          <mat-form-field>
+                            <input type="text" required pattern="\d*" maxlength="13" id="cnicNum" name="cnicNum" matInput placeholder="CNIC" [(ngModel)]="model.cnicNum">
+                          </mat-form-field>
+                        </div>
+                        <div class="cCol1">
+                          <mat-form-field>
+                            <input matInput required name="Expiry" max="{{maxDate}}" min="{{date}}" id="cnicExpryDate" [(ngModel)]="model.expiryDate"
+                              placeholder="CNIC Expiry Date" [matDatepicker]="picker1">
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker startView="multi-year" required #picker1 disabled="false"></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+                        <div class="cCol1 ">
+                          <button type="submit" [disabled]="!addNewLoanForm.form.valid" class="btn btn-primary btn-small btn-min">Validate with Kashf</button>
+                        </div>
+
+                      </div>
+                      <div [style.display]="hashistory ? 'block' : 'none'">
+                        <div class="pt-1 pb-1">
+                          <div>
+                            <label>Client Name:
+                              <span class="colorBlue">{{applicantHistory.firstName}} {{applicantHistory.lastName}}</span>
+                            </label>
+                          </div>
+                          <div>
+                            <label>Client ID:
+                              <span class="colorBlue">{{applicantHistory.clientSeq}}</span>
+                            </label>
+                          </div>
+                          <div>
+                            <label>Address:
+                              <span class="colorBlue">{{applicantHistory.houseNum}} {{applicantHistory.sreet_area}}, Pakistan.</span>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="table-responsive">
+                          <table class="table">
+                            <thead class="thead-light">
+                              <tr>
+                                <th>Credit ID</th>
+                                <th>Disbursement Date</th>
+                                <th>Disbursement Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Status</th>
+                                <th>Installment (OD)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let app of oldApplicants">
+                                <td>
+                                  <a>{{app.clientSeq}}</a>
+                                </td>
+                                <td>6/01/2018</td>
+                                <td>25000</td>
+                                <td>20,000</td>
+                                <td class="colorGreen">{{app.status}}</td>
+                                <td>0</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="cRow mb-2">
+                        <button (click)="createNewLoan()" type="button" [disabled]="!isValid" class="btn btn-primary btn-small btn-min">Continue with Credit Application</button>
+                        <button type="button" class="btn btn-primary btn-small btn-min" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div> -->
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          </mat-form-field> -->
+          <div class="table-responsive">
+            <table class="table" mat-table [dataSource]="dataSource" matSort>
+
+              <!-- Position Column -->
+              <ng-container matColumnDef="firstName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                <td mat-cell *matCellDef="let loan" style="padding-left: 8px;">
+                  <a (click)="clientHistoryScreen(loan)">
+                    <span style="margin-left: 5px;">{{loan.firstName}} {{loan.lastName}}</span>
+                  </a>
+              </ng-container>
+
+              <!-- Name Column -->
+              <ng-container matColumnDef="loanAppId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client ID / Credit ID </th>
+                <td mat-cell *matCellDef="let loan">
+                  <!-- <a class="userImg" (click)="editLoan(loan)">
+                    <span style="margin-left: 5px;">{{loan.loanAppId}} </span>
+                  </a> -->
+                  {{loan.clientId}} /
+                  <a class="userImg" (click)="editLoan(loan, false)"
+                    *ngIf=" ((loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') || auth.role =='bm') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Discarded' && loan.loanAppStatus != 'DISCARDED') && (loan.loanAppStatus != 'Deferred' && loan.loanAppStatus != 'DEFERRED')  && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE') && (loan.loanAppStatus != 'ADVANCE' && loan.loanAppStatus != 'Advance')">
+                    <span style="margin-left: 5px;">{{loan.loanAppId}}</span>
+                  </a>
+                  <a class="userImg" (click)="editLoan(loan, true)"
+                    *ngIf=" !(((loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') || auth.role =='bm') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Discarded' && loan.loanAppStatus != 'DISCARDED') && (loan.loanAppStatus != 'Deferred' && loan.loanAppStatus != 'DEFERRED') && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE') && (loan.loanAppStatus != 'ADVANCE' && loan.loanAppStatus != 'Advance'))">
+                    <span style="margin-left: 5px;">{{loan.loanAppId}}</span>
+                  </a>
+                </td>
+              </ng-container>
+
+              <!-- Weight Column -->
+              <!-- <ng-container matColumnDef="addressString">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
+                <td style=" max-width: 10%; " mat-cell *matCellDef="let loan" class="w-20"> {{loan.addressString}} </td>
+              </ng-container> -->
+
+              <!-- Symbol Column -->
+              <ng-container matColumnDef="loanAppStatus">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                <td mat-cell *matCellDef="let loan"> <span class="{{loan.loanAppStatus}}">{{loan.loanAppStatus}}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="stsDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                <td mat-cell *matCellDef="let loan"> {{loan.stsDate | date:'dd-MM-yyyy'}} </td>
+              </ng-container>
+              <ng-container matColumnDef="prdNm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Name </th>
+                <td mat-cell *matCellDef="let loan"> {{loan.prdNm}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="recAmount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Rec./App Amount </th>
+                <td mat-cell *matCellDef="let loan"> {{loan.recAmount | currency:'PKR':''}} / {{loan.aprAmount |
+                  currency:'PKR':''}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="empNm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> BDO Name </th>
+                <td mat-cell *matCellDef="let loan"> {{loan.empNm}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="verisys">
+                <th mat-header-cell *matHeaderCellDef> Verisys </th>
+                <td mat-cell *matCellDef="let loan">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img class="center" title="{{loan.verisysDesc}}" *ngIf="loan.verisysCount==1" src="assets/images/verisys-ok.png" alt="" style="width: 18px;">
+                  <img class="center" title="{{loan.verisysDesc}}" *ngIf="loan.verisysCount==0" src="assets/images/verisys-fail.png" alt="" style="width: 18px;">
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let loan"> <a (click)="associateLoan(loan)" class="iconBtn"
+                    *ngIf="(loan.assocPrdCount>0) && ((loan.loanAppStatus == 'Active' || loan.loanAppStatus == 'ACTIVE' || loan.loanAppStatus == 'active') && auth.role =='bm')">
+                    <img src="assets/images/rsgrey-icon.png" alt="" style="width: 18px;"></a>
+
+                  <a (click)="editLoan(loan)" class="iconBtn"
+                    *ngIf="auth.role !='bm' && ((loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') || auth.role =='bm') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Discarded' && loan.loanAppStatus != 'DISCARDED') && (loan.loanAppStatus != 'Deferred' && loan.loanAppStatus != 'DEFERRED') && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE')  && (loan.loanAppStatus != 'Advance' && loan.loanAppStatus != 'ADVANCE')">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                  <a class="iconBtn"
+                    *ngIf="auth.role !='bm' && ((loan.loanAppStatus == 'Active' || loan.loanAppStatus == 'ACTIVE' || loan.loanAppStatus == 'active') && auth.role =='bm')">
+                    <img src="assets/images/rsgrey-icon.png" alt=""></a>
+                  <a (click)="deleteLoan(loan)" class="iconBtn delBtn"
+                    *ngIf=" auth.role !='bm' && (loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Discarded' && loan.loanAppStatus != 'DISCARDED') && (loan.loanAppStatus != 'Deferred' && loan.loanAppStatus != 'DEFERRED') && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE') && (loan.loanAppStatus != 'Need More Clarification' && loan.loanAppStatus != 'NEED MORE CLARIFICATION') && (loan.loanAppStatus != 'Advance' && loan.loanAppStatus != 'ADVANCE')">
+                    <i class="fa fa-trash-o"></i>
+                  </a>
+                  <a *ngIf="(loan.paidInst==0 && (auth.role=='finance' || auth.role=='ra')  && ((loan.loanAppStatus == 'Active' || loan.loanAppStatus == 'ACTIVE') || (loan.loanAppStatus == 'Advance' || loan.loanAppStatus == 'ADVANCE'))) && (loan.trf_la_seq != '2')"
+                    matTooltip="text" data-toggle="modal" (click)="disgardApp(loan)" class="iconBtn delBtn "
+                    title="Deffer Application"><img alt=""><i _ngcontent-c19="" class="fa fa-undo"></i></a>
+
+                  <!-- Added By Naveed - Date - 24-02-2022
+                      SCR - Portfolio phase - 2, show tooltip text
+                  -->
+                  <a *ngIf="(loan.paidInst==0 && auth.role=='admin'  && ((loan.loanAppStatus == 'Active' || loan.loanAppStatus == 'ACTIVE') || (loan.loanAppStatus == 'Advance' || loan.loanAppStatus == 'ADVANCE'))) && (loan.trf_la_seq == '2')"
+                    matTooltip="text"  class="iconBtn delBtn "
+                    title="You cannot allowed To deffer transferred clients Disbursement"><img alt=""><i _ngcontent-c19="" class="fa fa-undo"></i></a>
+                  <!-- Ended By Naveed - Date - 24-02-2022 -->
+                  
+                  <!-- src="assets/images/crose-icon.png" (auth.role=='am' || auth.role=='admin') && -->
+                  <!-- <a *ngIf="auth.role=='bm'  &&(loan.loanAppStatus == 'Active' || loan.loanAppStatus == 'ACTIVE')"
+                    (click)="reSchedule(loan)" class="iconBtn" data-toggle="tooltip" title="Credit Rescheduling"><img
+                      src="assets/images/icon7.png" alt=""></a> -->
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]"></mat-paginator>
+          </div>
+          <!-- <div class="table-responsive">
+            <table class="table record" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>Name
+                  </th>
+                  <th>ID
+                  </th>
+                  <th>Address
+                  </th>
+                  <th width="9%">Status
+                  </th>
+                  <th width="10%">Date
+                  </th>
+                  <th width="15%">Product Name</th>
+                  <th width="12%">Rec./App Amount</th>
+                  <th width="11%" *ngIf="auth.role =='bm'" style="text-align: right;">Portfolio
+                  </th>
+                  <th width="6%">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let loan of pagedItems">
+                  <td width="12%">
+                    <a class="userImg" (click)="editLoan(loan)" *ngIf=" ((loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') || auth.role =='bm') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE')">
+                      <img src="assets/images/user_img.png" alt="">
+                      <span>{{loan.firstName}} {{loan.lastName}}</span>
+                    </a>
+                    <a class="userImg" *ngIf=" !(((loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') || auth.role =='bm') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE'))">
+                      <img src="assets/images/user_img.png" alt="">
+                      <span>{{loan.firstName}} {{loan.lastName}}</span>
+                    </a>
+                  </td>
+                  <td>{{loan.loanAppId}}</td>
+                  <td>House No. {{loan.house_num}}, {{loan.street}}, {{loan.cmntyNm}}, {{loan.village}},
+                    {{loan.other_detail}}.</td>
+                  <td class="{{loan.loanAppStatus}}">{{loan.loanAppStatus}}</td>
+                  <td>{{loan.stsDate | date:'dd-MM-yyyy'}}</td>
+                  <td>{{loan.prdNm}}</td>
+                  <td>{{loan.recAmount | currency:'PKR':''}} / {{loan.aprAmount | currency:'PKR':''}}</td>
+                  <td *ngIf="auth.role =='bm'" style="text-align: right;">{{loan.portfolio}}</td>
+                  <td *ngIf="auth.role =='bm'">
+                    <a (click)="associateLoan(loan)" class="iconBtn" *ngIf="((loan.loanAppStatus == 'Active' || loan.loanAppStatus == 'ACTIVE' || loan.loanAppStatus == 'active') && auth.role =='bm')">
+                      <img src="assets/images/rsgrey-icon.png" alt="" style="width: 18px;"></a>
+                  </td>
+                  <td *ngIf="auth.role !='bm'">
+                    <a (click)="editLoan(loan)" class="iconBtn" *ngIf=" ((loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') || auth.role =='bm') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE')">
+                      <i class="fa fa-pencil"></i>
+                    </a>
+                    <a class="iconBtn" *ngIf="((loan.loanAppStatus == 'Active' || loan.loanAppStatus == 'ACTIVE' || loan.loanAppStatus == 'active') && auth.role =='bm')">
+                      <img src="assets/images/rsgrey-icon.png" alt=""></a>
+                    <a (click)="deleteLoan(loan)" class="iconBtn delBtn" *ngIf="(loan.loanAppStatus != 'Submitted' && loan.loanAppStatus != 'SUBMITTED') && (loan.loanAppStatus != 'Completed' && loan.loanAppStatus != 'COMPLETED') && (loan.loanAppStatus != 'Approved' && loan.loanAppStatus != 'APPROVED') && (loan.loanAppStatus != 'Rejected' && loan.loanAppStatus != 'REJECTED') && (loan.loanAppStatus != 'Active' && loan.loanAppStatus != 'ACTIVE') && (loan.loanAppStatus != 'Need More Clarification' && loan.loanAppStatus != 'NEED MORE CLARIFICATION')">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <nav aria-label="Page navigation " >
+            <ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+              <li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+                <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+              </li>
+              <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                <a class="page-link" (click)="setPage(page)">{{page}}</a>
+              </li>
+              <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+              </li>
+            </ul>
+          </nav> -->
+          <!-- <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item disabled"> <a class="page-link"  tabindex="-1">Previous</a> </li>
+                <li class="page-item active"><a class="page-link" >1</a></li>
+                <li class="page-item"><a class="page-link" >2</a></li>
+                <li class="page-item"><a class="page-link" >3</a></li>
+                <li class="page-item"><a class="page-link" >4</a></li>
+                <li class="page-item"><a class="page-link" >5</a></li>
+                <li class="page-item"><a class="page-link" >6</a></li>
+                <li class="page-item"><a class="page-link" >7</a></li>
+                <li class="page-item"><a class="page-link" >8</a></li>
+                <li class="page-item"><a class="page-link" >9</a></li>
+                <li class="page-item"><a class="page-link" >10</a></li>
+                <li class="page-item"><a class="page-link" >11</a></li>
+                <li class="page-item"><a class="page-link" >12</a></li>
+                <li class="page-item"><a class="page-link" >13</a></li>
+                <li class="page-item"><a class="page-link" >14</a></li>
+                <li class="page-item"><a class="page-link" >15</a></li>
+                <li class="page-item"><a class="page-link" >16</a></li>
+                <li class="page-item"><a class="page-link" >17</a></li>
+                <li class="page-item"><a class="page-link" >18</a></li>
+                <li class="page-item"><a class="page-link" >19</a></li>
+                <li class="page-item"> <a class="page-link" >Next</a> </li>
+              </ul>
+            </nav> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="associateProductModel" role="dialog">
+      <div class="modal-dialog mymodal">
+
+        <!-- Modal content-->
+        <form (ngSubmit)="onAssocProductSubmit()" #secondaryIncomeForm="ngForm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Associate Credit</h5>
+            </div>
+            <div class="modal-body text-left">
+              <div class="row">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-4">
+                  <mat-form-field>
+                    <!-- [(ngModel)]="secondaryIncome.incomeTypeKey" -->
+                    <mat-select placeholder="Associate Products" (selectionChange)="onAssocProductSelect($event.value)"
+                      [(ngModel)]="assocProductSeq" pattern="^[1-9]\d*$" name="residence" required>
+                      <mat-option *ngFor="let edu of assocProducts" [value]="edu.productSeq">
+                        {{edu.productName}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-4">
+                  <mat-form-field>
+                    <!-- [(ngModel)]="assocApprovedAmount" #secondryIncomeAmount="assocApprovedAmount" -->
+                    <input matInput type="text" pattern="\d*" min="0" maxlength="7" required id="assocApprovedAmount"
+                      name="assocApprovedAmount" [errorStateMatcher]="matcher" (keypress)="onlyNumbers($event)"
+                      placeholder="Approved Amount" [(ngModel)]="assocApprovedAmount">
+
+                    <mat-hint
+                      *ngIf="assocApprovedAmount<=selectedAssocProduct.maxAmount && assocApprovedAmount>=selectedAssocProduct.minAmount">
+                      {{selectedAssocProduct.minAmount}}
+                      =< Approved Amount <={{selectedAssocProduct.maxAmount}} </mat-hint>
+                        <mat-hint *ngIf="assocApprovedAmount > selectedAssocProduct.maxAmount" style="color: red;">Max
+                          Amount is
+                          <strong>{{selectedAssocProduct.maxAmount}}</strong>
+                        </mat-hint>
+                        <mat-hint *ngIf="assocApprovedAmount < selectedAssocProduct.minAmount" style="color: red;">Min
+                          Amount is
+                          <strong>{{selectedAssocProduct.minAmount}}</strong>
+                        </mat-hint>
+                        <!-- <mat-hint *ngIf="model.approvedAmount>model.reqAmount" style="color: red;">Cannot exceed Requested
+                      Amount
+                      <strong>{{product.reqAmount}}</strong>
+                    </mat-hint> -->
+                        <!-- <mat-error *ngIf="secondryIncomeAmount.invalid">
+                        secondary income is
+                        <strong>invalid</strong>
+                      </mat-error> -->
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer text-center">
+              <button appNoDblClick type="button" (click)="onAssocProductSubmit()" class="btn btn-primary btn-min"
+                [disabled]="!secondaryIncomeForm.form.valid">Ok</button>
+              <button type="button" class="btn btn-primary btn-min" (click)="cancelClicked()"
+                data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deleteConfirmation" role="dialog">
+      <div class="modal-dialog mymodal">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete Credit</h5>
+          </div>
+          <div class="modal-body">
+
+            <div class="table-responsive">
+              <h6>Do you want to Discard application?</h6>
+            </div>
+
+
+            <div class="modal-footer smmodal-footer text-center">
+              <button type="button" (click)="confirmDelete()" class="btn btn-primary btn-min">Yes</button>
+              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <div class="modal fade" id="disgardApp" role="dialog">
+    <div class="modal-dialog mymodal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Defer Application</h5>
+        </div>
+        <form class="md-float-material" [formGroup]="disgardForm" (ngSubmit)="onSubmitDisgardApp()">
+          <input type="hidden" formControlName="loanAppSeq" />
+          <div class="modal-body">
+            <div class="cRow">
+              <div class="cCol6">
+                <mat-form-field>
+                  <input matInput required formControlName="cmnt" placeholder="Remarks:" />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button appNoDblClick type="button" (click)="onSubmitDisgardApp()" class="btn btn-primary">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="reSchedule" role="dialog">
+    <div class="modal-dialog big mymodal">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Credit Rescheduling</h5>
+        </div>
+        <form [formGroup]="reScheduleForm" (ngSubmit)="submitReschedule()">
+          <div class="modal-body">
+            <div class="cRow mt-2">
+              <div class="cCol3-col">
+
+                <mat-form-field>
+                  <mat-select (selectionChange)="rescheduleMethodChange($event)" placeholder="Select Method"
+                    name="method" formControlName="methdSeq" required>
+                    <!-- <mat-option value="1">Method A (Without Charges)</mat-option> -->
+                    <mat-option value="2">Method B (With Charges)</mat-option>
+                    <mat-option value="3">Method C (With KSZB Charges & Accrural Service Charge)</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <input type="hidden" formControlName="clntSeq" />
+              <!-- <div class="cCol3-col">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Client Id:" formControlName="clntId">
+                </mat-form-field>
+              </div> -->
+              <!-- <div class="cCol3-col">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Credit Seq:" formControlName="loanAppSeq">
+                </mat-form-field>
+              </div> -->
+              <!-- <div class="cCol3-col">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Client:" formControlName="clntNm">
+                </mat-form-field>
+              </div> -->
+
+              <div class="cCol3-col">
+                <!-- <mat-form-field>
+                  <input type="number" matInput placeholder="Days add to Payment Schedule" formControlName="days">
+                </mat-form-field> -->
+
+                <mat-form-field>
+                  <mat-select (selectionChange)="rescheduleMonthChange($event)" placeholder="Select Duration"
+                    name="duration" required formControlName="perd">
+                    <mat-option value="1">1 Month</mat-option>
+                    <mat-option value="2">2 Month</mat-option>
+                    <mat-option value="3">3 Month</mat-option>
+                    <mat-option value="4">4 Month</mat-option>
+                    <mat-option value="5">5 Month</mat-option>
+                    <mat-option value="6">6 Month</mat-option>
+                    <mat-option value="7">7 Month</mat-option>
+                    <mat-option value="8">8 Month</mat-option>
+                    <mat-option value="9">9 Month</mat-option>
+                    <mat-option value="10">10 Month</mat-option>
+                    <mat-option value="11">11 Month</mat-option>
+                    <mat-option value="12">12 Month</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="cCol3-col">
+
+                <mat-form-field>
+                  <mat-select formControlName="rsnKey" placeholder="Reason" pattern="^[1-9]\d*$">
+                    <mat-option *ngFor="let edu of reasonForRescheduling" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </div>
+
+              <div class="cCol3-col">
+                <mat-form-field>
+                  <input type="text" matInput placeholder="Comments:" formControlName="cmnt">
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="modal-footer text-center">
+            <button type="button" [disabled]="!reScheduleForm.valid" appNoDblClick (click)="submitReschedule()"
+              class="btn btn-primary btn-min">OK</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

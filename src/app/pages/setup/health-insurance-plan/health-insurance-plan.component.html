@@ -1,0 +1,177 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Health Insurance Plan
+                  <!-- <i class="fa fa-search"></i> -->
+                </h6>
+                <div class="mysearch">
+                  <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..."
+                    title="Type in a name">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#businessector"
+                (click)="onAddNewClick()"><i class="fa fa-plus"></i> Add</button>
+            </div>
+            <div class="modal fade" id="businessector" role="dialog">
+              <div class="modal-dialog big mymodal">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Health Insurance Plan</h5>
+                  </div>
+
+                  <form [formGroup]="healthInsurancePlanForm" (ngSubmit)="addHealthInsurancePlanSubmit()">
+                    <div class="modal-body">
+                      <ul class="infolist">
+                      </ul>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <label>Plan Name:</label>
+                          <input type="text" formControlName="planNm" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && form.planNm.errors }" maxlength="20"/>
+                          <div *ngIf="submitted && form.planNm.errors" class="invalid-feedback">
+                            <div *ngIf="form.planNm.errors.required">Plan Name is required</div>
+                          </div>
+                        </div>
+                        <!-- Added by Areeba - 15-9-2022 -->
+                        <div class="cCol2">
+                          <label>Plan Description:</label>
+                          <input type="text" formControlName="plnDscr" class="form-control" maxlength="30"
+                            [ngClass]="{ 'is-invalid': submitted && form.plnDscr.errors }" />
+                        </div>
+                        <!-- Ended by Areeba -->
+                        <div class="cCol2">
+                          <label>Annual Premium:</label>
+                          <input type="text" formControlName="anlPremAmt" class="form-control" maxlength="7"
+                            (keypress)="onlyNumbers($event)" 
+                            [ngClass]="{ 'is-invalid': submitted && form.anlPremAmt.errors }" />
+                          <div *ngIf="submitted && form.anlPremAmt.errors" class="invalid-feedback">
+                            <div *ngIf="form.anlPremAmt.errors.required">Annual Premium Amount is required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>Max. Policy Amt. per Member</label>
+                          <input type="text" formControlName="maxPlcyAmt" class="form-control" maxlength="7"
+                            (keypress)="onlyNumbers($event)" 
+                            [ngClass]="{ 'is-invalid': submitted && form.maxPlcyAmt.errors }" />
+                          <div *ngIf="submitted && form.maxPlcyAmt.errors" class="invalid-feedback">
+                            <div *ngIf="form.maxPlcyAmt.errors.required">Maximum Policy Amount is required</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <label>GL Account Number:</label>
+                          <input type="text" formControlName="glAcctNum" class="form-control" maxlength="29"
+                            [ngClass]="{ 'is-invalid': submitted && form.glAcctNum.errors }" />
+                          <div *ngIf="submitted && form.glAcctNum.errors" class="invalid-feedback">
+                            <div *ngIf="form.glAcctNum.errors.required">GL Account Number is required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>Deffered Account Number:</label>
+                          <input type="text" formControlName="dfrdAcctNum" class="form-control" maxlength="29"
+                            [ngClass]="{ 'is-invalid': submitted && form.dfrdAcctNum.errors }" />
+                          <div *ngIf="submitted && form.dfrdAcctNum.errors" class="invalid-feedback">
+                            <div *ngIf="form.dfrdAcctNum.errors.required">Deffered Account Number is required</div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <label>Status:</label>
+                          <select type="" formControlName="planStsKey" class="form-control" id="status"
+                            [ngClass]="{ 'is-invalid': submitted && form.planStsKey.errors }">
+                            <option *ngFor="let status of statusArray" [value]="status.codeKey">{{status.codeValue}}
+                            </option>
+                          </select>
+                          <div *ngIf="submitted && form.planStsKey.errors" class="invalid-feedback">
+                            <div *ngIf="form.planStsKey.errors.required">Status is required</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Added by Areeba - 15-9-2022 -->
+                      <div class="cRow">
+                        <div class="cCol2">
+                          <div class="checkbox mb-1 mt-4">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="checkbox1" name="hlthCardFlg" class="custom-control-input" formControlName="hlthCardFlg">
+                              <label class="custom-control-label" for="checkbox1">Health Card</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cCol2">
+                          <div class="checkbox mb-1 mt-4">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="checkbox2" name="mnthFlg" class="custom-control-input" formControlName="mnthFlg">
+                              <label class="custom-control-label" for="checkbox2">Monthly</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /Ended by Areeba -->
+
+                    </div>
+                    <div class="modal-footer text-center">
+                      <button type="button" class="btn btn-primary btn-min"
+                        (click)="addHealthInsurancePlanSubmit()">Ok</button>
+                      <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>Plan ID</th>
+                  <th>Plan Name</th>
+                  <th>Annual Premium</th>
+                  <th>Max Policy Amt. per Member</th>
+                  <th>GL Account Number</th>
+                  <th>Deffered Account Number</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let healthInsurancePlan of HealthInsurancePlans">
+                  <td>{{healthInsurancePlan.planId}}</td>
+                  <td>{{healthInsurancePlan.planNm}}</td>
+                  <td>{{healthInsurancePlan.anlPremAmt}}</td>
+                  <td>{{healthInsurancePlan.maxPlcyAmt}}</td>
+                  <td>{{healthInsurancePlan.glAcctNum}}</td>
+                  <td>{{healthInsurancePlan.dfrdAcctNum}}</td>
+                  <td>{{findValueByKey(healthInsurancePlan.planStsKey)}}</td>
+                  <td>
+                    <a class="iconBtn" (click)="onEdit(healthInsurancePlan)"><i class="fa fa-pencil"></i></a>
+                    <a class="iconBtn delBtn" (click)="onDelete(healthInsurancePlan.hlthInsrPlanSeq)"><i
+                        class="fa fa-trash-o"></i></a>
+                    <!-- <a  class="iconBtn"><i class="fa fa-history"></i></a> -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="back">
+				<a href="setup.html" class="btn btn-primary btn-min"><i class="fa fa-chevron-left"></i> Back</a>
+			</div> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

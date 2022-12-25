@@ -1,0 +1,127 @@
+<main class="main">
+
+  <div class="container-fluid">
+    <app-voucher-info  (disbursementAmt)="recievemsg($event)" (isPaymentReq)="paymentReq($event)" (prdSeq)="getPrdSeq($event)" (appSts)="getAppSts($event)" ></app-voucher-info>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-arrow">
+          <li class="ng-star-inserted active">
+            <a >{{prdSeq==='0010' && appSts==='0004'?"Agency Creation":"Disbursement Voucher"}}</a>
+          </li>
+            <li >
+                <a  >PDCs</a>
+              </li>
+      
+        </ol>
+      </nav>
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-6 ">
+          <h6 class="colorBlack">{{prdSeq==='0010' && appSts==='0004'?"Agency Creation":"Disbursement Voucher"}}</h6>
+        </div>
+        <div class="col-sm-6 addBtn mb-2">
+        
+          <div class="modal fade" id="addVoucher" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Voucher</h5>
+                </div>
+                <form class="md-float-material" [formGroup]="agencyForm" (ngSubmit)="onSubmit()" >
+                  <div class="modal-body">
+                    <div class="cRow">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <mat-select placeholder="Payment Mode"  formControlName="pymtTypSeq" (selectionChange)="onRecoveryChange()"
+                                      [errorStateMatcher]="matcher">
+                            <mat-option  *ngFor="let code of paymentModes" [value]="code">
+                              {{code.typStr}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="!agencyForm.get('pymtTypSeq').valid">
+                            Payment Mode is <strong>required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col" *ngIf="isCheck">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Instrument No:" formControlName="instrNum"
+                                 [errorStateMatcher]="matcher">
+                          <mat-error *ngIf="!agencyForm.get('instrNum').valid">
+                            Instrument Number is <strong>required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Amount:" formControlName="amt"
+                                 [errorStateMatcher]="matcher" pattern="[0-9]{1,6}">
+                          <mat-error *ngIf="!agencyForm.get('amt').valid">
+                            Amount is <strong>invalid</strong>
+                          </mat-error>
+                          <mat-error *ngIf="agencyForm.errors?.pattern">
+                            Voucher amount is  <strong>invalid </strong>
+                           </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="submit" class="btn btn-primary" [disabled]="!agencyForm.valid">Ok</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mb-md-5">
+        <table class="table order-list"  id="myTable">
+          <thead class="thead-light">
+          <tr>
+            <th>Payment Mode</th>
+            <th>Instrument No.</th>
+            <th>Amount</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let code of allItems">
+              <td>
+                  <div *ngFor="let pm of paymentModesOrig" >
+                    <div *ngIf="code.pymtTypSeq.typSeq===pm.typSeq">
+                        {{pm.typStr}}
+                    </div>
+                   </div>
+                </td>
+            <td>{{code.instrNum}}</td>
+            <td>{{code.amt  | currency:'PKR':''}}</td>
+            <td [class.wrapper]="auth.role=='ito'">
+              <a [class.pointer-events-none]="auth.role=='ito'" (click)="editVoucher(code)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+            </td>
+          </tr>
+         
+          </tbody>
+          <tbody>
+          <tr class="total-info">
+            <td></td>
+            <td class="text-right"><b>Total Amount:</b></td>
+            <td>{{totalAmount  | currency:'PKR':''}}</td>
+            <td>
+            </td>
+          </tr>
+          </tbody>
+
+
+
+        </table>
+      </div>
+      <button class="btn btn-primary" [disabled]="auth.role=='ito'" (click)="saveVouchers()">Save Vouchers</button>
+      <button  [disabled]="totalAmount!=disbursementAmt"  class="btn btn-primary" routerLink="/disbursement/edit-pdcs">Next</button>
+      
+      <!--<button class="btn btn-default">Save</button>-->
+    </div>
+  </div>
+  </main>

@@ -1,0 +1,105 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <form (ngSubmit)="onHilAppraisalFormSubmit(hilAppraisalForm.value)" #hilAppraisalForm="ngForm">
+        <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+        <div class="cRow">
+          <div class="cCol1">
+            <mat-form-field>
+              <!-- <input type="text" placeholder="Loan Purpose" id="bizDtl" name="bizDtl" matInput
+                [disabled]="!hasPermission" [(ngModel)]="model.bizDtl" required
+                maxlength="30" > -->
+              <mat-select [disabled]="readonly && !hasPermission" placeholder="Loan Purpose"
+                [(ngModel)]="model.bizDtl" (selectionChange)="changePurpose($event)"
+                [errorStateMatcher]="matcher" name="bizDtl" required>
+                <mat-option *ngFor="let prp of loanPurpose" [value]="prp.bizActyNm">
+                  {{prp.bizActyNm}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Year of Construction" id="yrOfCnstrctn" name="yrOfCnstrctn" matInput
+                [disabled]="!hasPermission" [(ngModel)]="yrOfCnstrctn" required (keypress)="onlyNumbers($event)"
+                maxlength="4">
+            </mat-form-field>
+            <!-- <mat-form-field>
+              <input matInput [matDatepicker]="picker1" placeholder="Year of Construction"
+              [disabled]="readonly && !hasPermission"  required
+              id="yrOfCnstrctn" name="yrOfCnstrctn" [(ngModel)]="yrOfCnstrctn" [max]="maxDate">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker startView="multi-year" #picker1 (yearSelected)="chosenYearHandler($event, picker)"></mat-datepicker>
+            </mat-form-field> -->
+            
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Floors in House" id="noOfFlrs" name="noOfFlrs" matInput
+                [disabled]="!hasPermission" [(ngModel)]="noOfFlrs" required (keypress)="onlyNumbers($event)"
+                maxlength="2" >
+            </mat-form-field>
+            
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Area of Plot (Marla)" id="plotAreaInMrla" name="plotAreaInMrla" matInput
+                [disabled]="!hasPermission" [(ngModel)]="plotAreaInMrla" required (keypress)="onlyNumbers($event)"
+                maxlength="3" >
+            </mat-form-field>
+            
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Number of Rooms" id="noOfRooms" name="noOfRooms" matInput
+                [disabled]="!hasPermission" [(ngModel)]="noOfRooms" required (keypress)="onlyNumbers($event)"
+                maxlength="2" >
+            </mat-form-field>
+            
+          </div>
+          <div class="cCol1">
+            <mat-form-field>
+              <input type="text" placeholder="Number of Bedrooms" id="noOfBdroom" name="noOfBdroom" matInput
+                [disabled]="!hasPermission" [(ngModel)]="noOfBdroom" required (keypress)="onlyNumbers($event)"
+                maxlength="2" >
+            </mat-form-field>
+            
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Number of Washrooms" id="noOfWshroom" name="noOfWshroom"
+              value="{{model.previousLoanCyclNum}}" [(ngModel)]="noOfWshroom" required (keypress)="onlyNumbers($event)"
+              maxlength="2" [disabled]="!hasPermission">
+            </mat-form-field>
+            
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol5">
+            <div class="pt-1 pb-1">
+              <br>
+              <label style="display:block;">Separate Kitchen</label>
+              <mat-radio-group name="isKtchnSeprt" [(ngModel)]="isKtchnSeprt" required [disabled]="!hasPermission">
+
+                <mat-radio-button class="m-r-30" [disabled]="false" [value]="true">Yes
+                </mat-radio-button>
+                <mat-radio-button class="m-r-30" [disabled]="false" [value]="false">No
+                </mat-radio-button>
+
+              </mat-radio-group>
+            </div>
+          </div>
+        </div>
+
+        <button (click)="continueClicked()" [disabled]="!formSaved" type="button"
+          class="btn btn-primary">Continue</button>
+        <button class="btn btn-default" [disabled]="readonly && !hasPermission" type="submit">Save</button>
+        
+      </form>
+    </div>
+  </div>
+</main>

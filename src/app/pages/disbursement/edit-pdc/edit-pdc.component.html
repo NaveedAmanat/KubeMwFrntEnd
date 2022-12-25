@@ -1,0 +1,208 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-voucher-info (recvAmt)="recievemsg($event)" (pdcslimit)="pdcRequired($event)"
+      (isPaymentReq)="paymentReq($event)"></app-voucher-info>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-arrow">
+          <li class="ng-star-inserted active">
+            <a >Disbursement Voucher</a>
+          </li>
+            <li >
+                <a  >PDCs</a>
+              </li>
+      
+        </ol>
+      </nav>
+    <div class="content" *ngIf="pdcslimit==0 && pdcslimit==null">
+      <h6 class="colorBlack"><span>PDCs not required for this product.</span> </h6>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-6 ">
+          <h6 class="colorBlack">PDCs</h6>
+        </div>
+
+        <div class="modal fade" id="addmember" role="dialog">
+          <div class="modal-dialog mymodal">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">PDC</h5>
+              </div>
+              <form class="md-float-material" [formGroup]="pdcForm" (ngSubmit)="onSubmit()">
+                <div class="modal-body">
+                  <div class="cRow">
+                    <div class="cCol2">
+                      <mat-form-field>
+                        <input matInput required [min]="minDate" [max]="maxDate" formControlName="collDt"
+                          placeholder="Cheque Date:" [matDatepicker]="picker1" disabled readonly />
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                        <mat-error *ngIf="!pdcForm.get('collDt').valid">
+                          Cheque Date is <strong>required</strong>
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol2">
+                      <mat-form-field>
+                        <input type="text" matInput required placeholder="Cheque Number:" formControlName="cheqNum"
+                          [errorStateMatcher]="matcher" pattern="[0-9]{1,16}">
+                        <mat-error *ngIf="!pdcForm.get('cheqNum').valid">
+                          max 16 digets <strong>required</strong>
+                        </mat-error>
+
+                      </mat-form-field>
+                    </div>
+                    <div class="cCol2">
+                      <mat-form-field>
+                        <input type="text" matInput required placeholder="Amount:" formControlName="amt"
+                          [errorStateMatcher]="matcher" pattern="[0-9]{1,6}">
+                        <mat-error *ngIf="!pdcForm.get('amt').valid">
+                          Amount is <strong>Invalid</strong>
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cRow">
+        <div class="cCol1">
+          <label>Bank Name:</label>
+          <mat-select [(ngModel)]="model.bankKey" placeholder="Bank" name="bankNm" required
+            [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" class="form-control">
+            <mat-option *ngFor="let bank of banks" [value]="bank.codeKey">
+              {{bank.codeValue}}
+            </mat-option>
+          </mat-select>
+        </div>
+        <div class="cCol1">
+          <label>Branch:</label>
+          <input type="text" [(ngModel)]="model.brnchNm" class="form-control">
+        </div>
+        <div class="cCol1">
+          <label>Account No.:</label>
+          <input type="text" pattern="[0-9]{1,20}" (keypress)="onlyNumbers($event)" [(ngModel)]="model.acctNum"
+            #hhMembers="ngModel" class="form-control">
+          <mat-error *ngIf="hhMembers.errors?.pattern">
+            20 digits are <strong>allowed </strong>
+          </mat-error>
+        </div>
+        <div class="cCol1">
+          <div>
+            <button class="btn btn-primary btn-sm mt-4" (click)="addPdcHeader()"><i class="fa fa-floppy-o"
+                aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 addBtn mb-2">
+        <button class="btn btn-primary btn-sm" (click)="onAddPdc()"><i class="fa fa-plus"></i> Add</button>
+      </div>
+      <div class="table-responsive mb-md-5">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>PDCs ID</th>
+              <th>Collection Date</th>
+              <th>Cheque No.</th>
+              <th>Amount</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let code of allItems">
+              <td>{{code.pdcId}}</td>
+              <td>{{code.collDt | date :'dd-MM-yyyy'}}</td>
+              <td>{{code.cheqNum}}</td>
+              <td>{{code.amt | currency:'PKR':''}}</td>
+              <td>
+                <a (click)="editPdc(code)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                <a (click)="deleteItem(code)" class="iconBtn delBtn"> <i class="fa fa-trash-o"></i></a>
+                <!--              <a href="#." class="iconBtn"><i class="fa fa-history"></i></a>-->
+              </td>
+            </tr>
+
+          </tbody>
+          <tbody>
+            <tr class="total-info">
+              <td></td>
+              <td></td>
+              <td class="text-right"><b>Total Amount:</b></td>
+              <td>{{totalAmount | currency:'PKR':''}}</td>
+              <td>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 
+                 <button class="btn btn-primary" (click)="disbursementPosting()">Disburse Credit</button>
+        <button class="btn btn-default">Save</button> -->
+    </div>
+    <button class="btn btn-primary" routerLink="/disbursement/edit-voucher">Back</button>
+    <button class="btn btn-primary" (click)="savePdcs()">Save Pdcs</button>
+
+    <!-- <button *ngIf="isPaymentReq" class="btn btn-primary" routerLink="/disbursement/payment-schedule">Back</button>
+      <button *ngIf="!isPaymentReq" class="btn btn-primary" routerLink="/disbursement/voucher">Back</button>
+      <button class="btn btn-primary" (click)="openDialog()">Disburse Credit</button> -->
+
+  </div>
+</main>
+<div class="modal fade" id="DisburseLoan" role="dialog">
+  <div class="modal-dialog mymodal big" style="width: 20%">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Disburse Credit Application</h5>
+      </div>
+      <form (ngSubmit)="disbursementPosting()">
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol2">
+              <mat-checkbox class="example-margin" [(ngModel)]="post" name="post" labelPosition="before">Do you want to
+                Post this transaction?</mat-checkbox>
+
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="submit" class="btn btn-primary btn-min">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  $('.date').datepicker({
+  });
+
+  $('input#yescheque').change(function () {
+    if (this.checked) {
+      $('#addpdcsrow').show();
+    }
+    else {
+
+    }
+  })
+
+  $('input#ChequeNot').change(function () {
+    if (this.checked) {
+      $('#checknotrow').show();
+    }
+    else {
+
+    }
+  })
+
+</script>

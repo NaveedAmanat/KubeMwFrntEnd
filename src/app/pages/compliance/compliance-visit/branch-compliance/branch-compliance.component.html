@@ -1,0 +1,92 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+
+  
+      <div class="table-responsive mb-md-5">
+        <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+
+          <ng-container matColumnDef="fname">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Client Name</th>
+            <td mat-cell *matCellDef="let obj">
+             
+              {{obj.fname}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="ctgryNm">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Category Name</th>
+            <td mat-cell *matCellDef="let obj">
+            
+              {{obj.ctgryNm}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="refCdDscr">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+            <td mat-cell *matCellDef="let obj">
+            
+              {{obj.refCdDscr}}
+            </td>
+          </ng-container>
+
+      
+          <ng-container matColumnDef="ctgryCmnt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Category Comments</th>
+            <td mat-cell *matCellDef="let obj">{{obj.ctgryCmnt}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="ctgryScr">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Category Score</th>
+            <td mat-cell *matCellDef="let obj">{{obj.ctgryScr}}</td>
+          </ng-container>
+          
+
+           Target Visits Column 
+          <ng-container matColumnDef="vstScr">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Visit Score</th>
+            <td mat-cell *matCellDef="let obj">{{obj.vstScr}}</td>
+          </ng-container>
+
+        
+
+          <!-- Complete Visits Column  -->
+          <ng-container matColumnDef="countKeys">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Count Keys</th>
+            <td mat-cell *matCellDef="let obj">{{obj.countKeys}}</td>
+          </ng-container>
+
+          <!-- Remaining Column  -->
+          <ng-container matColumnDef="isuNm">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Issue Name</th>
+            <td mat-cell *matCellDef="let obj">{{obj.isuNm}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="isuSts">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Issue Status</th>
+            <td mat-cell *matCellDef="let obj">{{obj.isuSts}}</td>
+          </ng-container>
+
+        
+          <ng-container matColumnDef="isuCmnt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Issue Comments</th>
+            <td mat-cell *matCellDef="let obj">{{obj.isuCmnt}}</td>
+          </ng-container>
+
+         
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+
+
+    </div>
+  </div>
+</main>

@@ -1,0 +1,356 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-voucher-info (recvAmt)="recievemsg($event)" (pdcslimit)="pdcRequired($event)" (prdGrpSeq)="getPrdGrpSeq($event)" (loanAppStatus) = "getLoanAppStatus($event)"
+      (isPaymentReq)="paymentReq($event)" (showHlthCard)="isHealthCard($event)" (disbAmount)="getDisbAmount($event)" (cnicNum)="getCnicNum($event)"></app-voucher-info>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-arrow">
+        <li>
+          <a>Disbursement Voucher</a>
+        </li>
+        <li *ngIf="isPaymentReq">
+          <a>Repayment Schedule</a>
+        </li>
+        <li class="ng-star-inserted active">
+          <a>PDCs</a>
+        </li>
+
+      </ol>
+    </nav>
+    <div class="content" *ngIf="pdcslimit==null || pdcslimit==0 ">
+      <h6 class="colorBlack"><span>PDCs not required </span> </h6>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-6 ">
+          <h6 class="colorBlack">PDCs</h6>
+        </div>
+        <div *ngIf="model.pdcHdrSeq==null   && (pdcslimit!=null && pdcslimit!=0 )" class="col-sm-6 addBtn mb-2">
+          <!-- <button class="btn btn-primary btn-sm" (click)="onAddPdc()"><i class="fa fa-plus"></i> Add</button> -->
+          <button class="btn btn-primary btn-sm" (click)="onGenerateClick()"> Generate PDCs</button>
+        </div>
+
+      </div>
+      <div *ngIf="model.pdcHdrSeq!=null" class="cRow">
+        <div class="cCol1">
+          <label>Bank Name:</label>
+          <mat-select [(ngModel)]="model.bankKey" placeholder="Bank" name="bankNm" required
+            [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" class="form-control">
+            <mat-option *ngFor="let bank of banks" [value]="bank.codeKey">
+              {{bank.codeValue}}
+            </mat-option>
+          </mat-select>
+        </div>
+        <div class="cCol1">
+          <label>Branch:</label>
+          <input type="text" [(ngModel)]="model.brnchNm" class="form-control">
+        </div>
+        <div class="cCol1">
+          <label>Account No.:</label>
+          <input type="text" pattern="[0-9]{1,20}" (keypress)="onlyNumbers($event)" [(ngModel)]="model.acctNum"
+            #hhMembers="ngModel" class="form-control">
+          <mat-error *ngIf="hhMembers.errors?.pattern">
+            20 digits are <strong>allowed </strong>
+          </mat-error>
+        </div>
+        <!-- <div class="cCol1">
+          <label>Cheque Number:</label>
+          <input type="text" [(ngModel)]="model.cheque" class="form-control">
+        </div> -->
+        <div class="cCol1" style="padding-top: 27px;">
+          <button appNoDblClick type="button" class="btn btn-primary btn-min" (click)="addPdcHeader()">Save</button>
+        </div>
+
+      </div>
+      <div class="table-responsive mb-md-5">
+        <table *ngIf="allItems!=null && allItems.length>0" class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>PDCs ID</th>
+              <th>Collection Date</th>
+              <th>Cheque No.</th>
+              <th>Amount</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let code of allItems">
+              <td>{{code.pdcId}}</td>
+              <td>{{code.collDt | date :'dd-MM-yyyy'}}</td>
+              <td>{{code.cheqNum}}</td>
+              <td>{{code.amt | currency:'PKR':''}}</td>
+              <td>
+                <a (click)="editPdc(code)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                <!-- <a (click)="deleteItem(code)" class="iconBtn delBtn"> <i class="fa fa-trash-o"></i></a> -->
+                <!--              <a href="#." class="iconBtn"><i class="fa fa-history"></i></a>-->
+              </td>
+            </tr>
+
+          </tbody>
+          <tbody>
+            <tr class="total-info">
+              <td></td>
+              <td></td>
+              <td class="text-right"><b>Total Amount:</b></td>
+              <td>{{totalAmount | currency:'PKR':''}}</td>
+              <td>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 
+               <button class="btn btn-primary" (click)="disbursementPosting()">Disburse Credit</button>
+      <button class="btn btn-default">Save</button> -->
+    </div>
+    <button *ngIf="isPaymentReq" class="btn btn-primary" routerLink="/disbursement/payment-schedule">Back</button>
+    <button *ngIf="!isPaymentReq" class="btn btn-primary" routerLink="/disbursement/voucher">Back</button>
+    <button class="btn btn-primary" (click)="openDialog()">Disburse Credit</button>
+  </div>
+</main>
+<div class="modal fade" id="DisburseLoan" role="dialog">
+  <div class="modal-dialog mymodal big" style="width: 35%">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Disburse Credit Application</h5>
+      </div>
+      <form (ngSubmit)="disbursementPosting()">
+        <div class="modal-body">
+
+          <div *ngIf="hasAmlMatch">
+            <div class="row">
+              <div class="col-sm-12">
+                <h6 class="text-dark">{{amlMtch.reason}}</h6>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <mat-checkbox [(ngModel)]="amlChck" name="amlChck" labelPosition="before">
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="(hasAmlMatch && amlChck) || !hasAmlMatch">
+            <div class="col-sm-10">
+              <mat-checkbox [(ngModel)]="post" name="post" labelPosition="before"><b>Do you
+                  want
+                  to
+                  Post this transaction?</b></mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="submit" *ngIf="(hasAmlMatch && amlChck) || !hasAmlMatch" appNoDblClick
+            (click)="disbursementPosting()" [disabled]="disbFlg" class="btn btn-primary btn-min">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="checkList" role="dialog">
+  <div class="modal-dialog mymodal big" style="width: 35%">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Check List</h5>
+      </div>
+      <form (ngSubmit)="submitCheckList()" [formGroup]="checkListForm">
+        <div class="modal-body">
+
+          <div class="row">
+              <div class="col-sm-10" *ngIf="isPDCTakenShow()">
+                <mat-checkbox formControlName="pdcFlg"><b>PDCs taken and checked - </b> </mat-checkbox>
+                    <span class="badge badge-pill badge-info" style="font-size: 1.1em; margin-left: 2px; letter-spacing: 1px;" *ngFor="let pdc of allItems"> {{pdc.cheqNum}} </span>
+              </div>
+              <div class="col-sm-10">
+                <mat-checkbox formControlName="orgnlCnicFlg"><b>Original CNIC checked and verified by the BM - <span class="badge badge-pill badge-info" style="font-size: 1.2em; letter-spacing: 1px;" >{{cnicNum}}</span> </b></mat-checkbox>
+              </div>
+              <div class="col-sm-10">
+                <mat-checkbox formControlName="mfiActvLoansFlg"><b>Checked other active loans in MFIs</b></mat-checkbox>
+              </div>
+              <div class="col-sm-10">
+                <mat-checkbox formControlName="verisysFlg"><b>Nadra verisys checked by the BM</b></mat-checkbox>
+              </div>
+              <div class="col-sm-10">
+                <mat-checkbox formControlName="clntAgremntFlg"><b>Client agreed with loan amount - <span class="badge badge-pill badge-info" style="font-size: 1.2em;" >{{disbAmount}}</span></b></mat-checkbox>
+              </div>
+              <div class="col-sm-10">
+                <mat-checkbox formControlName="clntDueDtAgremntFlg"><b>1<sup>st</sup> installment due date agreed with client and LRS printed - <span class="badge badge-pill badge-info" style="font-size: 1.2em;">{{minDate | date :'dd-MM-yyyy' }}</span></b></mat-checkbox>
+              </div>
+
+              
+            <!-- </div> -->
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="submit" (click)="submitCheckList()" [disabled]="!checkListForm.valid" appNoDblClick class="btn btn-primary btn-min">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--- Bhayoo model--->
+<div class="modal fade" id="generatePdcsModal" role="dialog">
+  <div class="modal-dialog mymodal big">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">PDCs</h5>
+      </div>
+      <form (ngSubmit)="generatePdcSubmit()" [formGroup]="generatePdcForm">
+        <div class="modal-body">
+          <div class="cRow">
+            <input type="hidden" formControlName="loanAppSeq">
+
+            <div class="cCol2">
+              <mat-form-field>
+                <mat-select placeholder="Bank Name" formControlName="bankKey" [(ngModel)]="model.bankKey">
+                  <mat-option *ngFor="let bank of banks" [value]="bank.codeKey">
+                    {{bank.codeValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Branch Name:" formControlName="brnchNm" [(ngModel)]="model.brnchNm">
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Account Number:"
+                  formControlName="acctNum" [(ngModel)]="model.acctNum" [maxlength]="24">
+              </mat-form-field>
+            </div>
+
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput (keypress)="onlyNumbers($event)" placeholder="First Cheque Number:"
+                  formControlName="cheqNum" [maxlength]="15">
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button [disabled]="pdcGenFlg" type="button" (click)="generatePdcSubmit()" appNoDblClick
+            class="btn btn-primary btn-min">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="AmountModal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog mymodal big" style="width: 35%">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cheque Amount</h5>
+      </div>
+        <div class="modal-body">
+
+          <div>
+            <div class="row">
+              <div class="col-sm-12">
+                <h6 class="text-dark">Cheque Amount RS:                 {{chckAmnt}}</h6>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button"  appNoDblClick
+            (click)="chckAmtSubmit()" class="btn btn-primary btn-min">Ok</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="addmember" role="dialog">
+  <div class="modal-dialog mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">PDC</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="pdcForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol2">
+              <mat-form-field>
+                <input matInput required [min]="minDate" [max]="maxDate" formControlName="collDt"
+                  placeholder="Cheque Date:" disabled readonly />
+                <!-- <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker required #picker1 disabled="false"></mat-datepicker> -->
+                <mat-error *ngIf="!pdcForm.get('collDt').valid">
+                  Cheque Date is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput required placeholder="Cheque Number:" formControlName="cheqNum"
+                  [errorStateMatcher]="matcher" pattern="[0-9]{1,16}">
+                <mat-error *ngIf="!pdcForm.get('cheqNum').valid">
+                  max 16 digets <strong>required</strong>
+                </mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="cCol2">
+              <mat-form-field>
+                <input type="text" matInput required placeholder="Amount:" formControlName="amt"
+                  [errorStateMatcher]="matcher" pattern="[0-9]{1,6}">
+                <mat-error *ngIf="!pdcForm.get('amt').valid">
+                  Amount is <strong>Invalid</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" appNoDblClick (click)="onSubmit()" class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('.date').datepicker({
+  });
+
+  $('input#yescheque').change(function () {
+    if (this.checked) {
+      $('#addpdcsrow').show();
+    }
+    else {
+
+    }
+  })
+
+  $('input#ChequeNot').change(function () {
+    if (this.checked) {
+      $('#checknotrow').show();
+    }
+    else {
+
+    }
+  })
+
+</script>

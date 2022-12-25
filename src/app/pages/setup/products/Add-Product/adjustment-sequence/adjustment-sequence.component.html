@@ -1,0 +1,46 @@
+
+<main class="main">
+  <div class="container-fluid">
+    <app-bread-crumb></app-bread-crumb>
+    <div class="content">
+      <h6 class="colorBlack">{{product.prdNm}}</h6>
+
+      <div class="row mt-0">
+        <div class="col-sm-6">
+          <h6 class="mt-1">Adjustment Sequence</h6>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="thead-light">
+          <tr>
+            <th width="15%">Sequence</th>
+            <th>Type</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let type of allitems">
+            <td><mat-form-field>
+              <mat-select placeholder="Order:" [(ngModel)] = "type.adjOrdr" 
+                          name="prdGrpSts2" [errorStateMatcher]="matcher">
+                <mat-option *ngFor="let i of index" [value]="i">{{i}}</mat-option>
+              </mat-select>
+            </mat-form-field></td>
+            <td>{{type.chargeName}}</td>
+            <td></td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <!-- <div class="arrows mb-4">
+        <a (click)="onTop()" class="btn btn-border"><img src="../../../../../assets/images/arrow-top.png" alt=""></a>
+        <a (click)="onBottom()" class="btn btn-border"><img src="../../../../../assets/images/arrow-down.png" alt=""></a>
+      </div> -->
+
+      <a class="btn  btn-min btn-primary" routerLink="/setup/addProduct/business-sector">Continue</a>
+      <button (click)="onSubmit()" class="btn btn-min btn-default">Save</button>
+    </div>
+  </div>
+</main>

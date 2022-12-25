@@ -1,0 +1,84 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">Branch: {{brmodel.brnchSeq}} - {{brmodel.brnchNm.toUpperCase()}}</h6>
+      <div class="row mt-3">
+        <div class="col-sm-6">
+          <h6 class="colorBlack">Products</h6>
+        </div>
+        <div class="col-sm-6 addBtn">
+          <button type="button" [disabled]="readonly && !hasPermission" class="btn btn-primary btn-sm"
+            (click)="addProducts()">
+            <i class="fa fa-plus"></i> Add</button>
+        </div>
+        <div class="modal fade" id="addProducts" role="dialog">
+          <div class="modal-dialog mymodal">
+
+            <!-- Modal content-->
+            <form (ngSubmit)="onProductsFormSubmit(productsForm.value)" #productsForm="ngForm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Product</h5>
+                </div>
+                <div class="modal-body text-left">
+                  <div class="row">
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-6">
+                      <mat-form-field>
+                        <mat-select [disabled]="readonly && !hasPermission" placeholder="Select Product"
+                          [(ngModel)]="prdSeq" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" name="prdSeq"
+                          id="prdSeq" required>
+                          <mat-option *ngFor="let product of products" [value]="product.prdSeq">
+                            {{product.prdNm}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="submit" class="btn btn-primary btn-min"
+                    [disabled]="!productsForm.form.valid">Ok</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>Product Code</th>
+              <th>Product Name</th>
+              <th>Comment</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let prd of brmodel.products">
+              <td>{{prd.prdSeq}}</td>
+              <td>{{prd.prdNm}}</td>
+              <td>{{prd.prdCmnt}}</td>
+              <td>
+                <button [disabled]="readonly && !hasPermission" (click)="deleteProduct(prd)"
+                  class="iconBtn delBtn simplebtn ">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <button (click)="prevScreen()" type="button" class="btn btn-primary"><i
+      class="fa fa-chevron-left"></i> Back</button>
+    <button (click)="continueClicked()" type="button"
+          class="btn btn-primary">Continue</button>
+  </div>
+</main>

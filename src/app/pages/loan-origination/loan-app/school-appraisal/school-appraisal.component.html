@@ -1,0 +1,1108 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+      <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+      <ul class="nav nav-tabs borrowerTabs" id="borrowerTabs" role="tablist">
+        <li class="nav-item"> <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basincinfo" role="tab"
+            aria-controls="home" aria-selected="true"><span *ngIf="model.schoolAppraisal.hasBasic"
+              class="dot green"></span><span *ngIf="!model.schoolAppraisal.hasBasic" class="dot orange"></span>Basic
+            Info</a> </li>
+        <li class="nav-item"> <a class="nav-link" id="address-tab" data-toggle="tab" href="#addressTab" role="tab"
+            aria-controls="addressTab" aria-selected="false"><span *ngIf="model.schoolAppraisal.hasAddress"
+              class="dot green"></span><span *ngIf="!model.schoolAppraisal.hasAddress" class="dot orange"></span>School
+            Address Details</a> </li>
+        <li class="nav-item"> <a class="nav-link" id="GradeDetails-tab" data-toggle="tab" href="#GradeDetailsTab"
+            role="tab" aria-controls="addressTab" aria-selected="false"><span *ngIf="model.schoolAppraisal.hasGrade"
+              class="dot green"></span><span *ngIf="!model.schoolAppraisal.hasGrade" class="dot orange"></span>Grade
+            Details</a> </li>
+        <li class="nav-item"> <a class="nav-link" id="attendance-tab" data-toggle="tab" href="#attendanceTab" role="tab"
+            aria-controls="addressTab" aria-selected="false"><span *ngIf="model.schoolAppraisal.hasAttend"
+              class="dot green"></span><span *ngIf="!model.schoolAppraisal.hasAttend" class="dot orange"></span>Staff
+            Profile</a> </li>
+        <li class="nav-item"> <a class="nav-link" id="incomeid" data-toggle="tab" href="#incomeTab" role="tab"
+            aria-controls="incomeTab" aria-selected="false"><span *ngIf="model.schoolAppraisal.hasIncome"
+              class="dot green"></span><span *ngIf="!model.schoolAppraisal.hasIncome"
+              class="dot orange"></span>Income</a> </li>
+        <li class="nav-item"> <a class="nav-link" id="expensesid" data-toggle="tab" href="#expensesTab" role="tab"
+            aria-controls="expensesTab" aria-selected="false"><span *ngIf="model.schoolAppraisal.hasExpense"
+              class="dot green"></span><span *ngIf="!model.schoolAppraisal.hasExpense"
+              class="dot orange"></span>Expenses</a> </li>
+        <!-- <li class="nav-item"> <a class="nav-link" id="school-quality" data-toggle="tab" href="#schoolqualityTab" role="tab"
+            aria-controls="schoolqualityTab" aria-selected="false"><span *ngIf="model.schoolAppraisal.hasQltyChck" class="dot green"></span><span *ngIf="!model.schoolAppraisal.hasQltyChck" class="dot orange"></span>School Quality Questionnaire</a> </li> -->
+      </ul>
+      <form (ngSubmit)="onSubmit()" #schoolAppraisalForm="ngForm">
+        <div class="tab-content borrowerTabsContent mb-md-5" id="borrowerTabsContent">
+          <div class="tab-pane fade show active" id="basincinfo" role="tabpanel" aria-labelledby="basic-tab">
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" maxlength="30" matInput [disabled]="readonly && !hasPermission" placeholder="School Name: *"
+                    name="schNm" [(ngModel)]="model.schoolAppraisal.schNm">
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="School Ownership: *"
+                    [(ngModel)]="model.schoolAppraisal.schOwnTypKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="schOwnTypKey">
+                    <mat-option *ngFor="let edu of schoolOwnerShip" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Relation with Owner: *"
+                    [(ngModel)]="model.schoolAppraisal.relWthOwnKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="relWthOwnKey">
+                    <mat-option *ngFor="let edu of relation" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="School Principal: *"
+                    [(ngModel)]="model.schoolAppraisal.schPpalKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="schPpalKey">
+                    <mat-option *ngFor="let edu of principal" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Building Ownership Status: *"
+                    [(ngModel)]="model.schoolAppraisal.bldngOwnKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="bldngOwnKey">
+                    <mat-option *ngFor="let edu of buildingOwnerShip" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="PEF Supported School: *"
+                    [(ngModel)]="model.schoolAppraisal.pefSptFlg" [errorStateMatcher]="matcher" pattern="^[0-9]\d*$"
+                    name="pefSptFlg">
+                    <mat-option *ngFor="let edu of boolean" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="School Type: *"
+                    [(ngModel)]="model.schoolAppraisal.schTypKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="schTypKey">
+                    <mat-option *ngFor="let edu of schoolType" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="School Level: *"
+                    [(ngModel)]="model.schoolAppraisal.schLvlKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="schLvlKey">
+                    <mat-option *ngFor="let edu of schoolLevel" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="School Medium: *"
+                    [(ngModel)]="model.schoolAppraisal.schMedmKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="schMedmKey">
+                    <mat-option *ngFor="let edu of schoolMedium" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="School Area Units: *"
+                    [(ngModel)]="model.schoolAppraisal.schAreaUntKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                    name="schAreaUntKey">
+                    <mat-option *ngFor="let edu of schoolArea" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" maxlength="3" placeholder="School Area: *" (keypress)="onlyNumbers($event)"
+                    matInput [disabled]="readonly && !hasPermission" [errorStateMatcher]="matcher" #schArea="ngModel" name="schArea"
+                    pattern="^[1-9]\d*$" [(ngModel)]="model.schoolAppraisal.schArea">
+                  <mat-error *ngIf="schArea.invalid">
+                    School Area is <strong>invalid</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <!-- <mat-form-field>
+                  <input [(ngModel)]="this.model.schoolAppraisal.yearSchlEst" [matDatepicker]="dp" placeholder="Year of School Establishment"  matInput>
+                  <mat-datepicker-toggle matSuffix [for]="dp"  (change)="calculateSchoolAge()"></mat-datepicker-toggle>
+                  <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event, dp)" (monthSelected)="chosenMonthHandler($event, dp)"
+                    panelClass="example-month-picker">
+                  </mat-datepicker>
+                </mat-form-field> -->
+                <mat-form-field>
+                  <input matInput [matDatepicker]="dp" readonly [max]="yearBefore"
+                    placeholder="Year of School Establishment: *" name="yearBefore" [(ngModel)]="date">
+                  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                  <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event, dp)"
+                    (monthSelected)="chosenMonthHandler($event, dp)" panelClass="example-month-picker">
+                  </mat-datepicker>
+                </mat-form-field>
+              </div>
+
+
+              <div class="cCol1">
+                <mat-form-field>
+                  <mat-select [disabled]="readonly && !hasPermission" placeholder="Is School Registered: *"
+                    [(ngModel)]="model.schoolAppraisal.schRegdFlg" [errorStateMatcher]="matcher" pattern="^[0-9]\d*$"
+                    name="schRegdFlg">
+                    <mat-option *ngFor="let edu of boolean" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="cCol1"  *ngIf="model.schoolAppraisal.schRegdFlg">
+                  <mat-form-field>
+                      <input type="text" maxlength="50"  matInput
+                        [disabled]="readonly && !hasPermission" placeholder="School Registeration: *" name="schRegdAgy"
+                        [(ngModel)]="model.schoolAppraisal.schRegdAgy">
+                    </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="addressTab" role="tabpanel" aria-labelledby="address-tab">
+            <div class="cRow">
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input matInput readonly id="province" name="province"
+                    [(ngModel)]="model.schoolAppraisal.addressDto.provinceName" readonly placeholder="Province: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input matInput readonly id="district" name="district"
+                    [(ngModel)]="model.schoolAppraisal.addressDto.districtName" readonly placeholder="District: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input matInput readonly id="tehsil" name="tehsil"
+                    [(ngModel)]="model.schoolAppraisal.addressDto.tehsilName" readonly placeholder="Tehsil: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input matInput readonly id="uc" name="uc" [(ngModel)]="model.schoolAppraisal.addressDto.ucName"
+                    readonly placeholder="UC: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 ">
+                <mat-form-field>
+                  <input matInput readonly id="city" name="city" [(ngModel)]="model.schoolAppraisal.addressDto.cityName"
+                    readonly placeholder="City: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1 mt-3">
+                <button type="button" class="btn btn-dots" data-toggle="modal" data-target="#Location"></button>
+                <div class="modal fade" id="Location" role="dialog">
+                  <div class="modal-dialog bigger mymodal">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Location </h5>
+                      </div>
+                      <div class="modal-body">
+                        <div class="table-responsive">
+                          <table class="table last-left">
+                            <thead class="thead-light last-left">
+                              <tr>
+                                <th>Province</th>
+                                <th>District</th>
+                                <th>Tehsil</th>
+                                <th width="20%">UC</th>
+                                <th>City</th>
+                                <th>Select</th>
+                              </tr>
+                            </thead>
+                            <tbody class="evenodd">
+                              <tr *ngFor="let address of addresses">
+                                <td>{{address.provinceName}} </td>
+                                <td>{{address.districtName}}</td>
+                                <td>{{address.tehsilName}}</td>
+                                <td>{{address.ucName}}</td>
+                                <td>{{address.cityName}}</td>
+                                <td>
+                                  <button type="button" data-dismiss="modal" class="btn btn-primary btn-min"
+                                    (click)="selectAddress(address)">Select</button>
+                                </td>
+                              </tr>
+
+                            </tbody>
+                          </table>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input [disabled]="readonly && !hasPermission" type="text" value="" id="houseNum" name="houseHum"
+                    [(ngModel)]="model.schoolAppraisal.addressDto.houseNum" matInput placeholder="House Number: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input [disabled]="readonly && !hasPermission" type="text" value="" id="street" name="street"
+                    [(ngModel)]="model.schoolAppraisal.addressDto.sreet_area" matInput placeholder="Street/Area: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <ng-select [disabled]="readonly && !hasPermission" [items]="communityArray" required bindLabel="cmntyNm"
+                  bindValue="cmntySeq" name="cmntyNm" placeholder="Select Community" [(ngModel)]="model.schoolAppraisal.addressDto.community">
+                </ng-select>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input [disabled]="readonly && !hasPermission" type="text" value="" id="village" name="village"
+                    [(ngModel)]="model.schoolAppraisal.addressDto.village" matInput placeholder="Village">
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input [disabled]="readonly && !hasPermission" type="text" id="other" name="other"
+                    [(ngModel)]="model.schoolAppraisal.addressDto.otherDetails" matInput placeholder="Other Details: *">
+                </mat-form-field>
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="tab-pane fade" id="attendanceTab" role="tabpanel" aria-labelledby="basic-tab">
+            <!-- <h6 class="colorBlack">Revenue & Attendance in School</h6> -->
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [disabled]="readonly && !hasPermission" matInput [errorStateMatcher]="matcher"
+                    (keypress)="onlyNumbers($event)" maxlength="3" name="totMaleTchrs"
+                    [(ngModel)]="model.schoolAppraisal.totMaleTchrs" (change)="calculateStRatio()"
+                    placeholder="Total Male Teachers: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" matInput [disabled]="readonly && !hasPermission" [errorStateMatcher]="matcher" name="totFemTchrs"
+                    (keypress)="onlyNumbers($event)" maxlength="3" [(ngModel)]="model.schoolAppraisal.totFemTchrs"
+                    (change)="calculateStRatio()" placeholder="Total Female Teachers: *">
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" matInput [disabled]="readonly" name="totalteachers"
+                    [value]="(+model.schoolAppraisal.totFemTchrs) + (+model.schoolAppraisal.totMaleTchrs)  | number:'1.0-0'"
+                    disabled placeholder="Total Teachers">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" matInput [disabled]="readonly" [errorStateMatcher]="matcher" name="stRatio"
+                    [value]="getTotal() | number:'1.0-0'"
+                    disabled placeholder="Average Students per Teacher">
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                  <mat-form-field>
+                    <input type="text" matInput [disabled]="readonly && !hasPermission" [errorStateMatcher]="matcher"
+                      (change)="calculateStRatio()" name="lastYrDrop" (keypress)="onlyNumbers($event)" maxlength="3"
+                      [(ngModel)]="model.schoolAppraisal.lastYrDrop" placeholder="Last Year Dropout Students: *">
+                  </mat-form-field>
+                </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="GradeDetailsTab" role="tabpanel" aria-labelledby="basic-tab">
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="model.schoolAppraisal.schoolGradeDtos.length" placeholder="Total Grades"
+                    matInput disabled>
+                </mat-form-field>
+              </div>
+              <!-- <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" maxlength="10" [value]="totalGrade.avgFee"
+                    placeholder="Total Average Class Fee" matInput disabled>
+                </mat-form-field>
+              </div> -->
+              <!-- <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" [value]="totalGrade.femStdntPrsnt"
+                    placeholder="Total Present Girls" matInput disabled>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="totalGrade.maleStdntPrsnt" (keypress)="onlyNumbers($event)" maxlength="3"
+                    placeholder="Total Present Boys" matInput disabled>
+                </mat-form-field>
+              </div> -->
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="totalGrade.totFemStdnt" placeholder="Total girls in school" matInput
+                     disabled>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="totalGrade.totMaleStdnt" (keypress)="onlyNumbers($event)" maxlength="3"
+                    placeholder="Total boys in school" matInput  disabled>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="totalGrade.totalStudents" placeholder="Total School Strength" matInput
+                     disabled>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="cRow">
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="totalGrade.girlsAverage" placeholder="% of Girls" matInput
+                     disabled>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="totalGrade.classAverageFee" placeholder="Average School Fee" matInput
+                     disabled>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" [value]="totalGrade.schoolRevenue" placeholder="School Revenue" matInput
+                     disabled>
+                </mat-form-field>
+              </div>
+              <div class="cCol1">
+                <mat-form-field>
+                  <input type="text" matInput readonly disabled [errorStateMatcher]="matcher"
+                    (change)="calculateStRatio()" name="lastYrDroprd" (keypress)="onlyNumbers($event)" maxlength="3"
+                    [(ngModel)]="model.schoolAppraisal.lastYrDrop" placeholder="Last Year Dropout Students: *">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-sm-6">
+                <h6 class="colorBlack">Grade Details</h6>
+              </div>
+              <div class="col-sm-6 addBtn">
+                <button class="btn btn-primary btn-sm" [disabled]="readonly && !hasPermission" type="button" (click)="openAddGrade()"><i class="fa fa-plus"></i>
+                  Add</button>
+                <div class="modal fade" id="GradeDetails" role="dialog">
+                  <div class="modal-dialog big mymodal">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Grade Details</h5>
+                      </div>
+                      <form class="md-float-material" [formGroup]="schoolGradeForm" (ngSubmit)="onSubmitGrade()">
+                        <div class="modal-body text-left">
+                          <div class="cRow">
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <mat-select placeholder="Grade" (keypress)="onlyNumbers($event)"
+                                  formControlName="grdKey" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$"
+                                  name="grdKey">
+                                  <mat-option *ngFor="let edu of grade" [value]="edu.codeKey">
+                                    {{edu.codeValue}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" matInput  (keypress)="onlyNumbers($event)"
+                                  maxlength="10" placeholder="Class Fee" formControlName="avgFee"
+                                  [errorStateMatcher]="matcher">
+                                <mat-error *ngIf="!schoolGradeForm.get('avgFee').valid">
+                                  Class Fee is <strong></strong>
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" 
+                                  matInput placeholder="Females Enrolled" formControlName="totFemStdnt"
+                                  [errorStateMatcher]="matcher">
+                                <mat-error *ngIf="!schoolGradeForm.get('totFemStdnt').valid">
+                                  Females Enrolled is <strong>invalid</strong>
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" 
+                                  matInput placeholder="Males Enrolled" formControlName="totMaleStdnt"
+                                  [errorStateMatcher]="matcher">
+                                <mat-error *ngIf="!schoolGradeForm.get('totMaleStdnt').valid">
+                                  Males Enrolled is <strong>invalid</strong>
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+                            <!-- <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" matInput placeholder="Female Students Present"
+                                  formControlName="femStdntPrsnt" [errorStateMatcher]="matcher">
+                                <mat-error *ngIf="!schoolGradeForm.get('femStdntPrsnt').valid">
+                                  Female Students Present is <strong></strong>
+                                </mat-error>
+                                <mat-hint *ngIf="+schoolGradeForm.get('totFemStdnt').value<+schoolGradeForm.get('femStdntPrsnt').value" style="color: red;">Female Students Present must be less than
+                                  <strong>Total Female Students</strong>
+                                </mat-hint>
+                              </mat-form-field>
+                            </div>
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" matInput placeholder="Male Students Present"
+                                  formControlName="maleStdntPrsnt" [errorStateMatcher]="matcher">
+                                <mat-error *ngIf="!schoolGradeForm.get('maleStdntPrsnt').valid">
+                                  Male Students Present is <strong></strong>
+                                </mat-error>
+                                <mat-hint *ngIf="+schoolGradeForm.get('totMaleStdnt').value<+schoolGradeForm.get('maleStdntPrsnt').value" style="color: red;">Male Students Present must be less than
+                                  <strong>Total Male Students</strong>
+                                </mat-hint>
+                              </mat-form-field>
+                            </div> -->
+                            <div class="cCol2">
+                              <mat-form-field>
+                                <input type="text" (keypress)="onlyNumbers($event)" maxlength="3" matInput
+                                   placeholder="Students Paying No Fee"
+                                  formControlName="noFeeStdnt" [errorStateMatcher]="matcher">
+                                <mat-error *ngIf="!schoolGradeForm.get('noFeeStdnt').valid">
+                                  Students Paying No Fee is <strong></strong>
+                                </mat-error>
+                                <mat-hint
+                                  *ngIf="(+schoolGradeForm.get('totFemStdnt').value + +schoolGradeForm.get('totMaleStdnt').value) < +schoolGradeForm.get('noFeeStdnt').value"
+                                  style="color: red;">Students Paying no fee must be less than
+                                  <strong> Total Students</strong>
+                                </mat-hint>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer text-center">
+                          <button type="submit" [disabled]="!schoolGradeForm.valid"
+                            class="btn btn-primary btn-min">Ok</button>
+                          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Grade</th>
+                    <th>Class Fee</th>
+                    <th>Females Enrolled</th>
+                    <th>Males Enrolled</th>
+                    <!-- <th>Female Students Present</th>
+                    <th>Male Students Present</th> -->
+                    <th>Students Paying No Fee</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let grd of model.schoolAppraisal.schoolGradeDtos; let i=index">
+                    <td>{{findValueFromKey(grd.grdKey, gradeOrig)}}</td>
+                    <td>{{grd.avgFee | currency:'PKR':''}}</td>
+                    <td>{{grd.totFemStdnt}}</td>
+                    <!-- <td>{{grd.totMaleStdnt}}</td>
+                    <td>{{grd.femStdntPrsnt}}</td> -->
+                    <td>{{grd.totMaleStdnt}}</td>
+                    <td>{{grd.noFeeStdnt}}</td>
+                    <td><button  [disabled]="readonly && !hasPermission" type="button" (click)="editGrade(grd , i)" class="iconBtn simplebtn"><i class="fa fa-pencil"></i></button>
+                      <button [disabled]="readonly && !hasPermission" type="button" (click)="deleteGrade(i, grd)" class="iconBtn delBtn simplebtn"><i class="fa fa-trash-o"></i></button>
+                      <!-- <a class="iconBtn simplebtn "><i class="fa fa-history"></i></a> -->
+                    </td>
+                  </tr>
+                  <!--<tr>-->
+                  <!--<td>A</td>-->
+                  <!--<td>2000</td>-->
+                  <!--<td>100</td>-->
+                  <!--<td>150</td>-->
+                  <!--<td>85</td>-->
+                  <!--<td>85</td>-->
+                  <!--<td>10</td>-->
+                  <!--<td><a (click)="editGrade({}, 1)" class="iconBtn simplebtn "><i class="fa fa-pencil"></i></a>-->
+                  <!--<a (click)="deleteGrade(1)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>-->
+                  <!--<a href="#" class="iconBtn simplebtn "><i class="fa fa-history"></i></a>-->
+                  <!--</td>-->
+                  <!--</tr>-->
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="incomeTab" role="tabpanel" aria-labelledby="incomeTab">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row mt-3">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">School Income</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" class="btn btn-primary btn-sm" [disabled]="readonly && !hasPermission" (click)="addPrimaryIncome()">
+                      <i class="fa fa-plus"></i> Add</button>
+                    <div class="modal fade" id="addPrimaryIncome" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onPrimaryIncomeFormSubmit()" #primaryIncomeForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Other Income</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select placeholder="Income Type"
+                                      [(ngModel)]="primaryIncome.incomeTypeKey" [errorStateMatcher]="matcher"
+                                      pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of incomeType" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput  type="text" pattern="\d*" min="0"
+                                      maxlength="10" id="primaryIncome" name="primaryIncome"
+                                      [(ngModel)]="primaryIncome.incomeAmount" [errorStateMatcher]="matcher"
+                                      (keypress)="onlyNumbers($event)" placeholder="Amount"
+                                      #primaryIncomeAmount="ngModel" required>
+                                    <mat-error *ngIf="primaryIncomeAmount.invalid">
+                                      Income is <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!primaryIncomeForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Income Type</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let primary of model.schoolAppraisal.primaryIncome">
+                        <td>{{findValueFromKey(primary.incomeTypeKey, incomeTypeOrig)}}</td>
+                        <td>{{primary.incomeAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button  type="button" (click)="editPIncome(primary)" class="iconBtn simplebtn">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button  type="button" (click)="deletePIncome(primary)" class="iconBtn delBtn simplebtn">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr class="total-info">
+                        <td>
+                          <b>Total School Income:</b>
+                        </td>
+                        <td>
+                          <input type="text" readonly class="form-control small"
+                            value="{{totalPrimaryIncome  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row mt-3">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">Secondary Income</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" class="btn btn-primary btn-sm"  (click)="addSecondaryIncome()">
+                      <i class="fa fa-plus"></i> Add</button>
+
+                    <div class="modal fade" id="addSecondaryIncome" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onSecondaryIncomeFormSubmit()" #secondaryIncomeForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Secondary Income</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select  placeholder="Income Source"
+                                      [(ngModel)]="secondaryIncome.incomeTypeKey" [errorStateMatcher]="matcher"
+                                      pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of secondaryIncomeArray" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput  type="text" pattern="\d*" min="0"
+                                      maxlength="10" id="secondryIncomeAmount" name="secondryIncomeAmount"
+                                      [(ngModel)]="secondaryIncome.incomeAmount" [errorStateMatcher]="matcher"
+                                      (keypress)="onlyNumbers($event)" placeholder="Amount"
+                                      #secondryIncomeAmount="ngModel" required>
+                                    <mat-error *ngIf="secondryIncomeAmount.invalid">
+                                      secondary income is <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!secondaryIncomeForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Income Source</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let secondary of model.schoolAppraisal.secondaryIncome">
+                        <td>{{findValueFromKey(secondary.incomeTypeKey, secondaryIncomeArrayOrig)}}</td>
+                        <td>{{secondary.incomeAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button  type="button" (click)="editSIncome(secondary)" class="iconBtn simplebtn">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button  type="button" (click)="deleteSIncome(secondary)" class="iconBtn delBtn simplebtn">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                          <!-- <a href="#" class="iconBtn simplebtn ">
+                            <i class="fa fa-history"></i>
+                          </a> -->
+                        </td>
+                      </tr>
+                      <tr class="total-info">
+                        <td>
+                          <b>Total Secondary Income:</b>
+                        </td>
+                        <td>
+                          <input type="text" readonly class="form-control small"
+                            value="{{totalSecondaryIncome  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="expensesTab" role="tabpanel" aria-labelledby="expensesTab">
+            <div class="profitwrap">
+              <div class="profitbx text-right mb-2 ml-2">
+                <div>
+                  <b>Total School Profit: {{totalGrade.schoolRevenue - +totalBusinessExpense | currency:'PKR':''}}</b>
+                </div>
+              </div>
+              <div class="profitbx text-right mb-2">
+                <div>
+                  <b>Net Desposible Income: {{totalGrade.schoolRevenue + (+totalPrimaryIncome) + (+totalSecondaryIncome)
+                    - (+totalBusinessExpense) - (+totalHouseholdExpense) | currency:'PKR':''}}</b>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">School Expenses</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" class="btn btn-primary btn-sm" [disabled]="readonly && !hasPermission" (click)="BusinessExpenses()">
+                      <i class="fa fa-plus"></i> Add</button>
+
+                    <div class="modal fade" id="BusinessExpenses" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onBusinessExpenseFormSubmit()" #businessExpenseForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add School Expenses</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select  placeholder="Expense Type"
+                                      [(ngModel)]="businessExpense.expTypKey" [errorStateMatcher]="matcher"
+                                      pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of schoolExpenseArray" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput  type="text" pattern="\d*" min="0"
+                                      maxlength="7" id="businessExpAmount" name="businessExpAmount"
+                                      [(ngModel)]="businessExpense.expAmount" [errorStateMatcher]="matcher"
+                                      (keypress)="onlyNumbers($event)" placeholder="Amount" #businessExpAmount="ngModel"
+                                      required>
+                                    <mat-error *ngIf="businessExpAmount.invalid">
+                                      Expense amount is <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!businessExpenseForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Expense Type</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let bExpense of model.schoolAppraisal.businessExpense">
+                        <td>{{findValueFromKey(bExpense.expTypKey, schoolExpenseArrayOrig)}}</td>
+                        <td>{{bExpense.expAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button [disabled]="readonly && !hasPermission" type="button" (click)="editBExpense(bExpense)" class="iconBtn simplebtn ">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button  [disabled]="readonly && !hasPermission" type="button" (click)="deleteBExpense(bExpense)" class="iconBtn delBtn simplebtn">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                          <!-- <a class="iconBtn simplebtn "><i class="fa fa-history"></i></a>-->
+                        </td>
+                      </tr>
+                      <tr class="total-info">
+                        <td>
+                          <b>Total Amount:</b>
+                          <br>
+                        </td>
+                        <td>
+                          <input type="text" readonly class="form-control small"
+                            value="{{totalBusinessExpense  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <h6 class="colorBlack">Household Expenses</h6>
+                  </div>
+                  <div class="col-sm-6 addBtn">
+                    <button type="button" class="btn btn-primary btn-sm" [disabled]="readonly && !hasPermission" (click)="HouseholdExpenses()">
+                      <i class="fa fa-plus"></i> Add</button>
+
+                    <div class="modal fade" id="HouseholdExpenses" role="dialog">
+                      <div class="modal-dialog mymodal">
+
+                        <!-- Modal content-->
+                        <form (ngSubmit)="onHouseholdExpenseFormSubmit()" #householdExpenseForm="ngForm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Household Expenses</h5>
+                            </div>
+                            <div class="modal-body text-left">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <mat-select  placeholder="Expense Type"
+                                      [(ngModel)]="householdExpense.expTypKey" [errorStateMatcher]="matcher"
+                                      pattern="^[1-9]\d*$" name="residence" required>
+                                      <mat-option *ngFor="let edu of householdExpenseArray" [value]="edu.codeKey">
+                                        {{edu.codeValue}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-sm-4">
+                                  <mat-form-field>
+                                    <input matInput  type="text" pattern="\d*" min="0"
+                                      maxlength="7" id="hhExpAmount" name="hhExpAmount"
+                                      [(ngModel)]="householdExpense.expAmount" [errorStateMatcher]="matcher"
+                                      (keypress)="onlyNumbers($event)" placeholder="Amount" #hhExpAmount="ngModel"
+                                      required>
+                                    <mat-error *ngIf="hhExpAmount.invalid">
+                                      house hold expense amount is <strong>invalid</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="submit" class="btn btn-primary btn-min"
+                                [disabled]="!householdExpenseForm.form.valid">Ok</button>
+                              <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Expense Type</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let hExpense of model.schoolAppraisal.householdExpense">
+                        <td>{{findValueFromKey(hExpense.expTypKey, householdExpenseArrayOrig)}}</td>
+                        <td>{{hExpense.expAmount | currency:'PKR':''}}</td>
+                        <td>
+                          <button  [disabled]="readonly && !hasPermission" type="button" (click)="editHExpense(hExpense)" class="iconBtn simplebtn" *ngIf="!hExpense.DSED">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button [disabled]="readonly && !hasPermission" type="button" (click)="deleteHExpense(hExpense)" class="iconBtn delBtn simplebtn" *ngIf="!hExpense.DSED">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                          <!-- <a class="iconBtn simplebtn "><i class="fa fa-history"></i></a>-->
+                        </td>
+                      </tr>
+                      <tr class="total-info">
+                        <td>
+                          <b>Total Amount:</b>
+                          <br>
+                        </td>
+                        <td>
+                          <input type="text" readonly class="form-control small"
+                            value="{{totalHouseholdExpense  | currency:'PKR':''}}">
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="tab-pane fade" id="schoolqualityTab" role="tabpanel" aria-labelledby="school-quality">
+
+            <form (ngSubmit)="onSubmitQuestionsForm()">
+              <div class="borderbox pt-2 mb-3" *ngFor="let catQuestion of model.schoolAppraisal.SchoolQAArray; let h = index">
+                <label><b>{{catQuestion.group}}</b></label>
+                <div class="qs row" *ngFor="let question of catQuestion.questions; let i = index">
+                  <div class="col-sm-9">
+                    <p>{{question.questionString}}</p>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="qsbtns text-right">
+                      <mat-radio-group name="answer{{h}}{{i}}" [(ngModel)]="question.answerSeq">
+                        <mat-radio-button class="w-50" *ngFor="let disFlag of booleanQA" [value]="disFlag.codeKey">{{disFlag.codeValue}}</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </form> 
+          </div> -->
+        </div>
+        <a class="btn btn-primary" (click)="continueClicked()">Continue</a>
+        <button class="btn btn-default" [disabled]="readonly && !hasPermission" type="submit">Save</button>
+      </form>
+
+      <div class="modal fade" id="deletePConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Other Income</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmPDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal fade" id="deleteSConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Secondary Income</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmSDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal fade" id="deleteBConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete School Expense</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmBDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal fade" id="deleteHConfirmation" role="dialog">
+        <div class="modal-dialog mymodal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Household Expense</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="table-responsive">
+                <h6>Do you want to delete?</h6>
+              </div>
+
+
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" (click)="confirmHDelete()" class="btn btn-primary btn-min">Yes</button>
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

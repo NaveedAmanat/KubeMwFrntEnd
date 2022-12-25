@@ -1,0 +1,220 @@
+<main class="main">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="content">
+
+      <form (ngSubmit)="onLoanInfoFormSubmit()" #addLoanInfoForm="ngForm">
+
+
+        <h6 class="mt-3">{{model.clientSeq}} - {{model.firstName}} {{model.lastName}}</h6>
+        <div class="cRow">
+          <div class="cCol1 ">
+            <!-- [disabled]="!(auth.role == 'admin' && model.loan_app_sts_seq==700)" -->
+            <mat-form-field>
+              <input type="text" matInput placeholder="Product Cycle" name="loanCyclNum" required
+                [(ngModel)]="model.loanCyclNum" #loanCyclNum="ngModel" [disabled]="!hasPermission || isDisabled()">
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Previous Cycle Amount" value="{{model.previousAmount}}" disabled
+                readonly>
+            </mat-form-field>
+          </div>
+
+          <!-- Added by Areeba - Dated - 10-05-22 - Home Loan -->
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Previous Loan Cycle Number" value="{{model.previousLoanCyclNum}}"
+                disabled readonly>
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Previous Loan Product"
+                value="{{model.prevLoanProd == null ? ' ' : model.prevLoanProd}}" disabled readonly>
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Previous Loan Remaining Installment"
+                value="{{model.prevLoanRemainInst == null ? 0 : model.prevLoanRemainInst}}" disabled readonly>
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Previous Loan Outstanding"
+                value="{{model.prevLoanOst != null ? model.prevLoanOst : model.remainingOutstandingOfPreviousLoan == null ? 0 :  model.remainingOutstandingOfPreviousLoan }}"
+                disabled readonly>
+            </mat-form-field>
+          </div>
+          <!-- Ended by Areeba -->
+        </div>
+        <div class="cRow">
+
+          <div class="cCol1">
+            <!-- [(ngModel)]="" -->
+            <mat-form-field>
+              <mat-select disabled placeholder="Product Group" [(ngModel)]="model.loanProdGrp"
+                [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" [disabled]="!prdEditable || readonly"
+                (selectionChange)="onProductGroupSelect($event.value, 'true')" name="productGrp" required>
+                <mat-option *ngFor="let edu of productGroup" [value]="edu.prdGrpSeq">
+                  {{edu.prdGrpNm}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="cCol1">
+            <!-- [(ngModel)]="" -->
+            <mat-form-field>
+              <mat-select disabled placeholder="Product" [(ngModel)]="model.loanProd" [errorStateMatcher]="matcher"
+                pattern="^[1-9]\d*$" [disabled]="!prdEditable || readonly"
+                (selectionChange)="onProductSelect($event.value, 'true')" name="product" required>
+                <mat-option *ngFor="let edu of products" [value]="edu.productSeq">
+                  {{edu.productName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput required (keypress)="onlyNumbers($event)" [(ngModel)]="model.reqAmount"
+                min="0" [disabled]="isDisabled()" id="reqAmount" maxlength="6" [errorStateMatcher]="matcher"
+                pattern="^[1-9]\d*$" name="reqAmount" placeholder="Requested Amount" #reqAmount="ngModel">
+              <mat-error *ngIf="reqAmount.invalid">
+                request amount is <strong>invalid</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput required [(ngModel)]="model.recAmount" [disabled]="isDisabled()"
+                (keypress)="onlyNumbers($event)" (change)="onRecommendAmountChange('true')" id="recAmount"
+                name="recAmount" min="{{product.minAmount}}" max="{{product.maxAmount}}" [errorStateMatcher]="matcher"
+                pattern="^[1-9]\d*$" placeholder="Recommended Amount" #recAmount="ngModel">
+              <mat-hint *ngIf="model.recAmount<=product.maxAmount && model.recAmount>=product.minAmount">
+                {{product.minAmount}}
+                =< Recommended Amount <={{product.maxAmount}} </mat-hint>
+                  <mat-hint *ngIf="model.recAmount > product.maxAmount" style="color: red;">Max
+                    Amount is
+                    <strong>{{product.maxAmount}}</strong>
+                  </mat-hint>
+                  <mat-hint *ngIf="model.recAmount < product.minAmount" style="color: red;">Min Amount is
+                    <strong>{{product.minAmount}}</strong>
+                  </mat-hint>
+                  <mat-error *ngIf="recAmount.invalid">
+                    recommended amount is <strong>invalid</strong>
+                  </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <div class="cCol1" *ngIf="showFields">
+            <mat-form-field>
+              <input type="text" matInput [required]="showFields" [disabled]="readonly"
+                [(ngModel)]="model.totIncmOfErngMemb" (keypress)="onlyNumbers($event)" id="totIncmOfErngMembId"
+                name="totIncmOfErngMemb" maxlength="10" pattern="^[0-9]\d*$"
+                placeholder="Total Income of Earning Members" #totIncmOfErngMemb="ngModel">
+            </mat-form-field>
+          </div>
+
+          <div class="cCol2" *ngIf="showFields">
+            <mat-form-field>
+              <!-- <input type="text" matInput [(ngModel)]="model.bizDtl" (keypress)="alphaNumeric($event)" maxlength="100"
+                [required]="showFields" id="bizDtlId" name="bizDtl" placeholder="Business Detail" #bizDtl="ngModel"> -->
+              <mat-select [disabled]="readonly" placeholder="Credit Purpose" [(ngModel)]="model.bizDtl"
+                [required]="showFields" name="bizDtl" required>
+                <mat-option *ngFor="let edu of loanPurpose" [value]="edu.codeValue">
+                  {{edu.codeValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="cRow">
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Total Installments" value="{{product.installments}}" readonly
+                disabled>
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Service Charges" value="{{product.chargesStr}}" readonly
+                disabled>
+            </mat-form-field>
+          </div>
+          <!-- <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Total Receivable Amount" value="{{product.totalRecieveable}}" readonly disabled>
+            </mat-form-field>
+          </div>
+          <div class="cCol1 ">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Installment Amount" value="{{product.installmentAmount}}" readonly disabled>
+            </mat-form-field>
+          </div> -->
+        </div>
+        <!-- {{tableFieldScreeingKEL}}
+        {{auth.role =='bm' && tableFieldScreeingKEL}} -->
+        <div *ngIf="auth.role =='bm' || hasPermission">
+          <div class="cRow">
+            <div class="cCol5">
+              <div class="pt-1 pb-1">
+                <!-- <mat-label>Is Next Of Kin same as Client’s Father or Spouse ?</mat-label> -->
+                <br>
+                <h5>{{model.tblScr}}</h5>
+                <mat-radio-group name="tblScrn" [(ngModel)]="model.tblScrn" required>
+                  <!-- <mat-radio-button class="m-r-30" *ngFor="let disFlag of disFlags" [value]="disFlag.value">
+                    {{disFlag.name}}</mat-radio-button> -->
+
+                  <mat-radio-button class="m-r-30" [disabled]="tableScreening && !hasPermission" [value]="false">Table
+                    Screening
+                  </mat-radio-button>
+                  <mat-radio-button class="m-r-30" [disabled]="fieldScreening && !hasPermission" [value]="true">Field
+                    Screening
+                  </mat-radio-button>
+
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <div class="cRow">
+            <div class="cCol1 ">
+              <mat-form-field>
+                <input type="text" matInput required [(ngModel)]="model.approvedAmount" [disabled]="isDisabled()"
+                  (keypress)="onlyNumbers($event)" id="approvedAmountId" name="approvedAmount"
+                  min="{{product.minAmount}}" max="{{product.maxAmount}}" [errorStateMatcher]="matcher"
+                  pattern="^[1-9]\d*$" placeholder="Approved Credit Amount" #approvedAmount="ngModel">
+                <mat-hint *ngIf="model.recAmount<=product.maxAmount && model.recAmount>=product.minAmount">
+                  {{product.minAmount}}
+                  =< Approved Amount <={{product.maxAmount}} </mat-hint>
+                    <mat-hint *ngIf="model.recAmount > product.maxAmount" style="color: red;">Max
+                      Amount is
+                      <strong>{{product.maxAmount}}</strong>
+                    </mat-hint>
+                    <mat-hint *ngIf="model.recAmount < product.minAmount" style="color: red;">Min Amount is
+                      <strong>{{product.minAmount}}</strong>
+                    </mat-hint>
+                    <mat-hint *ngIf="model.approvedAmount>model.reqAmount" style="color: red;">Cannot exceed Requested
+                      Amount
+                      <strong>{{product.reqAmount}}</strong>
+                    </mat-hint>
+                    <mat-error *ngIf="approvedAmount.invalid">
+                      recommended amount is <strong>invalid</strong>
+                    </mat-error>
+              </mat-form-field>
+            </div>            
+          </div>
+        </div>
+        <div class="mt-4">
+          <button type="button" class="btn btn-primary" (click)="continueClicked()"
+            [disabled]="!formSaved">Continue</button>
+          <button class="btn btn-default" type="submit"
+            [disabled]="!addLoanInfoForm.form.valid || !hasPermission">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

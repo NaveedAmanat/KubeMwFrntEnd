@@ -1,0 +1,50 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-reports-leftside-bar></app-reports-leftside-bar>
+      </div>
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">PAR Report <i class="fa fa-print"> </i></h6>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <form class="md-float-material" [formGroup]="ngForm" (ngSubmit)="portfolioReport()">
+              <div class="modal-body">
+                <div class="cRow">
+                  <div class="cCol5">
+                    <!-- <mat-form-field>
+                      <input matInput required formControlName="frmDt"  placeholder="From Date:"
+                        [matDatepicker]="picker1" disabled readonly />
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                    </mat-form-field> -->
+                    <mat-form-field>
+                      <input matInput required formControlName="toDt" placeholder="As Of Date:" [matDatepicker]="toDt"
+                        disabled readonly />
+                      <mat-datepicker-toggle matSuffix [for]="toDt"></mat-datepicker-toggle>
+                      <mat-datepicker required #toDt disabled="false"></mat-datepicker>
+                    </mat-form-field>
+
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer text-center">
+                <button [disabled]="!ngForm.valid" type="submit" class="btn btn-primary">Print</button>
+
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

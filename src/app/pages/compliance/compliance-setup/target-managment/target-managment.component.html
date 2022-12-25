@@ -1,0 +1,157 @@
+<main class="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <app-left-side-bar></app-left-side-bar>
+            </div>
+            <div class="col-md-9">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <!-- <div class="mysearchbox">
+                                <h6 class="d-inline-block searchshow">Target Managment
+                                    <i class="fa fa-search"> </i>
+                                </h6>
+                            </div> -->
+                            <mat-form-field>
+                                <mat-label>Target Year</mat-label>
+                                <mat-select (selectionChange)="onSelectionTargetManagmentPeriods($event)">
+                                    <mat-option *ngFor="let trgtYr of yearSpan" [value]="trgtYr">{{trgtYr}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-6 addBtn">
+                            <button *ngIf="addButton" class="btn btn-primary btn-sm" type="button"
+                                (click)="openAddBranch()"><i class="fa fa-plus"></i>
+                                Add</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Region Name</th>
+                                    <th>Area Name</th>
+                                    <th>Branch Name</th>
+                                    <th>Target Year</th>
+                                    <th>Target Type</th>
+                                    <th>Target Visits</th>
+                                    <!-- <th>Brnanch Target Sequence</th> -->
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let branch of allTargetManagment">
+                                    <td>{{regionName(branch.regSeq)}}</td>
+                                    <td>{{areaName(branch.areaSeq)}}</td>
+                                    <td>{{branchName(branch.brnchSeq)}}</td>
+                                    <td>{{branch.trgtYr}}</td>
+                                    <td>{{findVisitType(branch.vstTyp)}}</td>
+                                    <td>{{branch.trgt}}</td>
+                                    <!-- <td>{{branch.adtTrgtSeq}}</td> -->
+                                    <td>
+                                        <a  data-toggle="tooltip" title="Edit" (click)="onEditTargetManagment(branch)"
+                                            class="iconBtn"><i class="fa fa-pencil"></i></a>
+                                        <a *ngIf="branch.comp_vsts == 0" data-toggle="tooltip" title="Delete"
+                                            (click)="onDeleteTargetManagment(branch)" class="iconBtn delBtn"><i
+                                                class="fa fa-trash-o"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="modal fade" id="addTargetManagment" role="dialog">
+                <div class="modal-dialog big mymodal">
+
+                    <form (ngSubmit)="onSubmitComplianceBranchVisitForm()" [formGroup]="complianceBranchForm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Target</h5>
+                            </div>
+                            <div class="modal-body" style="overflow:visible">
+                                <div class="cRow">
+
+                                    <div class="cCol2">
+                                        <!-- <mat-form-field>
+                                            <input type="text" matInput placeholder="Branch Sequence:"
+                                                formControlName="brnchSeq" readonly>
+                                        </mat-form-field> -->
+
+                                        <ng-select [items]="regions" required bindLabel="regNm" bindValue="regSeq"
+                                            name="regNm" placeholder="Select Region:" (change)="onRegionSelect($event.regSeq)" formControlName="regSeq">
+                                        </ng-select>
+                                    </div>
+                                    <div class="cCol2">
+                                        <ng-select [items]="filteredAreas" required bindLabel="areaNm" bindValue="areaSeq"
+                                            name="areaNm" placeholder="Select Area:" (change)="onAreaSelect($event.areaSeq)" formControlName="areaSeq">
+                                        </ng-select>
+                                    </div>
+                                    <div class="cCol2">
+                                        <ng-select [items]="filteredBranches" required bindLabel="brnchNm" bindValue="brnchSeq"
+                                            name="brnchNm" placeholder="Select Branch:" formControlName="brnchSeq">
+                                        </ng-select>
+
+                                    </div>
+
+                                </div>
+                                <div class="cRow">
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="text" matInput placeholder="Target Year:"
+                                                formControlName="trgtYr" readonly>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <!-- <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyNumbers($event)" matInput placeholder="Branch ID:"
+                        formControlName="branchId">
+                    </mat-form-field>
+                  </div>
+                  <div class="cCol2">
+                    <mat-form-field>
+                      <input type="text" (keypress)="onlyLetters($event)" matInput placeholder="Branch Name:"
+                        formControlName="branchNam">
+                    </mat-form-field>
+                  </div> -->
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <mat-select placeholder="Target Type:" formControlName="adtFlg" name="key4">
+                                                <mat-option *ngFor="let obj of visitType" [value]="obj.seq">{{obj.desc}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="cCol2">
+                                        <mat-form-field>
+                                            <input type="number" (keypress)="onlyNumbers($event)" matInput
+                                                placeholder="Target Visits:" formControlName="trgt">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                                <button type="submit" [disabled]=!complianceBranchForm.valid
+                                    class="btn btn-primary btn-min">Ok</button>
+                                <button type="button" class="btn btn-primary btn-min"
+                                    data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</main>

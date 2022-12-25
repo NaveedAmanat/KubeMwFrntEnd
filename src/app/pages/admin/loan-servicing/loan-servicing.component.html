@@ -1,0 +1,727 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar-admin></app-left-side-bar-admin>
+      </div>
+      <div class="col-md-9">
+        <div class="content">
+          <div class="row">
+            <div class="col-sm-6" *ngIf="allClnt?.length>0 || (this.auth.role == 'bm')">
+              <div class="mysearchbox" (click)="showField()" *ngIf="!showFields">
+                <h6 class="d-inline-block searchshow" style="cursor: pointer;">Search
+                  <i class="fa fa-search"> </i>
+                </h6>
+              </div>
+              <div class="mysearch" *ngIf="showFields">
+                <form (ngSubmit)="applyFilter(searchVal)" #searchForm="ngForm">
+                  <div class="col-sm-10" style="float:left;">
+                    <mat-form-field *ngIf="showFields">
+                      <input id="searchBox" (keyup)="searchValue()" [InputField]="'onlyAlphaNumaric'" autofocus matInput name="searchValue"
+                        [(ngModel)]="searchVal" placeholder="Search">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-2" style="float:right;">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-6" *ngIf="auth.role != 'bm' && auth.role != 'bdo'">
+              <form [formGroup]="branchForm" (ngSubmit)="onSubmitBranchForm()">
+                <ng-select *ngIf="auth.role != 'bm' && auth.role != 'bdo'" [items]="brnchs" required
+                  (change)="onSelectBranch($event)" bindLabel="brnchNm" bindValue="brnchSeq" name="brnchNm"
+                  placeholder="Select Branch:" formControlName="branch">
+                </ng-select>
+
+
+              </form>
+            </div>
+          </div>
+          <!-- <div class="table-responsive mb-md-5">
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>Client ID</th>
+                  <th>Client</th>
+                  <th>Product</th>
+                  <th>Credit Amount</th>
+                  <th>Charges</th>
+                  <th>Paid Amount</th>
+                  <th>Remaining Amount</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let clnt of allClnt">
+                  <td>{{clnt.clntId}}</td>
+                  <td><a href="#">{{clnt.frstNm}} {{clnt.lastNm}}</a></td>
+                  <td>{{clnt.prd}}</td>
+                  <td>{{clnt.loanAmt| currency:'PKR':''}}</td>
+                  <td>{{clnt.sercvChrgs| currency:'PKR':''}}</td>
+                  <td>{{clnt.rcvdAmt| currency:'PKR':''}}</td>
+                  <td>{{(clnt.loanAmt+clnt.sercvChrgs)-clnt.rcvdAmt| currency:'PKR':''}}</td>
+                  <td class="colorGreen">Active</td>
+                  <td>
+                    <a *ngIf="clnt.dthRptSeq==0" (click)="reSchedule(clnt)" class="iconBtn" data-toggle="tooltip" title="Credit Rescheduling"><img
+                        src="assets/images/icon7.png" alt=""></a>
+
+                    <span href="#" data-toggle="modal" data-target="#cmmoncodes" class="iconBtn"><img src="assets/images/taging-icon.png"
+                        alt="" data-toggle="tooltip" data-placement="top" title="Tagging"></span>
+
+                    <a *ngIf="clnt.dthRptSeq==0" (click)="reportDeath(clnt)" class="iconBtn" data-toggle="tooltip"
+                      title="Report Death"><img src="assets/images/report-icon.png" alt=""></a>
+
+                    <a *ngIf="clnt.dthRptSeq!=0 && clnt.paid==false" (click)="payPeportDeath(clnt)" class="iconBtn"
+                      data-toggle="tooltip" title="Pay Funeral Claims"><img src="assets/images/rsedite.png" alt=""></a>
+
+                    <a *ngIf="clnt.paid" (click)="printHealthCard(clnt.clntSeq)" class="iconBtn" data-toggle="tooltip"
+                      title="Print"><img src="assets/images/print-icon.png" alt=""></a>
+
+                    <a *ngIf="clnt.paid && clnt.post"  (click)="adjustLoan(clnt)" class="iconBtn"><img src="assets/images/rsgrey-icon.png" alt=""  data-toggle="tooltip" title="Loan Adjustment"></a>
+                    <span href="#" data-toggle="modal" data-target="#ClaimInsurance" class="iconBtn"><img src="assets/images/submit-icon.png"
+                        alt="" data-toggle="tooltip" data-placement="top" title="Submit"></span>
+                  </td>
+                </tr>
+
+
+              </tbody>
+            </table>
+          </div> -->
+
+
+
+          <!---- DATA TABLES---->
+
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="table" multiTemplateDataRows matSort>
+
+              <!-- Client ID Column -->
+              <ng-container matColumnDef="clntId">
+                <th width="14%" mat-header-cell *matHeaderCellDef mat-sort-header>Client ID</th>
+                <td width="14%" mat-cell *matCellDef="let clnt">{{clnt.clntId}}</td>
+              </ng-container>
+
+              <!-- Client Column -->
+              <ng-container matColumnDef="frstNm">
+                <th width="14%" mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+                <td width="14%" mat-cell *matCellDef="let clnt">{{clnt.frstNm}} {{clnt.lastNm}}</td>
+              </ng-container>
+
+              <!-- Product Column -->
+              <ng-container matColumnDef="prd">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Product</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.prd}}</td>
+              </ng-container>
+
+              <!-- Credit Amount Column -->
+              <ng-container matColumnDef="loanAmt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Credit Amount</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.loanAmt| currency:'PKR':''}}</td>
+              </ng-container>
+
+              <!-- Charges Column -->
+              <ng-container matColumnDef="sercvChrgs">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Charges</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.sercvChrgs| currency:'PKR':''}}</td>
+              </ng-container>
+
+              <!-- Paid Amount Column -->
+              <ng-container matColumnDef="rcvdAmt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Paid Amount</th>
+                <td mat-cell *matCellDef="let clnt">{{clnt.rcvdAmt| currency:'PKR':''}}</td>
+              </ng-container>
+
+              <!-- Remaining Amount Column -->
+              <ng-container matColumnDef="remainingamount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Remaining Amount</th>
+                <td mat-cell *matCellDef="let clnt">{{(clnt.loanAmt+clnt.sercvChrgs)-clnt.rcvdAmt| currency:'PKR':''}}
+                </td>
+              </ng-container>
+
+              <!-- Status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <td mat-cell *matCellDef="let clnt" class="colorGreen">Active</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th width="15%" mat-header-cell *matHeaderCellDef>Action</th>
+                <td width="15%" mat-cell *matCellDef="let clnt">
+
+                  <!-- <a *ngIf="clnt.dthRptSeq==0 && (auth.role=='ho' || auth.role=='admin')" (click)="reSchedule(clnt)"
+                    class="iconBtn" data-toggle="tooltip" title="Credit Rescheduling"><img src="assets/images/icon7.png"
+                      alt=""></a> -->
+
+                  <span (click)="onClntTagClick(clnt)" class="iconBtn"><img src="assets/images/taging-icon.png" alt=""
+                      data-toggle="tooltip" data-placement="top" title="Tagging"></span>
+
+                  <!-- Modified by Areeba - SCR - Disability Recoveries -->
+                  <a *ngIf="clnt.dthRptSeq==0 && clnt.dsbltyRptSeq==0" (click)="reportDeath(clnt)" class="iconBtn"
+                    data-toggle="tooltip" title="Report Death"><img src="assets/images/report-icon.png" alt=""></a>
+
+                  <a *ngIf="clnt.dthRptSeq!=0 && clnt.paid==false" (click)="payFuneralClaim(clnt)" class="iconBtn"
+                    data-toggle="tooltip" title="Pay Funeral Claims"><img src="assets/images/rsedite.png" alt=""></a>
+
+                  <a *ngIf="clnt.dthRptSeq!=0 && (clnt.paid && clnt.post) && (auth.role=='ho' || auth.role=='admin' || auth.role=='ra')"
+                    (click)="reverseFunralPayment(clnt)" class="iconBtn infoBtn" data-toggle="tooltip"
+                    title="Revert Funeral"> <i class="fa fa-undo"></i></a>
+
+                  <!-- <a *ngIf="clnt.dsbltyRptSeq==0 && clnt.dthRptSeq==0" (click)="reportDisability(clnt)" class="iconBtn" data-toggle="tooltip"
+                    title="Report Disability"><i class="fa fa-thin fa-wheelchair" style="color:gray"></i></a> -->
+
+                  <a *ngIf="clnt.dsbltyRptSeq!=0 && clnt.paid==false" (click)="collectDisabilityReceivable(clnt)"
+                    class="iconBtn" data-toggle="tooltip" title="Collect Receivable"><img
+                      src="assets/images/rsedite.png" alt=""></a>
+
+                  <a *ngIf="clnt.dsbltyRptSeq!=0 && (clnt.paid && clnt.post) && (auth.role=='ho' || auth.role=='admin'  || auth.role=='ra') && !clnt.prd.toLowerCase().includes('KFK')"
+                    (click)="reverseDsbltyRcvry(clnt)" class="iconBtn infoBtn" data-toggle="tooltip"
+                    title="Revert Receivable"> <i class="fa fa-undo"></i></a>
+
+                  <a *ngIf="(clnt.paid && clnt.post) && clnt.dsbltyRptSeq!=0 && auth.role!='admin' && (clnt.dsbltyAmt != 0)"
+                    (click)="printKCR(clnt.clntSeq)" class="iconBtn" data-toggle="tooltip" title="Print KCR"><img
+                      src="assets/images/print-icon.png" alt=""></a>
+
+                  <a *ngIf="clnt.paid && clnt.dsbltyRptSeq!=0 && !clnt.prd.toLowerCase().includes('KFK')"
+                    (click)="printHealthCardForDisability(clnt.clntSeq)" class="iconBtn" data-toggle="tooltip"
+                    title="Print Disability Claim Form"><img src="assets/images/print-icon.png" alt=""></a>
+
+                  <a *ngIf="clnt.paid && clnt.dthRptSeq!=0" (click)="printHealthCard(clnt.clntSeq)" class="iconBtn"
+                    data-toggle="tooltip" title="Print Insurance Claim Form"><img src="assets/images/print-icon.png"
+                      alt=""></a>
+
+                  <!-- Modified by Areeba - Given RA rights -->
+                  <a *ngIf="((clnt.dthRptSeq!=0 || clnt.dsbltyRptSeq!=0) && !clnt.paid) && (auth.role=='ho' || auth.role=='admin' || auth.role=='ra')"
+                    (click)="reverseClnt(clnt)" class="iconBtn delBtn" data-toggle="tooltip" title="Revert"> <i
+                      class="fa fa-undo"></i></a>
+
+                  <a *ngIf="((clnt.paid && clnt.post)) && (auth.role=='admin')" (click)="adjustLoan(clnt)"
+                    class="iconBtn"><img src="assets/images/rsgrey-icon.png" alt="" data-toggle="tooltip"
+                      title="Loan Adjustment"></a>
+
+                  <!-- Ended by Areeba -->
+
+                  <!-- <span href="#" data-toggle="modal" data-target="#ClaimInsurance" class="iconBtn"><img
+                      src="assets/images/submit-icon.png" alt="" data-toggle="tooltip" data-placement="top"
+                      title="Submit"></span> -->
+                  <span class="iconBtn" *ngIf="clnt.prdId == '0016' || clnt.prdId == '52' || clnt.prdId == '53'"><a>
+                      <i class="fa fa-paw" (click)="reportAnimalDeath(clnt)" aria-hidden="true" data-toggle="tooltip"
+                        data-placement="top" title="Report Animal Death"></i></a>
+                  </span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead-light thead-blue"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <mat-paginator [length]="datalength" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+
+
+          <div class="modal fade" id="AdjustLoan" role="dialog">
+            <div class="modal-dialog smallpop mymodal">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Adjust Credit</h5>
+                </div>
+                <form [formGroup]="adjustLoanForm" (ngSubmit)="submitAdjustLoan()">
+                  <div class="modal-body">
+                    <div class="cRow mt-2">
+                      <input type="hidden" formControlName="clntSeq" />
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client Id:" formControlName="clntId">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client:" formControlName="clntNm">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Loan Amount:" formControlName="loanAmt">
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button appNoDblClick type="button" (click)="submitAdjustLoan()"
+                      class="btn btn-primary btn-min">OK</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="ClaimInsurance" role="dialog">
+            <div class="modal-dialog smallpop mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Submit Claim Insurance</h5>
+                </div>
+                <div class="modal-body">
+                  <ul class="infolist infolistblock mt-1 mb-1">
+                    <li>Client: <span>Shabnam</span></li>
+                    <li>Address: <span>Client Address will be placed here.</span></li>
+                    <li>Credit Amount:<span>30,000</span></li>
+                    <li>Disbursement Date: <span> 05/05/2018</span></li>
+                    <li>Total Principle :<span> 30,000</span></li>
+                    <li>Total Charges : <span>3 0,000</span></li>
+                    <li>Remaining Principle : <span> 10,000</span></li>
+                    <li>Remaining Charges : <span>10,000</span></li>
+                  </ul>
+
+
+                  <div class="cRow mt-3">
+                    <div class="cCol4">
+                      <label>Adjust Principle Amount:</label>
+                      <input type="text" class="form-control">
+                    </div>
+                    <div class="cCol4 ">
+                      <label>Adjust Charges:</label>
+                      <input type="text" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer text-center">
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">OK</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="cmmoncodes" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Taging</h5>
+                </div>
+                <div class="modal-body">
+                  <ul class="infolist infolistblock mt-1 mb-1">
+                    <li>Client: <span>{{tagClient?.firstName}} {{tagClient?.lastName}}</span></li>
+                    <li> Address: <span>House No. {{tagClient?.houseNum}}, {{tagClient?.sreet_area}}
+                        {{tagClient?.cityName}}.</span></li>
+                    <li> Credit Amount: <span> {{clnt?.loanAmt}}</span></li>
+                  </ul>
+
+                  <mat-radio-group [(ngModel)]="taggedSeq" name="disableFlag" required>
+                    <mat-radio-button class="w-50" *ngFor="let disFlag of tags" [value]="disFlag.tagsSeq">
+                      {{disFlag.tagNm}}</mat-radio-button>
+                  </mat-radio-group>
+
+                  <!-- <div class="checkbox mb-1 mt-4">
+                    <div class="custom-control custom-checkbox">
+                      <input type="radio" id="checkbox2" name="coBorrower" class="custom-control-input">
+                      <label class="custom-control-label" for="checkbox2"> Block List</label>
+                    </div>
+                  </div>
+                  <div class="checkbox mb-1">
+                    <div class="custom-control custom-checkbox">
+                      <input type="radio" id="checkbox3" name="coBorrower" class="custom-control-input">
+                      <label class="custom-control-label" for="checkbox3"> Opportunist</label>
+                    </div>
+                  </div>
+                  <div class="checkbox mb-1">
+                    <div class="custom-control custom-checkbox">
+                      <input type="radio" id="checkbox4" name="coBorrower" class="custom-control-input">
+                      <label class="custom-control-label" for="checkbox4"> Danger</label>
+                    </div>
+                  </div> -->
+                </div>
+                <div class="modal-footer text-center">
+                  <button appNoDblClick type="button" class="btn btn-primary btn-min"
+                    (click)="onTagSubmit()">OK</button>
+                  <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="reSchedule" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Credit Rescheduling</h5>
+                </div>
+                <form [formGroup]="reScheduleForm" (ngSubmit)="submitReschedule()">
+                  <div class="modal-body">
+                    <div class="cRow mt-2">
+                      <input type="hidden" formControlName="clntSeq" />
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client Id:" formControlName="clntId">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client:" formControlName="clntNm">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Credit Amount:" formControlName="loanAmt">
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                    <div class="cRow mt-2">
+
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="number" matInput placeholder="Days add to Payment Schedule"
+                            formControlName="days">
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="submitReschedule()"
+                      class="btn btn-primary btn-min">OK</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="ReportDeath" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Report Death</h5>
+                </div>
+                <form [formGroup]="deathForm" (ngSubmit)="submitDeathReport()">
+                  <div class="modal-body">
+                    <div class="cRow mt-2">
+                      <input type="hidden" formControlName="clntSeq" />
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client Id:" formControlName="clntId">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client:" formControlName="clntNm">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Credit Amount:" formControlName="loanAmt">
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                    <div class="cRow mt-2">
+                      <div class="cCol3-col">
+                        <mat-radio-group name="gender" required formControlName="gender">
+                          <mat-radio-button class="w-50" [value]="0">Client</mat-radio-button>
+                          <mat-radio-button *ngIf="client!=null && client.relTypFlg==1" class="w-50" [value]="1">Nominee
+                          </mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+
+
+                    </div>
+
+                    <div class="cRow mt-2">
+
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input matInput required [min]="minDate" [max]="maxDate" formControlName="deathDt"
+                            placeholder="Date of Death:" [matDatepicker]="picker1" disabled readonly />
+                          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                          <mat-datepicker required #picker1 disabled="false"></mat-datepicker>
+                        </mat-form-field>
+
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <mat-select placeholder="Cause of Death:" formControlName="dethCase" name="dethCase">
+                            <mat-option *ngFor="let edu of causeOfDeath" [value]="edu.codeValue">
+                              {{edu.codeValue}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <!-- <mat-form-field>
+                          <input type="text" matInput placeholder="Cause of Death:" formControlName="dethCase">
+                        </mat-form-field> -->
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" ngModel maxlength="30" matInput placeholder="Death Certifications:"
+                            formControlName="deathcertf">
+
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="submitDeathReport()" class="btn btn-primary btn-min"
+                      [disabled]="!deathForm.valid">OK</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="modal fade" id="payFuneralClaim" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Pay Funeral Claims</h5>
+                </div>
+                <form [formGroup]="funralForm" (ngSubmit)="submitFunralClaims()">
+                  <div class="modal-body">
+                    <div class="cRow mt-2">
+                      <input type="hidden" formControlName="dthRptSeq" />
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client Id:" formControlName="clntId" readonly>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client:" formControlName="clntNm" readonly>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Amount:" formControlName="amt" readonly>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <!-- Added by Zohaib Asim - Dated 28-09-2022 -->
+                    <div class="cRow mt-2">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Receivable Amount:" formControlName="rcvblAmt"
+                            readonly>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <button type="button" appNoDblClick (click)="collectCash(funralForm.value)"
+                          [disabled]="!funralForm.value.rcvblAmt > 0"
+                          class="btn btn-primary btn-min">Collect Cash</button>
+                      </div>
+                    </div>
+                    <!-- End -->
+                    <div class="cRow mt-2">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <mat-select placeholder="Institution Name:" (selectionChange)="onRecoveryChange()"
+                            formControlName="rcvryTypsSeq" name="rcvryTypsSeq">
+                            <mat-option *ngFor="let edu of tempInstituteArray" [value]="edu">
+                              {{edu.typStr}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="funralForm.controls.rcvryTypsSeq.errors?.required">
+                            Institution Name is <strong>required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col" *ngIf="!isCash">
+
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Instrument Number:" formControlName="instr">
+                          <mat-error *ngIf="funralForm.controls.instr.errors?.required">
+                            instrument number is <strong>required</strong>
+                          </mat-error>
+                          <mat-error *ngIf="funralForm.controls.instr.errors?.maxlength">
+                            instrument number length should be <strong>20 characters</strong>
+                          </mat-error>
+                          <mat-error *ngIf="funralForm.controls.instr.errors?.minlength">
+                            instrument number length should be <strong>20 characters</strong>
+                          </mat-error>
+                          <mat-error *ngIf="funralForm.controls.instr.errors?.pattern">
+                            only number are <strong>allowed</strong>
+                          </mat-error>
+                        </mat-form-field>
+
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="submitFunralClaims()"
+                      [disabled]="funralForm.value.rcvblAmt > 0" class="btn btn-primary btn-min">Pay</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Added by Areeba - SCR - Disability Recoveries -->
+          <div class="modal fade" id="ReportDisability" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Report Disability</h5>
+                </div>
+                <form [formGroup]="disabilityForm" (ngSubmit)="submitDisabilityReport()">
+                  <div class="modal-body">
+                    <div class="cRow mt-2">
+                      <input type="hidden" formControlName="clntSeq" />
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client Id:" formControlName="clntId">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client:" formControlName="clntNm">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Credit Amount:" formControlName="loanAmt">
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                    <div class="cRow mt-2">
+                      <div class="cCol3-col">
+                        <mat-radio-group name="gender" required formControlName="gender">
+                          <mat-radio-button class="w-50" [value]="0">Client</mat-radio-button>
+                          <mat-radio-button *ngIf="client!=null && client.relTypFlg==1" class="w-50" [value]="1">Nominee
+                          </mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+                    </div>
+
+                    <div class="cRow mt-2">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input matInput required [min]="minDate" [max]="maxDate" formControlName="dtOfDsblty"
+                            placeholder="Date of Disability:" [matDatepicker]="picker2" disabled readonly />
+                          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                          <mat-datepicker required #picker2 disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Comments:" formControlName="cmnt">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="submitDisabilityReport(clnt)"
+                      class="btn btn-primary btn-min" [disabled]="!disabilityForm.valid">Post</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="collectDsbltyReceivable" role="dialog">
+            <div class="modal-dialog mymodal">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Collect Receivable</h5>
+                </div>
+                <form [formGroup]="receivableForm" (ngSubmit)="submitDsbltyRcvry()">
+                  <div class="modal-body">
+                    <div class="cRow mt-2">
+                      <input type="hidden" formControlName="dsbltyRptSeq" />
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client Id:" formControlName="clntId">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Client:" formControlName="clntNm">
+                        </mat-form-field>
+                      </div>
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <input type="text" matInput placeholder="Receivable Amount:" formControlName="receivableAmt"
+                            readonly>
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                    <div class="cRow mt-2">
+                      <div class="cCol3-col">
+                        <mat-form-field>
+                          <mat-select placeholder="Institution Name:" formControlName="rcvryTypsSeq"
+                            name="rcvryTypsSeq">
+                            <mat-option *ngFor="let edu of tempInstituteArrayDsblty" [value]="edu">
+                              {{edu.typStr}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="receivableForm.controls.rcvryTypsSeq.errors?.required">
+                            Institution Name is <strong>required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" appNoDblClick (click)="submitDsbltyRcvry()"
+                      class="btn btn-primary btn-min">Post</button>
+                    <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- Ended by Areeba -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="modal fade" id="reverseClnt" role="dialog">
+  <div class="modal-dialog mymodal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reverse Death</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="reverseForm" (ngSubmit)="onSubmitReverseClnt()">
+        <input type="hidden" formControlName="dthRptSeq" />
+        <div class="modal-body">
+          <div class="cRow">
+            <div class="cCol6">
+              <mat-form-field>
+                <input matInput required formControlName="cmnt" placeholder="Remarks:" />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" appNoDblClick (click)="onSubmitReverseClnt()" class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

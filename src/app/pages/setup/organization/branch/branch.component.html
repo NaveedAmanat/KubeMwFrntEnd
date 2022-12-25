@@ -1,0 +1,741 @@
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <app-left-side-bar></app-left-side-bar>
+      </div>
+
+
+      <div class="modal fade" id="AssignCheque" role="dialog">
+        <div class="modal-dialog mymodal" style="top:2%">
+
+          <!-- Modal content-->
+
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Remittance</h5>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th><b>Remittance Type</b></th>
+                      <th><b>Select</b></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let pymt of allPaymentTypes">
+                      <td>{{pymt.typStr}}</td>
+                      <td>
+                        <mat-checkbox class="example-margin" name="selfPDC" (change)="addUpdateType(pymt, $event)"
+                          [(ngModel)]="pymt.ischecked">
+                        </mat-checkbox>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer smmodal-footer text-center">
+                <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Ok</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-md-9">
+        <div class="content mb-md-5">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="mysearchbox">
+                <h6 class="d-inline-block searchshow">Branch <i class="fa fa-search"> </i></h6>
+                <div class="mysearch">
+                  <a href="#." class="remove-search"><i class="fa fa-window-close"> </i></a>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by Name..."
+                    title="Type in a name">
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-sm-6 addBtn">
+              <button class="btn btn-primary btn-sm" data-toggle="modal" (click)="addItem()"><i class="fa fa-plus"></i>
+                Add</button>
+            </div> -->
+
+          </div>
+          <div class="table-responsive">
+            <table class="table" id="myTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>Branch Code</th>
+                  <th>Branch Name</th>
+                  <th>Branch Type</th>
+                  <!--<th>Branch Category</th>-->
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let branch of pagedItems">
+                  <td>{{branch.brnchCd}}</td>
+                  <td><a (click)="branchFun(branch.brnchSeq, branch.brnchNm)">{{branch.brnchNm}}</a></td>
+                  <td>{{findValueByKey(branch.brnchTypKey, branchTypes)}}</td>
+                  <!--<td>{{branch.areaCat}}</td>-->
+                  <td>{{branch.brnchDscr}}</td>
+                  <td>{{findValueByKeyStatus(branch.brnchStsKey)}}</td>
+ 
+                  <td>
+                    <a class="iconBtn" data-toggle="modal" (click)="openTabAssignment(branch.brnchSeq)"><i
+                        class="fa fa-tablet"></i></a>
+                    <a class="iconBtn" data-toggle="modal" (click)="openPayment(branch.brnchSeq)"><i
+                        class="fa fa-plus"></i></a>
+                    <a href="#" data-toggle="modal" (click)="ProductAssign(branch.brnchSeq, branch.brnchNm)"
+                      class="iconBtn"><i class="fa fa-product-hunt"></i></a>
+                    <a href="#" class="iconBtn" data-toggle="modal"
+                      (click)="AccountSetup(branch.brnchSeq, branch.brnchNm)"><img src="assets/images/setup-icon.png"
+                        alt=""></a>
+                    <!-- <a href="#" class="iconBtn" data-toggle="modal" (click)="AssignLocation(branch.brnchSeq)"><img
+                        src="assets/images/pin-icon.png" alt=""></a> -->
+
+                    <a data-toggle="modal" (click)="UserAssignment(branch.brnchSeq)" class="iconBtn"><i
+                        class="fa fa-user"></i></a>
+                    <!--<a href="#" class="iconBtn marker"><i class="fa fa-map-marker"></i></a>-->
+                    <!-- <a (click)="editItem(branch.brnchSeq)" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                    <a (click)="deleteItem(branch.brnchSeq)" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+                    <!-- <a href="#" class="iconBtn"><i class="fa fa-history"></i></a> -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="back">
+            <a routerLink="/setup/organization/area/{{clickBranch}}" class="btn btn-primary btn-min"><i
+                class="fa fa-chevron-left"></i>
+              Back</a>
+          </div>
+          <nav aria-label="Page navigation ">
+            <ul class="pagination justify-content-center" *ngIf="pager.pages && pager.pages.length">
+              <li class="page-item disabled" [ngClass]="{disabled:pager.currentPage === 1}">
+                <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+              </li>
+              <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                <a class="page-link" (click)="setPage(page)">{{page}}</a>
+              </li>
+              <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="modal fade" id="ProductAssign" role="dialog">
+  <div class="modal-dialog mymodal">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Product Assign to the Branch</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="ProductAssignForm" (ngSubmit)="onProductAssignSubmit()">
+        <div class="modal-body pb-1 pt-2">
+          <div class="table-responsive">
+            <table class="table mb-0 last-left">
+              <thead class="thead-light last-left">
+                <tr>
+                  <th>Product ID</th>
+                  <th>Product Name</th>
+                  <th>Product Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let assign of ProductAssignValue; let i = index;">
+                  <td><input type="checkbox" [checked]="assign.checked" [id]="'checkP-'+assign.productSeq"
+                      value="{{assign.productSeq}}"
+                      (click)="changeRadioProductAssignStatus($event)">{{assign.productSeq}}</td>
+                  <td>{{assign.productName}}</td>
+                  <td>{{assign.calcType}}</td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer text-center pb-3">
+          <button class="btn btn-primary">Ok</button>
+          <!-- <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button> -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="AssignLocation" role="dialog">
+  <div class="modal-dialog bigger mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Assign Location </h5>
+      </div>
+      <form class="md-float-material" [formGroup]="AssignLocationForm" (ngSubmit)="onAssignLocationSubmit()">
+
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table last-left" id="myTable">
+              <thead class="thead-light last-left">
+                <tr>
+                  <th></th>
+                  <th>Province</th>
+                  <th>District</th>
+                  <th>Tehseel</th>
+                  <th width="20%">UC</th>
+                  <th>City</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr *ngFor="let assign of AssignLocationValue; let i = index;">
+                  <td><input type="checkbox" [checked]="assign.checked" [id]="'check-'+assign.city"
+                      value="{{assign.city}}" (click)="changeRadioStatus($event)"></td>
+                  <td>{{assign.provinceName}}</td>
+                  <td>{{assign.districtName}}</td>
+                  <td>{{assign.tehsilName}}</td>
+                  <td>{{assign.ucName}}</td>
+                  <td>{{assign.cityName}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer text-center pt-0">
+          <button class="btn btn-primary">Ok</button>
+          <!-- <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button> -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="AccountSetup" role="dialog">
+  <div class="modal-dialog big mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Account Setup</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="AccountSetupForm" (ngSubmit)="onAccountSetupSubmit()">
+        <div class="modal-body">
+          <ul class="infolist">
+            <li>Branch ID: <span>{{AccountSetupId}}</span></li>
+          </ul>
+          <ul class="infolist">
+            <li>Branch Name: <span>{{AccountSetupName}}</span></li>
+          </ul>
+          <div class="cRow">
+            <div class="cCol2">
+              <label>Bank Name:</label>
+              <!-- 
+              <mat-form-field>
+                  <mat-select placeholder="Select Occupation" [errorStateMatcher]="matcher" pattern="^[1-9]\d*$" formControlName="bankName"
+                    name="occupationKey" required>
+                    <mat-option *ngFor="let edu of banks" [value]="edu.codeKey">
+                      {{edu.codeValue}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+
+              <select class="form-control" formControlName="bankName"
+                [ngClass]="{ 'is-invalid': submitted && a.bankName.errors }">
+                <option *ngFor="let edu of banks" [value]="edu.codeKey">{{edu.codeValue}}</option>
+              </select>
+            </div>
+            <div class="cCol2">
+              <label>Bank Branch:</label>
+              <input (keypress)="keyPressText($event)" type="text" class="form-control" formControlName="bankBranch"
+                [ngClass]="{ 'is-invalid': submitted && a.bankBranch.errors }">
+            </div>
+            <div class="cCol2">
+              <label>Account Title:</label>
+              <input type="text" class="form-control" formControlName="accTitle"
+                [ngClass]="{ 'is-invalid': submitted && a.accTitle.errors }">
+            </div>
+            <div class="cCol2">
+              <label>Account No:</label>
+              <input type="text" (keypress)="onlyNumbers($event)" class="form-control" formControlName="accNo"
+                [ngClass]="{ 'is-invalid': submitted && a.accNo.errors }">
+            </div>
+            <div class="cCol2">
+              <label>IBAN No:</label>
+              <input type="text" (keypress)="onlyNumbers($event)" class="form-control" formControlName="ibanNo"
+                [ngClass]="{ 'is-invalid': submitted && a.ibanNo.errors }">
+            </div>
+          </div>
+        </div>
+        <div *ngIf="submitted && a.bankName.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="a.bankName.errors.required">Please Select Bank Name</strong>
+        </div>
+        <div *ngIf="submitted && a.bankBranch.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="a.bankBranch.errors">Please Enter Bank Branch</strong>
+        </div>
+        <div *ngIf="submitted && a.accTitle.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="a.accTitle.errors">Please Enter Account Title</strong>
+        </div>
+        <div *ngIf="submitted && a.accNo.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="a.accNo.errors">Please Enter Account No</strong>
+        </div>
+        <div *ngIf="submitted && a.ibanNo.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="a.ibanNo.errors">Please Enter IBAN No</strong>
+        </div>
+        <div class="modal-footer text-center">
+          <button class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="UserAssignment" role="dialog">
+  <div class="modal-dialog mymodal bigger">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Employee Assignment</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="employeeAssignmentForm" (ngSubmit)="onemployeeAssignmentSubmit()">
+        <div class="modal-body pt-0" style="overflow:visible">
+          <div class="pt-1 pb-2">
+            <h6 class="colorBlack small mb-0 pt-1"><b>Position</b></h6>
+          </div>
+          <div class="borderbox p-2 pb-3">
+            <div class="userfields">
+              <div class="cRow vrbp0">
+                <div class="cCol2">
+                  <!-- <label>Branch Manager</label> -->
+                  <!-- <select formControlName="empSeq" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select> -->
+
+                  <!-- <ng-select [items]="userList" required bindLabel="empNm" bindValue="empNm"
+                    name="empSeq" placeholder="Branch Manager" formControlName="empSeq">
+                  </ng-select> --> 
+
+                  <mat-form-field>
+                    <mat-select placeholder="Branch Manager" formControlName="empSeq" name="empSeq">
+                      <mat-option *ngFor="let edu of userList" [value]="edu.empSeq">
+                        {{edu.empNm}}    ({{edu.empLanId}})
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!--<div style="width: 50%;"> 	
+                             <input formControlName="regionManager" (keydown)="search($event, 'regionManager')" type="text"  class="form-control" placeholder="Asad Khan">
+                             <ul *ngIf="regionManager" style="position: absolute;z-index: 999;background-color:#fff; width:16%;border:1px solid #999999;padding: 5px;">
+                             <li *ngFor="let search of regionManager" (click)="serchSelected(search.empSeq, 'regionManager')" style="width: 100%;">{{search.empNm}}</li>
+                             </ul>
+                             </div>-->
+                  <!-- <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+                </div>
+                <div class="cCol2">
+
+
+                  <!-- <ng-select autoCorrect [items]="userList" required required bindLabel="empLanId" bindValue="empLanId"
+                    name="coveringEmpSeq" placeholder="Covering Employee" formControlName="coveringEmpSeq">
+                  </ng-select> -->
+
+
+                  <mat-form-field>
+                        <mat-select placeholder="Covering Employee" formControlName="coveringEmpSeq" name="coveringEmpSeq">
+                          <mat-option *ngFor="let edu of userList" [value]="edu.empSeq">
+                            {{edu.empNm}}   ({{edu.empLanId}})
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                  <!-- <label>Covering Employee</label>
+                  <select formControlName="coveringEmpSeq" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select> -->
+                  <!--<div style="width: 50%;"> 		
+                             <input formControlName="coveringRegManager"  value="" (keydown)="search($event, 'coveringRegManager')" type="text" class="form-control" placeholder="Asad Khan">
+                              <ul *ngIf="coveringRegManager" style="position: absolute;z-index: 999;background-color:#fff; width:16%;border:1px solid #999999;padding: 5px;">
+                             <li *ngFor="let search of coveringRegManager" (click)="serchSelected(search.empSeq, 'coveringRegManager')" style="width: 100%;">{{search.empNm}}</li>
+                             </ul>
+                             </div>-->
+                  <!-- <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a> -->
+                </div>
+                <div class="cCol4 date2">
+                  <div class="input-group date mr-1">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="picker1" placeholder="From Date:"
+                        formControlName="coveringEmpFromDate">
+                      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                      <mat-datepicker startView="year" #picker1></mat-datepicker>
+                    </mat-form-field>
+                    <!-- <input formControlName="coveringEmpFromDate" type="date" class="form-control" placeholder="To Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div> -->
+                  </div>
+                  <div class="input-group date">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="picker2" placeholder="To Date:"
+                        formControlName="coveringEmpToDate">
+                      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                      <mat-datepicker startView="year" #picker2></mat-datepicker>
+                    </mat-form-field>
+                    <!-- <input type="date" formControlName="coveringEmpToDate" class="form-control" placeholder="From Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="cRow vrbp0">
+                <div class="cCol5 inlincbox">
+                  <label>Clerk</label>
+                  <select formControlName="clerk" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol5 inlincbox">
+                  <label>Covering Employee</label>
+                  <select formControlName="coveringClerk" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol1 date2">
+                  <div class="input-group date mr-1">
+                    <input type="date" formControlName="coveringClerkDateFrom" class="form-control" placeholder="To Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                  <div class="input-group date">
+                    <input formControlName="coveringClerkDateTo" type="date" class="form-control" placeholder="From Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="cRow vrbp0">
+                <div class="cCol5 inlincbox">
+                  <label>Accountant</label>
+                  <select formControlName="manager" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol5 inlincbox">
+                  <label>Covering Employee</label>
+                  <select formControlName="coveringManager" class="form-control">
+                    <option *ngFor="let search of userList" value="{{search.empSeq}}">{{search.empNm}}</option>
+                  </select>
+                  <a href="#" class="iconBtn"><i class="fa fa-pencil"></i></a>
+                  <a href="#" class="iconBtn delBtn"><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="cCol1 date2">
+                  <div class="input-group date mr-1">
+                    <input formControlName="coveringManagerDateFrom" type="date" class="form-control" placeholder="To Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                  <div class="input-group date">
+                    <input formControlName="coveringManagerDateTo" type="date" class="form-control" placeholder="From Date">
+                    <div class="input-group-append input-group-addon">
+                      <button class="input-group-text" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+          <div class="modal-footer text-center pb-3">
+            <button class="btn btn-primary" type="submit">Ok</button>
+            <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="branch" role="dialog">
+  <div class="modal-dialog biger mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Branch </h5>
+      </div>
+      <form class="md-float-material" [formGroup]="branchForm" (ngSubmit)="onBranchSubmit()">
+        <div class="modal-body">
+          <div class="cRow" *ngIf="editBranch">
+            <div class="cCol2">
+              <ng-select [items]="regions" required bindLabel="regNm" bindValue="regSeq" name="regNm"
+                placeholder="Select Region:" formControlName="regionSeq" (change)="regionChange()">
+              </ng-select>
+            </div>
+            <div class="cCol2">
+              <ng-select [items]="areas" required bindLabel="areaNm" bindValue="areaSeq" name="areaNm"
+                placeholder="Select Area:" formControlName="areaSeq">
+              </ng-select>
+            </div>
+          </div>
+          <div class="cRow">
+            <div class="cCol1">
+              <label>Branch Name:</label>
+              <input (keypress)="keyPress($event)" type="text" class="form-control" formControlName="branchName"
+                [ngClass]="{ 'is-invalid': submitted && f.branchName.errors }" />
+            </div>
+            <div class="cCol1">
+              <label>Branch Type:</label>
+              <select class="form-control" formControlName="brnchTypKey"
+                [ngClass]="{ 'is-invalid': submitted && f.brnchTypKey.errors }">
+                <option *ngFor="let edu of branchTypes" value="{{edu.codeKey}}">{{edu.codeValue}}</option>
+              </select>
+            </div>
+            <!--<div class="cCol1">
+                    <label>Branch Category:</label>
+                    <select class="form-control" formControlName="branchCategory" [ngClass]="{ 'is-invalid': submitted && f.branchCategory.errors }">
+                    	<option value="1" [selected] ="1">Branch Category	</option>
+                        <option value="2">Branch Category	</option>
+                    </select>
+                  </div>-->
+            <div class="cCol1">
+              <label>Phone Number:</label>
+              <input (keypress)="phNumValidate($event)" type="text" class="form-control" formControlName="brnchPhNum"
+                     [ngClass]="{ 'is-invalid': submitted && f.brnchPhNum.errors }" />
+            </div>
+            <div class="cCol1">
+              <label>Email:</label>
+              <input (keypress)="keyPress($event)" type="text" class="form-control" formControlName="brnchEmail"
+                     [ngClass]="{ 'is-invalid': submitted && f.brnchEmail.errors }" />
+            </div>
+
+            <div class="cCol1">
+              <label>Status:</label>
+              <select class="form-control" formControlName="branchStatus"
+                [ngClass]="{ 'is-invalid': submitted && f.branchStatus.errors }">
+                <option *ngFor="let status of statusListing" value="{{status.codeKey}}">{{status.codeValue}}</option>
+              </select>
+            </div>
+            <div class="col-full">
+              <label>Description:</label>
+              <input type="text" class="form-control" formControlName="branchDescription"
+                [ngClass]="{ 'is-invalid': submitted && f.branchDescription.errors }" />
+            </div>
+            <!-- <div class="cCol">
+                    <label>province:</label>
+                    <input type="text" readonly class="form-control" formControlName="provinceName" [ngClass]="{ 'is-invalid': submitted && f.provinceName.errors }" />
+                  </div>
+				  <div class="cCol">
+                    <label>district:</label>
+                    <input type="text" readonly class="form-control" formControlName="districtName" [ngClass]="{ 'is-invalid': submitted && f.districtName.errors }" />
+                  </div>
+				  <div class="cCol">
+                    <label>tehsil:</label>
+                    <input type="text" readonly class="form-control" formControlName="tehsilName" [ngClass]="{ 'is-invalid': submitted && f.tehsilName.errors }" />
+                  </div>
+				  <div class="cCol">
+                    <label>uc:</label>
+                    <input type="text" readonly class="form-control" formControlName="ucName" [ngClass]="{ 'is-invalid': submitted && f.ucName.errors }" />
+                  </div>
+				  <div class="cCol">
+                    <label>city:</label>
+                    <input type="text" readonly class="form-control" formControlName="cityName" [ngClass]="{ 'is-invalid': submitted && f.cityName.errors }" />
+                  </div>
+				  <div class="cCol mt-4">
+					<button type="button" class="btn btn-dots" data-toggle="modal" (click)="getLocations()"></button>
+                  </div>
+				  <div class="cCol1">
+                    <label>houseNum:</label>
+                    <input type="text" class="form-control" formControlName="houseNum" [ngClass]="{ 'is-invalid': submitted && f.houseNum.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>street:</label>
+                    <input type="text" class="form-control" formControlName="street" [ngClass]="{ 'is-invalid': submitted && f.street.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>village:</label>
+                    <input type="text" class="form-control" formControlName="village" [ngClass]="{ 'is-invalid': submitted && f.village.errors }" />
+                  </div>
+				  <div class="cCol1">
+                    <label>other:</label>
+                    <input type="text" class="form-control" formControlName="other" [ngClass]="{ 'is-invalid': submitted && f.other.errors }" />
+                  </div> -->
+
+
+            <!--<div class="col-full">
+                    <label>Address:</label>
+                    <input type="text" class="form-control" formControlName="branchAddress" [ngClass]="{ 'is-invalid': submitted && f.branchAddress.errors }" />
+                  </div>-->
+          </div>
+        </div>
+        <div *ngIf="submitted && f.branchName.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.branchName.errors">Please Enter Branch Name</strong>
+        </div>
+        <div *ngIf="submitted && f.branchDescription.errors" class="alert alert-warning mt-2 mb-2">
+          <i class="fa fa-exclamation-circle"></i>
+          <strong *ngIf="f.branchDescription.errors">Please Enter Branch Description</strong>
+        </div>
+        <!--<div *ngIf="submitted && f.branchAddress.errors" class="alert alert-warning mt-2 mb-2">
+                  <i  class="fa fa-exclamation-circle"></i>  
+                  <strong *ngIf="f.branchAddress.errors">Please Enter Branch Address</strong>
+                </div>-->
+        <div class="modal-footer text-center">
+          <button class="btn btn-primary">Ok</button>
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="AssignTablet" role="dialog">
+  <div class="modal-dialog big mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Assign Tablet</h5>
+      </div>
+      <form class="md-float-material" [formGroup]="AssignTabletForm">
+        <div class="modal-body" style="padding-top:4em">
+
+          <div class="row">
+            <!-- <div class="cCol2">
+                <label>Bank Name:</label>
+  
+                <select class="form-control" formControlName="bankName" [ngClass]="{ 'is-invalid': submitted && a.bankName.errors }">
+                  <option *ngFor="let edu of banks" [value]="edu.codeKey">{{edu.codeValue}}</option>
+                </select>
+              </div> -->
+            <!-- <div class="col-sm-1">
+            </div> -->
+            <div class="col-sm-3">
+              <!-- <label>Bank Branch:</label>
+                <input (keypress)="keyPressText($event)" type="text" class="form-control" formControlName="bankBranch"
+                  [ngClass]="{ 'is-invalid': submitted && a.bankBranch.errors }"> -->
+              <mat-form-field>
+                <input [readonly]="hasDvc" type="text" matInput formControlName="dvcAddr" placeholder="Device Unique Id"
+                  name="dvcAddr" minlength="15" maxlength="16" required>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input [readonly]="hasDvc" type="text" matInput formControlName="crtdBy" placeholder="Identifier"
+                  name="identifier" maxlength="30" required>
+              </mat-form-field>
+            </div>
+            <!-- Added by Areeba - 7-6-2022 -->
+            <div class="col-sm-3">
+              <mat-form-field>
+                <input [readonly]="hasDvc" type="text" matInput formControlName="phNum" placeholder="Mobile Number"
+                  name="phNum" maxlength="11" minlength="10" pattern="^[1-9][0-9]*$" (keypress)="phNumValidate($event)">
+                  <mat-hint>e.g.: 3001234567 </mat-hint>
+              </mat-form-field>
+            </div>
+            <!-- Ended by Areeba -->
+            
+            <!-- <div class="col-sm-1">
+            </div> -->
+            <div class="col-sm-2">
+              <button *ngIf="hasDvc" (click)="unregisterDevice()" type="button" mat-stroked-button
+                color="warn">Un-Register Device</button>
+              <button *ngIf="!hasDvc" (click)="registerDevice()" type="button" mat-stroked-button
+                color="primary">Register Device</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-1"></div>
+            <!-- <div class="col-sm-1" *ngIf=""></div> -->
+          </div>
+        </div>
+        <!-- <div *ngIf="submitted && a.bankName.errors" class="alert alert-warning mt-2 mb-2">
+            <i class="fa fa-exclamation-circle"></i>
+            <strong *ngIf="a.bankName.errors.required">Please Select Bank Name</strong>
+          </div>
+          <div *ngIf="submitted && a.bankBranch.errors" class="alert alert-warning mt-2 mb-2">
+            <i class="fa fa-exclamation-circle"></i>
+            <strong *ngIf="a.bankBranch.errors">Please Enter Bank Branch</strong>
+          </div>
+          <div *ngIf="submitted && a.accTitle.errors" class="alert alert-warning mt-2 mb-2">
+            <i class="fa fa-exclamation-circle"></i>
+            <strong *ngIf="a.accTitle.errors">Please Enter Account Title</strong>
+          </div>
+          <div *ngIf="submitted && a.accNo.errors" class="alert alert-warning mt-2 mb-2">
+            <i class="fa fa-exclamation-circle"></i>
+            <strong *ngIf="a.accNo.errors">Please Enter Account No</strong>
+          </div>
+          <div *ngIf="submitted && a.ibanNo.errors" class="alert alert-warning mt-2 mb-2">
+            <i class="fa fa-exclamation-circle"></i>
+            <strong *ngIf="a.ibanNo.errors">Please Enter IBAN No</strong>
+          </div> -->
+        <div class="modal-footer text-center">
+          <!-- <button class="btn btn-primary">Ok</button> -->
+          <button type="button" class="btn btn-primary btn-min" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="Location" role="dialog">
+  <div class="modal-dialog bigger mymodal">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Location </h5>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table last-left">
+            <thead class="thead-light last-left">
+              <tr>
+                <th>Province</th>
+                <th>District</th>
+                <th>Tehseel</th>
+                <th width="20%">UC</th>
+                <th>City</th>
+                <th>Select</th>
+              </tr>
+            </thead>
+            <tbody class="evenodd">
+              <tr *ngFor="let address of addresses">
+                <td>{{address.provinceName}} </td>
+                <td>{{address.districtName}}</td>
+                <td>{{address.tehsilName}}</td>
+                <td>{{address.ucName}}</td>
+                <td>{{address.cityName}}</td>
+                <td>
+                  <button data-dismiss="modal" type="button" class="btn btn-primary btn-min"
+                    (click)="selectAddress(address)">Select</button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
